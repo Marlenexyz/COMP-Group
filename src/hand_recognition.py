@@ -35,6 +35,11 @@ class HandRecognition:
                     # Draw landmark on frame
                     cv2.circle(frame, (int(landmark.x * frame.shape[1]), int(landmark.y * frame.shape[0])), 5, (0, 255, 0), -1)
 
+            # Get coordinates of the index finger tip
+            self.index_finger_coordinates = (int(hand_landmarks.landmark[mp.solutions.hands.HandLandmark.INDEX_FINGER_TIP].x * frame.shape[1]),
+                                        int(hand_landmarks.landmark[mp.solutions.hands.HandLandmark.INDEX_FINGER_TIP].y * frame.shape[0]))
+            self.index_finger_y = self.index_finger_coordinates[1]
+
         # Calculate and display FPS
         self.curr_time = time.time()
         fps = 1 / (self.curr_time - self.prev_time)
@@ -45,7 +50,7 @@ class HandRecognition:
         cv2.imshow('Hand Tracking', frame)
 
 if __name__ == '__main__':
-    hand_recognition = HandRecognition(0)
+    hand_recognition = HandRecognition(1)
     while True:
         # Break loop if 'q' is pressed
         if cv2.waitKey(1) & 0xFF == ord('q'):
