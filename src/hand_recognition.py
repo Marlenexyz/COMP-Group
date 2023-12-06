@@ -29,16 +29,15 @@ class HandRecognition:
         results = self.mp_hands.process(frame_rgb)
 
         # Draw landmarks on frame
+        self.index_finger_coordinates = []
         if results.multi_hand_landmarks:
             for hand_landmarks in results.multi_hand_landmarks:
                 for idx, landmark in enumerate(hand_landmarks.landmark):
-                    # Draw landmark on frame
-                    cv2.circle(frame, (int(landmark.x * frame.shape[1]), int(landmark.y * frame.shape[0])), 5, (0, 255, 0), -1)
-
-            # Get coordinates of the index finger tip
-            self.index_finger_coordinates = (int(hand_landmarks.landmark[mp.solutions.hands.HandLandmark.INDEX_FINGER_TIP].x * frame.shape[1]),
-                                        int(hand_landmarks.landmark[mp.solutions.hands.HandLandmark.INDEX_FINGER_TIP].y * frame.shape[0]))
-
+                    if idx == mp.solutions.hands.HandLandmark.INDEX_FINGER_TIP:
+                        self.index_finger_coordinates.append((int(landmark.x * frame.shape[1]), int(landmark.y * frame.shape[0])))
+                        # Draw landmark on frame
+                        cv2.circle(frame, (int(landmark.x * frame.shape[1]), int(landmark.y * frame.shape[0])), 5, (0, 255, 0), -1)                            
+            
         # Calculate and display FPS
         self.curr_time = time.time()
         fps = 1 / (self.curr_time - self.prev_time)
@@ -52,13 +51,14 @@ class HandRecognition:
         return self.index_finger_coordinates
 
 if __name__ == '__main__':
-    hand_recognition = HandRecognition(1)
+    hand_recognition = HandRecognition(0)
     while True:
         # Break loop if 'q' is pressed
-        if cv2.waitKey(1) & 0xFF == ord('q'):
+        if cv2.waitKey(1) & 0xFF == ord('q'): 
             break
         
         hand_recognition.run()
+        print(hand_recognition.getIndexFingerCoordinates())
             
     del hand_recognition
     
