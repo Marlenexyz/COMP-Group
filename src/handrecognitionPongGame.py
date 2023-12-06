@@ -14,18 +14,7 @@ if __name__ == '__main__':
                 running = False
 
         pong.move_paddles(hand_recognition.getIndexFingerCoordinates())         #give arguments 
-    
-        pong.move_ball()
-        
-        pong.check_collision_with_paddle()
-    
-        pong.check_collision_with_wall()
-
-        pong.update_score()
-
-        pong.draw_game()
-        pong.calibrate_corners()
-
+        pong.run()
 
         # Update the display
         pygame.display.flip()

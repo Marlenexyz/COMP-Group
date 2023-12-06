@@ -1,3 +1,4 @@
+from typing import Any
 import pygame
 import random
 import time
@@ -41,18 +42,18 @@ class PongGame:
         self.score_text = self.font.render("Player A: {}     Player B: {}".format(self.player_a_score, self.player_b_score), True, self.WHITE)
 
 
-    def move_ball(self):
+    def _move_ball(self):
         self.ball_x += self.ball_speed_x
         self.ball_y += self.ball_speed_y
 
-    def check_collision_with_paddle(self):
+    def _check_collision_with_paddle(self):
         # Check for collisions with paddles
         if self.ball_x == self.player_a_paddle_x + self.paddle_width and self.player_a_paddle_y <= self.ball_y <= self.player_a_paddle_y + self.paddle_height:
             self.ball_speed_x *= -1
         if self.ball_x == self.player_b_paddle_x - self.paddle_width and self.player_b_paddle_y <= self.ball_y <= self.player_b_paddle_y + self.paddle_height:
             self.ball_speed_x *= -1
 
-    def check_collision_with_wall(self):
+    def _check_collision_with_wall(self):
             # Check for collisions with walls
         if self.ball_y <= 0 or self.ball_y >= self.screen_height - self.ball_radius:
             self.ball_speed_y *= -1
@@ -65,11 +66,11 @@ class PongGame:
             self.ball_x = self.screen_width // 2
             self.ball_y = self.screen_height // 2
 
-    def update_score(self):
+    def _update_score(self):
         # Update the score text
         self.score_text = self.font.render("Player A: {}     Player B: {}".format(self.player_a_score, self.player_b_score), True, self.WHITE)
 
-    def draw_game(self):
+    def _draw_game(self):
         # Clear the screen
         self.screen.fill(self.BLACK)
 
@@ -99,7 +100,7 @@ class PongGame:
                 self.player_b_paddle_y = max(min(fingertip_pos_right, self.screen_height - self.paddle_height), 0)
         
 
-    def calibrate_corners(self):
+    def _calibrate_corners(self):
         # Define corner points
         corners = [(0, 0), (self.screen_width, 0), (0, self.screen_height), (self.screen_width, self.screen_height)]
 
@@ -113,31 +114,26 @@ class PongGame:
         pygame.display.flip()
         return corner_rects
 
+    def run(self):       
+        self._move_ball()
+        self._check_collision_with_paddle()
+        self._check_collision_with_wall()
+        self._update_score()
+        self._draw_game()
+        self._calibrate_corners()
 
 if __name__ == '__main__':
     # Game loop
     pong = PongGame()
     running = True
     while running:
-        
         # Handle events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
 
-        pong.move_paddles()         #give arguments 
-    
-        pong.move_ball()
-        
-        pong.check_collision_with_paddle()
-    
-        pong.check_collision_with_wall()
-
-        pong.update_score()
-
-        pong.draw_game()
-        pong.calibrate_corners()
-
+        pong.move_paddles()  
+        pong.run()
 
         # Update the display
         pygame.display.flip()
