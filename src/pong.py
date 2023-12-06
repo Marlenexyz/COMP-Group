@@ -108,36 +108,35 @@ class PongGame:
         return corner_rects
 
 
+if __name__ == '__main__':
+    # Game loop
+    pong = PongGame()
+    running = True
+    while running:
+        
+        # Handle events
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
 
+        pong.move_paddles()         #give arguments 
     
-# Game loop
-pong = PongGame()
-running = True
-while running:
+        pong.move_ball()
+        
+        pong.check_collision_with_paddle()
     
-    # Handle events
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+        pong.check_collision_with_wall()
 
-    pong.move_paddles()         #give arguments 
- 
-    pong.move_ball()
-    
-    pong.check_collision_with_paddle()
-   
-    pong.check_collision_with_wall()
+        pong.update_score()
 
-    pong.update_score()
-
-    pong.draw_game()
-    pong.calibrate_corners()
+        pong.draw_game()
+        pong.calibrate_corners()
 
 
-    # Update the display
-    pygame.display.flip()
-    
-    time.sleep(0.005)
+        # Update the display
+        pygame.display.flip()
+        
+        time.sleep(0.005)
 
-# Quit the game
-pygame.quit()
+    # Quit the game
+    pygame.quit()
