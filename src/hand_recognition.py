@@ -38,7 +38,6 @@ class HandRecognition:
             # Get coordinates of the index finger tip
             self.index_finger_coordinates = (int(hand_landmarks.landmark[mp.solutions.hands.HandLandmark.INDEX_FINGER_TIP].x * frame.shape[1]),
                                         int(hand_landmarks.landmark[mp.solutions.hands.HandLandmark.INDEX_FINGER_TIP].y * frame.shape[0]))
-            self.index_finger_y = self.index_finger_coordinates[1]
 
         # Calculate and display FPS
         self.curr_time = time.time()
@@ -48,6 +47,9 @@ class HandRecognition:
 
         # Show frame
         cv2.imshow('Hand Tracking', frame)
+        
+    def getIndexFingerCoordinates(self):
+        return self.index_finger_coordinates
 
 if __name__ == '__main__':
     hand_recognition = HandRecognition(1)
