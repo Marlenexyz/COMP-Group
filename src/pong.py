@@ -93,7 +93,23 @@ class PongGame:
         if keys[pygame.K_DOWN] and self.player_b_paddle_y < self.screen_height - self.paddle_height:
             self.player_b_paddle_y += self.paddle_speed
 
+    def calibrate_corners(self):
+        # Define corner points
+        corners = [(0, 0), (self.screen_width, 0), (0, self.screen_height), (self.screen_width, self.screen_height)]
 
+        # Draw and store the corners
+        corner_rects = []
+        for corner in corners:
+            rect = pygame.Rect(corner[0] - 5, corner[1] - 5, 10, 10)  # Erstelle ein Rechteck um die Ecke
+            pygame.draw.rect(self.screen, self.WHITE, rect)
+            corner_rects.append(rect)
+
+        pygame.display.flip()
+        return corner_rects
+
+
+
+    
 # Game loop
 pong = PongGame()
 running = True
@@ -104,10 +120,8 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    # Move the paddles
-    pong.move_paddles()
+    pong.move_paddles()         #give arguments 
  
-    # Move the ball
     pong.move_ball()
     
     pong.check_collision_with_paddle()
@@ -116,8 +130,8 @@ while running:
 
     pong.update_score()
 
-    
     pong.draw_game()
+    pong.calibrate_corners()
 
 
     # Update the display
