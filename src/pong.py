@@ -1,6 +1,4 @@
-from typing import Any
 import pygame
-import random
 import time
 import numpy as np
 
@@ -19,7 +17,7 @@ class PongGame:
         # Set up the colors
         self.BLACK = (0, 0, 0)
         self.WHITE = (255, 255, 255)
-        # self.RED = 
+        self.RED = (255, 0, 0)
 
         # Set up the paddles
         self.paddle_width = 10
@@ -84,26 +82,28 @@ class PongGame:
 
         # Draw the score
         self.screen.blit(self.score_text, (self.screen_width // 2 - self.score_text.get_width() // 2, 10))
-    
-    def move_paddles(self,fingertips):
-        # adjust this function to match the paddel y-coordinate to the finger tips
-        # Get fingertip positions
-        fingertips_array = np.array(fingertips)
-        if fingertips_array.shape[0] == 2:
-            
-            fingertip_pos_left = fingertips_array[np.argmax(fingertips_array[:,0]),1]
-            fingertip_pos_right = fingertips_array[np.argmin(fingertips_array[:,0]),1]
 
-            # Match paddle y-coordinate to fingertip y-coordinate
-            if fingertip_pos_left is not None:  # Ensure the fingertip was detected
-                self.player_a_paddle_y = max(min(fingertip_pos_left, self.screen_height - self.paddle_height), 0)
-            if fingertip_pos_right is not None:  # Ensure the fingertip was detected
-                self.player_b_paddle_y = max(min(fingertip_pos_right, self.screen_height - self.paddle_height), 0)
+    def move_paddle_left(self,fingertip_pos_left):
+        if fingertip_pos_left is not None:  # Ensure the fingertip was detected
+            self.player_a_paddle_y = max(min(fingertip_pos_left, self.screen_height - self.paddle_height), 0)
 
-    # def move_paddle_left(self,):
+    def move_paddle_right(self,fingertip_pos_right):
+        if fingertip_pos_right is not None:  # Ensure the fingertip was detected
+            self.player_b_paddle_y = max(min(fingertip_pos_right, self.screen_height - self.paddle_height), 0)
+
+
         
-    # def move_paddle_right(self,):
-        
+    def move_paddles_by_keys(self):
+        # Move the paddles
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_w] and self.player_a_paddle_y > 0:
+            self.player_a_paddle_y -= self.paddle_speed
+        if keys[pygame.K_s] and self.player_a_self.paddle_y < self.screen_height - self.paddle_height:
+            self.player_a_self.paddle_y += self.paddle_speed
+        if keys[pygame.K_UP] and self.player_b_self.paddle_y > 0:
+            self.player_b_self.paddle_y -= self.paddle_speed
+        if keys[pygame.K_DOWN] and self.player_b_self.paddle_y < self.screen_height - self.paddle_height:
+            self.player_b_self.paddle_y += self.paddle_speed
 
     def _calibrate_corners(self):
         # Define corner points
@@ -113,7 +113,7 @@ class PongGame:
         corner_rects = []
         for corner in corners:
             rect = pygame.Rect(corner[0] - 5, corner[1] - 5, 10, 10)  # Erstelle ein Rechteck um die Ecke
-            pygame.draw.rect(self.screen, self.WHITE, rect)
+            pygame.draw.rect(self.screen, self.RED, rect)
             corner_rects.append(rect)
 
         pygame.display.flip()
@@ -129,7 +129,7 @@ class PongGame:
 
 if __name__ == '__main__':
     # Game loop
-    pong = PongGame()
+    pong = PongGame(400,800)
     running = True
     while running:
         # Handle events
@@ -137,7 +137,7 @@ if __name__ == '__main__':
             if event.type == pygame.QUIT:
                 running = False
 
-        pong.move_paddles()  
+        pong.move_paddles_by_keys()  
         pong.run()
 
         # Update the display

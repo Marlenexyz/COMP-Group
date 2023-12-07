@@ -13,7 +13,9 @@ if __name__ == '__main__':
             if event.type == pygame.QUIT:
                 running = False
 
-        pong.move_paddles(hand_recognition.getIndexFingerCoordinates())       
+        pong.move_paddle_left(hand_recognition.getIndexFingerPosLeft())
+        pong.move_paddle_right(hand_recognition.getIndexFingerPosRight())
+
         pong.run()
 
         # Update the display
