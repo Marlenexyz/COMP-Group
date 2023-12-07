@@ -4,7 +4,7 @@ from pong import *
 
 if __name__ == '__main__':
     hand_recognition = HandRecognition(0)
-    pong = PongGame()
+    pong = PongGame(400,800)
     running = True
     while running:
         hand_recognition.run()
@@ -13,7 +13,7 @@ if __name__ == '__main__':
             if event.type == pygame.QUIT:
                 running = False
 
-        pong.move_paddles(hand_recognition.getIndexFingerCoordinates())         #give arguments 
+        pong.move_paddles(hand_recognition.getIndexFingerCoordinates())       
         pong.run()
 
         # Update the display

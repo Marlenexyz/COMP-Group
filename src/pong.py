@@ -5,19 +5,21 @@ import time
 import numpy as np
 
 class PongGame:
-    def __init__(self):
+    def __init__(self,screen_height,screen_width):
         # Initialize the game
         pygame.init()
 
         # Set up the display
-        self.screen_width = 800
-        self.screen_height = 400
+        self.screen_height = screen_height
+        self.screen_width = screen_width
+        
         self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
         pygame.display.set_caption("Pong")
 
         # Set up the colors
         self.BLACK = (0, 0, 0)
         self.WHITE = (255, 255, 255)
+        # self.RED = 
 
         # Set up the paddles
         self.paddle_width = 10
@@ -40,7 +42,6 @@ class PongGame:
         self.player_b_score = 0
         self.font = pygame.font.Font(None, 36)
         self.score_text = self.font.render("Player A: {}     Player B: {}".format(self.player_a_score, self.player_b_score), True, self.WHITE)
-
 
     def _move_ball(self):
         self.ball_x += self.ball_speed_x
@@ -98,6 +99,10 @@ class PongGame:
                 self.player_a_paddle_y = max(min(fingertip_pos_left, self.screen_height - self.paddle_height), 0)
             if fingertip_pos_right is not None:  # Ensure the fingertip was detected
                 self.player_b_paddle_y = max(min(fingertip_pos_right, self.screen_height - self.paddle_height), 0)
+
+    # def move_paddle_left(self,):
+        
+    # def move_paddle_right(self,):
         
 
     def _calibrate_corners(self):
