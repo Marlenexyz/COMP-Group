@@ -82,13 +82,6 @@ class PongGame:
 
         # Draw the score
         self.screen.blit(self.score_text, (self.screen_width // 2 - self.score_text.get_width() // 2, 10))
-    
-    # def move_paddles(self,fingertip_pos_left,fingertip_pos_right):
-    #     # Match paddle y-coordinate to fingertip y-coordinate
-    #     if fingertip_pos_left is not None:  # Ensure the fingertip was detected
-    #         self.player_a_paddle_y = max(min(fingertip_pos_left, self.screen_height - self.paddle_height), 0)
-    #     if fingertip_pos_right is not None:  # Ensure the fingertip was detected
-    #         self.player_b_paddle_y = max(min(fingertip_pos_right, self.screen_height - self.paddle_height), 0)
 
     def move_paddle_left(self,fingertip_pos_left):
         if fingertip_pos_left is not None:  # Ensure the fingertip was detected

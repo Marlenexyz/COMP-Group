@@ -56,15 +56,6 @@ class HandRecognition:
         if fingertips_array.shape[0] == 2:
             self.fingertip_pos_left = fingertips_array[np.argmax(fingertips_array[:,0]),1]
             self.fingertip_pos_right = fingertips_array[np.argmin(fingertips_array[:,0]),1]
-        # return self.fingertip_pos_left, self.fingertip_pos_right
-        
-    # def getIndexFingerCoordinates_left(self):
-    #     self.getIndexFingerCoordinates()
-    #     return self.fingertip_pos_left
-    
-    # def getIndexFingerCoordinates_right(self):
-    #     self.getIndexFingerCoordinates()
-    #     return self.fingertip_pos_right
         
     def getIndexFingerPosLeft(self):
         self.getIndexFingerCoordinates()
