@@ -56,7 +56,7 @@ class RedRectangleDetector:
 
 if __name__ == '__main__':
     detector = RedRectangleDetector()
-    frame = cv2.imread('test_red_corners.jpg')
+    frame = cv2.imread('../test_red_corners.jpg')
     frame = cv2.resize(frame, None, fx=0.2, fy=0.2)
     corners = detector.find_red_corners(frame)
     print(corners)
