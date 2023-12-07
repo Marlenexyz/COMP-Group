@@ -1,27 +1,34 @@
 from hand_recognition import *
 from pong import *
+from menu import *
 
 
 if __name__ == '__main__':
+    mainMenu = Menu(400, 600)
     hand_recognition = HandRecognition(0)
-    pong = PongGame(400,800)
+    pong = PongGame(400,600)
     running = True
+    status = mainMenu.getStatus()
     while running:
-        hand_recognition.run()
-        # Handle events
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
+        if status == 'main':
+            mainMenu.update_menu()
 
-        pong.move_paddle_left(hand_recognition.getIndexFingerPosLeft())
-        pong.move_paddle_right(hand_recognition.getIndexFingerPosRight())
+        if status == 'play':
+            hand_recognition.run()
+            # Handle events
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
 
-        pong.run()
+            pong.move_paddle_left(hand_recognition.getIndexFingerPosLeft())
+            pong.move_paddle_right(hand_recognition.getIndexFingerPosRight())
 
-        # Update the display
-        pygame.display.flip()
-        
-        time.sleep(0.005)
+            pong.run()
+
+            # Update the display
+            pygame.display.flip()
+            
+            time.sleep(0.005)
         
             
     del hand_recognition
