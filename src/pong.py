@@ -18,6 +18,10 @@ class PongGame:
         self.BLACK = (0, 0, 0)
         self.WHITE = (255, 255, 255)
         self.RED = (255, 0, 0)
+        
+        # Set up the corners
+        self.l_thickness = 15 * 2
+        self.l_length = 50 * 2
 
         # Set up the paddles
         self.paddle_width = 10
@@ -69,9 +73,22 @@ class PongGame:
         # Update the score text
         self.score_text = self.font.render("Player A: {}     Player B: {}".format(self.player_a_score, self.player_b_score), True, self.WHITE)
 
+    def _draw_l_marker(self, x, y):
+        # Vertical bar of the L
+        pygame.draw.rect(self.screen, self.RED, (x - self.l_thickness // 2, y - self.l_length // 2, self.l_thickness, self.l_length))
+        # Horizontal bar of the L
+        pygame.draw.rect(self.screen, self.RED, (x - self.l_length // 2, y - self.l_thickness // 2, self.l_length, self.l_thickness))
+
+
     def _draw_game(self):
         # Clear the screen
         self.screen.fill(self.BLACK)
+
+        # Draw L-shaped marker function
+        self._draw_l_marker(0, 0)
+        self._draw_l_marker(self.screen_width, 0)
+        self._draw_l_marker(0, self.screen_height)
+        self._draw_l_marker(self.screen_width, self.screen_height)
 
         # Draw the paddles
         pygame.draw.rect(self.screen, self.WHITE, (self.player_a_paddle_x, self.player_a_paddle_y, self.paddle_width, self.paddle_height))
