@@ -5,7 +5,7 @@ class FrameMatching:
     def __init__(self):
         pass
 
-    def find_red_corners(self, frame):
+    def run(self, frame):
         
         # Convert image to HSV color space
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
@@ -53,7 +53,7 @@ if __name__ == '__main__':
     detector = FrameMatching()
     frame = cv2.imread('test_red_corners.jpg')
     frame = cv2.resize(frame, None, fx=0.2, fy=0.2)
-    corners = detector.find_red_corners(frame)
+    corners = detector.run(frame)
     for corner in corners:
         cv2.circle(frame, corner, 5, (0, 0, 255), -1)
     cv2.imshow('frame', frame)
