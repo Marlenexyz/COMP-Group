@@ -44,6 +44,11 @@ class FrameMatching:
             cy = int(M['m01'] / M['m00'])
 
             corners.append((cx, cy))
+            
+        # Print corners onto frame
+        for corner in corners:
+            cv2.circle(frame, corner, 5, (0, 0, 255), -1)
+        cv2.imshow('corners', frame)
         
         return corners
 
