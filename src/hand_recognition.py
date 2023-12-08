@@ -67,11 +67,17 @@ class HandRecognition:
         self.fingertip_coord_right = None
         self.fingertip_coord_left = None
         fingertips_array = np.array(self.index_finger_coordinates)
-        if fingertips_array.shape[0] == 2:
+        if fingertips_array.shape[0] >= 2:
             self.fingertip_pos_left = fingertips_array[np.argmax(fingertips_array[:,0]),1]
             self.fingertip_coord_left = fingertips_array[np.argmax(fingertips_array[:,0]),:]
             self.fingertip_pos_right = fingertips_array[np.argmin(fingertips_array[:,0]),1]
             self.fingertip_coord_right = fingertips_array[np.argmin(fingertips_array[:,0]),:]
+        else: 
+            if fingertips_array.shape[0] == 1:
+                self.fingertip_pos_left = fingertips_array[0,1]
+                self.fingertip_coord_left = fingertips_array[0,:]
+                self.fingertip_pos_right = fingertips_array[0,1]
+                self.fingertip_coord_right = fingertips_array[0,:]
         
     # define function to return the coordinates of the middle finger
 
@@ -81,11 +87,17 @@ class HandRecognition:
         self.middlefingertip_coord_right = None
         self.middlefingertip_coord_left = None
         fingertips_array = np.array(self.middle_finger_coordinates)
-        if fingertips_array.shape[0] == 2:
+        if fingertips_array.shape[0] >= 2:
             self.middlefingertip_pos_left = fingertips_array[np.argmax(fingertips_array[:,0]),1]
             self.middlefingertip_coord_left = fingertips_array[np.argmax(fingertips_array[:,0]),:]
             self.middlefingertip_coord_right = fingertips_array[np.argmin(fingertips_array[:,0]),:]
             self.middlefingertip_pos_right = fingertips_array[np.argmin(fingertips_array[:,0]),1]
+        else:
+            if fingertips_array.shape[0] == 1:
+                self.middlefingertip_pos_left = fingertips_array[0,1]
+                self.middlefingertip_coord_left = fingertips_array[0,:]
+                self.middlefingertip_pos_right = fingertips_array[0,1]
+                self.middlefingertip_coord_right = fingertips_array[0,:]
         # Get the coordinates of middle fingers
         
 
@@ -121,12 +133,6 @@ class HandRecognition:
         self.getMiddleFingerCoordinates()
         return self.middlefingertip_coord_right
     
-    #define function to return if two fingers are held up in a peace sign
-    def isPeaceSign(self):
-        if self.fingertip_pos_left is not None and self.fingertip_pos_right is not None:
-            return self.fingertip_pos_left > self.fingertip_pos_right
-        else:
-            return False
     def isVShape(self, frame):
         """Check if the index finger and middle finger are held up in a V-shape."""
         # Assuming index_finger_coordinates and middle_finger_coordinates are available
