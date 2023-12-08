@@ -5,7 +5,7 @@ from pong import *
 import cv2
 
 # Hyperparameters ----------
-video = 2
+video = 0
 game_width = 400
 game_height = 800
 
@@ -72,12 +72,9 @@ if __name__ == '__main__':
         
         time.sleep(0.005)
         
-    
     # Release webcam and destroy windows
     cap.release()
     cv2.destroyAllWindows()
-    
-    del hand_recognition
 
     # Quit the game
     pygame.quit()
