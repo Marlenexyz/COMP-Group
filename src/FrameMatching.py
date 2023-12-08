@@ -1,0 +1,67 @@
+import cv2
+import numpy as np
+
+class RedRectangleDetector:
+    def __init__(self):
+        pass
+
+    def find_red_corners(self, frame):
+        
+        # Convert image to HSV color space
+        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+
+        # Define lower and upper bounds for red color
+        lower_red1 = np.array([0, 100, 100])
+        upper_red1 = np.array([5, 255, 255])
+        lower_red2 = np.array([355, 100, 100])
+        upper_red2 = np.array([360, 255, 255])
+
+        # Threshold the image to get only red colors
+        mask1 = cv2.inRange(hsv, lower_red1, upper_red1)
+        mask2 = cv2.inRange(hsv, lower_red2, upper_red2)
+        red_mask = cv2.bitwise_or(mask1, mask2)
+        
+        # cv2.imshow('red mask', red_mask)
+
+        # Dilate the mask to merge adjacent red regions
+        kernel = np.ones((5, 5), np.uint8)
+        red_mask_dilated = cv2.dilate(red_mask, kernel, iterations=1)
+        
+        # cv2.imshow('red mask dilated', red_mask_dilated)
+
+        # Find contours in the mask
+        contours, _ = cv2.findContours(red_mask_dilated, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
+        # Find the four largest contours based on area
+        contours = sorted(contours, key=cv2.contourArea, reverse=True)[:4]
+
+        # List to hold the corners
+        corners = []
+        for contour in contours:
+                        
+            M = cv2.moments(contour)
+            cx = int(M['m10'] / M['m00'])
+            cy = int(M['m01'] / M['m00'])
+
+            corners.append((cx, cy))
+            
+        for corner in corners:
+            cv2.circle(frame, corner, 5, (0, 0, 255), -1)
+        
+        cv2.imshow('contours', frame)
+        
+        return corners
+
+
+
+if __name__ == '__main__':
+    detector = RedRectangleDetector()
+    frame = cv2.imread('test_red_corners.jpg')
+    frame = cv2.resize(frame, None, fx=0.2, fy=0.2)
+    corners = detector.find_red_corners(frame)
+    print(corners)
+    cv2.imshow('frame', frame)
+    
+    # Wait for key press
+    cv2.waitKey(0)
+    

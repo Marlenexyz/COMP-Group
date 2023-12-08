@@ -47,55 +47,68 @@ class Menu:
     
     def getScreenWidth(self):
         return self.screen_width
+    
+    def check_button_click(self, button):
+        mouse_pos = pygame.mouse.get_pos()
+        if button["rect"].collidepoint(mouse_pos):
+            mouse_click = pygame.mouse.get_pressed()
+            if mouse_click[0] and not button["clicked"]:  # Left mouse button clicked and button not already clicked
+                button["clicked"] = True
+                return True
+            elif not mouse_click[0]:
+                button["clicked"] = False  # Reset the clicked status when the mouse button is released
+        return False
 
-if __name__ == '__main__':
-    # Game loop
-    mainMenu = Menu(600,800)
-    #Main menu state = True
-    run = True
-    while run:
-        mainMenu.screen.fill((52, 78, 91))
+    def update_menu(self):
+        self.screen.fill((52, 78, 91))
 
-        if mainMenu.menu_state == "main":
-            # Draw main menu
-            mainMenu.draw_button(mainMenu.play_button)
-            mainMenu.draw_button(mainMenu.options_button)
-            mainMenu.draw_button(mainMenu.quit_button)
-        elif mainMenu.menu_state == "options":
-            # Draw the different options buttons
-            mainMenu.draw_button(mainMenu.video_button)
-            mainMenu.draw_button(mainMenu.audio_button)
-            mainMenu.draw_button(mainMenu.keys_button)
-            mainMenu.draw_button(mainMenu.back_button)
-        # elif mainMenu.menu_state == 'paused':
+        if self.menu_state == "main":
+            self.draw_button(self.play_button)
+            self.draw_button(self.options_button)
+            self.draw_button(self.quit_button)
 
+            if self.check_button_click(self.play_button):
+                print("Play button clicked!")
+                self.menu_state = "play"
 
-        # # Check if the game is paused
-        # if mainMenu.isGamePaused():
-        #     # Check menu state
-        #     if mainMenu.menu_state == "main":
-        #         # Draw pause screen buttons
-        #         mainMenu.draw_button(mainMenu.play_button)
-        #         mainMenu.draw_button(mainMenu.options_button)
-        #         mainMenu.draw_button(mainMenu.quit_button)
-        #     # Check if the options menu is open
-        #     elif mainMenu.menu_state == "options":
-        #         # Draw the different options buttons
-        #         mainMenu.draw_button(mainMenu.video_button)
-        #         mainMenu.draw_button(mainMenu.audio_button)
-        #         mainMenu.draw_button(mainMenu.keys_button)
-        #         mainMenu.draw_button(mainMenu.back_button)
-        # else:
-            
+            elif self.check_button_click(self.options_button):
+                print("Options button clicked!")
+                self.menu_state = "options"
+            elif self.check_button_click(self.quit_button):
+                pygame.quit()
+                exit()
 
-        # # Event handler
-        # for event in pygame.event.get():
-        #     if event.type == pygame.KEYDOWN:
-        #         if event.key == pygame.K_SPACE:
-        #             game_paused = not mainMenu.isGamePaused()
-        #     elif event.type == pygame.QUIT:
-        #         run = False
+        elif self.menu_state == "options":
+            self.draw_button(self.video_button)
+            self.draw_button(self.audio_button)
+            self.draw_button(self.keys_button)
+            self.draw_button(self.back_button)
+
+            if self.check_button_click(self.video_button):
+                print("Video Settings button clicked!")
+            elif self.check_button_click(self.audio_button):
+                print("Audio Settings button clicked!")
+            elif self.check_button_click(self.keys_button):
+                print("Change Key Bindings button clicked!")
+            elif self.check_button_click(self.back_button):
+                self.menu_state = "main"
+
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    self.game_paused = not self.isGamePaused()
+            elif event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
 
         pygame.display.update()
 
-    pygame.quit()
+    def getStatus(self):
+        return self.menu_state
+
+
+if __name__ == '__main__':
+    mainMenu = Menu(600, 800)
+    run = True
+    while run:
+        mainMenu.update_menu()
