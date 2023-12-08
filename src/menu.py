@@ -31,7 +31,8 @@ class Menu:
         self.back_button = {"text": "Back", "rect": pygame.Rect(self.screen_height/2, 450, 200, 50)}
         self.enter_player_names_button = {"text": "Enter Names", "rect": pygame.Rect(self.screen_height/2, 0.55 * self.screen_width, 200, 50)}
         
-
+        self.playerNameA = "Player A"
+        self.playerNameB = "Player B"
    
         # Virtuelle Tastaturbuttons
         button_width, button_height = 40, 40
@@ -65,6 +66,7 @@ class Menu:
             {"text": "B", "rect": pygame.Rect(screen_width // 10 + 4 * button_spacing, screen_height - 50, button_width, button_height)},
             {"text": "N", "rect": pygame.Rect(screen_width // 10 + 5 * button_spacing, screen_height - 50, button_width, button_height)},
             {"text": "M", "rect": pygame.Rect(screen_width // 10 + 6 * button_spacing, screen_height - 50, button_width, button_height)},
+            {"text": "Enter", "rect": pygame.Rect(screen_width // 10 + 9 * button_spacing, screen_height - 50, 150, button_height)},
         ]
 
         # Input field variables for entering player names
@@ -75,8 +77,9 @@ class Menu:
         self.input_color_active = pygame.Color('dodgerblue2')
         self.input_color = self.input_color_inactive
         self.input_active = False
-        self.input_field = {"text": "", "rect": pygame.Rect(self.screen_height/2, 0.4 * self.screen_width, 200, 50)}
-
+        self.input_field = {"text": "", "rect": pygame.Rect(self.screen_height/2, 0.35 * self.screen_width, 200, 50)}
+        # Zusätzlicher Text über dem input_field
+        self.additional_text = {"text": "Enter player name:", "rect": pygame.Rect(screen_height/2, 0.30 * screen_width - 50, 200, 50)}
 
     def draw_keyboard(self):
         for button in self.keyboard_buttons:
@@ -144,6 +147,11 @@ class Menu:
         return False
     
     def draw_input_field(self, input_field):
+        # Zusätzlicher Text über dem input_field           
+        text_surface = self.font.render(self.additional_text["text"], True, self.BLACK)
+        text_rect = text_surface.get_rect(center=self.additional_text["rect"].center)
+        self.screen.blit(text_surface, text_rect)
+
         pygame.draw.rect(self.screen, (0, 0, 0), input_field["rect"])  # Weißes Rechteck für das Eingabefeld (255,255,255)
         pygame.draw.rect(self.screen, (0, 0, 0), input_field["rect"], 2)  # Schwarzer Rand um das Eingabefeld
 
@@ -238,6 +246,10 @@ class Menu:
                         self.input_field["text"] += 'N'  # Füge den Buchstaben 'N' zum input_field hinzu
                     if self.keyboard_buttons[25]["rect"].collidepoint(event.pos):
                         self.input_field["text"] += 'M'  # Füge den Buchstaben 'M' zum input_field hinzu
+                    if self.keyboard_buttons[26]["rect"].collidepoint(event.pos):
+                        
+                        self.playerNameA = self.input_field
+                        self.menu_state = "main"
 
 
                    
@@ -276,6 +288,12 @@ class Menu:
 
     def getStatus(self):
         return self.menu_state
+    
+    def getPlayerNameA(self):
+        return self.playerNameA
+    
+    def getPlayerNameB(self):
+        return self.playerNameB
 
 
 if __name__ == '__main__':
