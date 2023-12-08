@@ -45,7 +45,7 @@ class HandRecognition:
         cv2.putText(frame, f"FPS: {int(fps)}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
         # Show frame
-        cv2.imshow('Hand Tracking', frame)
+        # cv2.imshow('Hand Tracking', frame)
         
     def getIndexFingerCoordinates(self):
         # adjust this function to match the paddel y-coordinate to the finger tips

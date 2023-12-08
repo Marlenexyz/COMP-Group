@@ -81,6 +81,9 @@ class Menu:
         # Zusätzlicher Text über dem input_field
         self.additional_text = {"text": "Enter player name:", "rect": pygame.Rect(screen_height/2, 0.30 * screen_width - 50, 200, 50)}
 
+    def __del__(self):
+        pygame.quit()
+        
     def draw_keyboard(self):
         for button in self.keyboard_buttons:
             pygame.draw.rect(self.screen, (70, 70, 70), button["rect"])

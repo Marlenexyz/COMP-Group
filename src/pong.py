@@ -54,9 +54,12 @@ class PongGame:
 
     def setPlayerNameA(self,inputName):
         self.player_name_a = inputName
+        self._update_score()
 
     def setPlayerNameB(self,inputName):
         self.player_name_b = inputName
+        self._update_score()
+
     def togglePause(self):
         self.paused = not self.paused
 
@@ -89,7 +92,8 @@ class PongGame:
 
     def _update_score(self):
         # Update the score text
-        self.score_text = self.font.render("Player A: {}     Player B: {}".format(self.player_a_score, self.player_b_score), True, self.WHITE)
+        self.score_text = self.font.render("{}: {}     {}: {}".format(self.player_name_a, self.player_a_score, self.player_name_b,self.player_b_score), True, self.WHITE)
+
 
     def _draw_l_marker(self, x, y):
         # Vertical bar of the L
