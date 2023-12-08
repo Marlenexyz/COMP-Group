@@ -41,12 +41,22 @@ class PongGame:
         self.ball_x = self.screen_width // 2
         self.ball_y = self.screen_height // 2
 
+
+        self.player_name_a = "Player A"
+        self.player_name_b = "Player B"
+
         # Set up the score
         self.player_a_score = 0
         self.player_b_score = 0
         self.font = pygame.font.Font(None, 36)
-        self.score_text = self.font.render("Player A: {}     Player B: {}".format(self.player_a_score, self.player_b_score), True, self.WHITE)
+        self.score_text = self.font.render("{}: {}     {}: {}".format(self.player_name_a, self.player_a_score, self.player_name_b, self.player_b_score), True, self.WHITE)
 
+
+    def setPlayerNameA(self,inputName):
+        self.player_name_a = inputName
+
+    def setPlayerNameB(self,inputName):
+        self.player_name_b = inputName
     def togglePause(self):
         self.paused = not self.paused
 
