@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-class RedRectangleDetector:
+class FrameMatching:
     def __init__(self):
         pass
 
@@ -38,30 +38,26 @@ class RedRectangleDetector:
         # List to hold the corners
         corners = []
         for contour in contours:
-                        
+            
             M = cv2.moments(contour)
             cx = int(M['m10'] / M['m00'])
             cy = int(M['m01'] / M['m00'])
 
             corners.append((cx, cy))
-            
-        for corner in corners:
-            cv2.circle(frame, corner, 5, (0, 0, 255), -1)
-        
-        cv2.imshow('contours', frame)
         
         return corners
 
 
 
 if __name__ == '__main__':
-    detector = RedRectangleDetector()
+    detector = FrameMatching()
     frame = cv2.imread('test_red_corners.jpg')
     frame = cv2.resize(frame, None, fx=0.2, fy=0.2)
     corners = detector.find_red_corners(frame)
-    print(corners)
+    for corner in corners:
+        cv2.circle(frame, corner, 5, (0, 0, 255), -1)
     cv2.imshow('frame', frame)
+    print(corners)
     
     # Wait for key press
     cv2.waitKey(0)
-    
