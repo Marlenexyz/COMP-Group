@@ -75,6 +75,34 @@ class Menu:
     def getScreenWidth(self):
         return self.screen_width
     
+    def toggle_input_active(self):
+        self.input_active = not self.input_active
+
+    def update_input_active(self, event):
+        if self.menu_state == "enterNames":
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                # Überprüfe, ob die Maus im Eingabefeld liegt, um es zu aktivieren oder deaktivieren
+                #Sollte eigentlich automatisch active sein
+                if self.input_field["rect"].collidepoint(event.pos):
+                    self.toggle_input_active()
+                else:
+                    self.input_active = False
+
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    # Enter-Taste wurde gedrückt, um die Eingabe zu bestätigen
+                    print("Entered text:", self.input_field["text"])
+                    self.menu_state = "main"  # Hier könntest du die Logik für die Textverarbeitung implementieren
+                elif event.key == pygame.K_BACKSPACE:
+                    # Backspace-Taste wurde gedrückt, um das letzte Zeichen zu entfernen
+                    self.input_field["text"] = self.input_field["text"][:-1]
+                elif event.key == pygame.K_ESCAPE:
+                    # Escape-Taste wurde gedrückt, um die Eingabe zu deaktivieren
+                    self.input_active = False
+                else:
+                    # Füge das gedrückte Zeichen zur Eingabe hinzu
+                    self.input_field["text"] += event.unicode
+    
     def check_button_click(self, button):
         mouse_pos = pygame.mouse.get_pos()
         if button["rect"].collidepoint(mouse_pos):
@@ -112,42 +140,65 @@ class Menu:
                 self.menu_state = "options"
     
             elif self.check_button_click(self.enter_player_names_button):
-                # self.draw_input_field()
-                # self.input_active = not self.input_active
-                # self.input_text = ""
-                self.draw_input_field(self.input_field)
-            
-                # if self.input_active:
-                #     # Logik zum Hinzufügen von Buchstaben zur input_text-Zeichenkette hier hinzufügen
-                #     pass
+                self.menu_state = "enterNames"
 
             elif self.check_button_click(self.quit_button):
                 pygame.quit()
                 exit()
 
-        elif self.menu_state == "options":
-            self.draw_button(self.video_button)
-            self.draw_button(self.audio_button)
-            self.draw_button(self.keys_button)
-            # self.draw_button(self.enter_player_names_button)
-            self.draw_button(self.back_button)
+        elif self.menu_state == 'enterNames':
+            self.draw_input_field(self.input_field)
+            self.draw_keyboard()  # Hier füge die Zeichnung der virtuellen Tastatur hinzu
 
-            if self.check_button_click(self.video_button):
-                print("Video Settings button clicked!")
-            elif self.check_button_click(self.audio_button):
-                print("Audio Settings button clicked!")
-            elif self.check_button_click(self.keys_button):
-                print("Change Key Bindings button clicked!")
-            elif self.check_button_click(self.back_button):
-                self.menu_state = "main"
+            if self.input_active:
+                # Logik zum Hinzufügen von Buchstaben zur input_text-Zeichenkette hier hinzufügen
+                pass
+
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:
+                        print("Entered text:", self.input_field["text"])
+                        self.menu_state = "main"  # Hier könntest du die Logik für die Textverarbeitung implementieren
+                    elif event.key == pygame.K_BACKSPACE:
+                        self.input_field["text"] = self.input_field["text"][:-1]  # Entferne das letzte Zeichen
+                    else:
+                        if event.unicode == 'w' or event.unicode == 'W':
+                            self.input_field["text"] += 'W'  # Füge den Buchstaben 'W' hinzu
+
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        self.game_paused = not self.isGamePaused()
+                elif event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+
+                elif self.menu_state == "options":
+                    self.draw_button(self.video_button)
+                    self.draw_button(self.audio_button)
+                    self.draw_button(self.keys_button)
+                    # self.draw_button(self.enter_player_names_button)
+                    self.draw_button(self.back_button)
+
+                    if self.check_button_click(self.video_button):
+                        print("Video Settings button clicked!")
+                    elif self.check_button_click(self.audio_button):
+                        print("Audio Settings button clicked!")
+                    elif self.check_button_click(self.keys_button):
+                        print("Change Key Bindings button clicked!")
+                    elif self.check_button_click(self.back_button):
+                        self.menu_state = "main"
 
         for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN:
+            if event.type == pygame.KEYDOWN:    
                 if event.key == pygame.K_SPACE:
                     self.game_paused = not self.isGamePaused()
             elif event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
+        # for event in pygame.event.get():
+        #     if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.KEYDOWN:
+        #         self.update_input_active(event)
 
         pygame.display.update()
 
