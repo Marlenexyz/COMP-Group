@@ -7,6 +7,8 @@ class PongGame:
         # Initialize the game
         pygame.init()
 
+        self.paused = False
+
         # Set up the display
         self.screen_height = screen_height
         self.screen_width = screen_width
@@ -45,6 +47,12 @@ class PongGame:
         self.font = pygame.font.Font(None, 36)
         self.score_text = self.font.render("Player A: {}     Player B: {}".format(self.player_a_score, self.player_b_score), True, self.WHITE)
 
+    def togglePause(self):
+        self.paused = not self.paused
+
+    def isPaused(self):
+        return self.paused
+    
     def _move_ball(self):
         self.ball_x += self.ball_speed_x
         self.ball_y += self.ball_speed_y
