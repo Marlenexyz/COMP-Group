@@ -12,6 +12,7 @@ if __name__ == '__main__':
 
     pause_pressed = False   #Flag to track if paused
     while running:
+        
         if status == 'main':
             mainMenu.update_menu()
 
