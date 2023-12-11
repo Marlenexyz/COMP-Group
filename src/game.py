@@ -10,8 +10,8 @@ video = 0
 game_height = 400
 game_width = 600
 
-debug_height = 100
-debug_width = 200
+debug_height = 200
+debug_width = 600
 
 # --------------------------
 
@@ -33,7 +33,7 @@ if __name__ == '__main__':
         if status == 'main':
             mainMenu.update_menu()
         elif status == 'enterNames':
-            mainMenu.update_menu()          #Very important line
+            mainMenu.update_menu()
             pong.setPlayerNameA(mainMenu.getPlayerNameA())
             pong.setPlayerNameB(mainMenu.getPlayerNameB())
             # pong.setMenuState('play')
@@ -46,17 +46,6 @@ if __name__ == '__main__':
             ret, frame = cap.read()
             if ret == False:
                 continue
-            
-            # Initialize debug frame
-            debug_frame = np.zeros((debug_height, debug_width, 3), dtype=np.uint8)
-            
-            # Calculate and display FPS on a new cv2 window
-            curr_time = time.time()
-            fps = 1 / (curr_time - prev_time)
-            prev_time = curr_time
-            fps_display = f"FPS: {int(fps)}"
-            cv2.putText(debug_frame, fps_display, (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
-            cv2.imshow('Debug Info', debug_frame)
             
             game_corners = frame_matching.run(frame)
             hand_recognition.run(frame)
@@ -90,19 +79,37 @@ if __name__ == '__main__':
             # Update the display
             pygame.display.flip()
             
-            time.sleep(0.005)
+            # Initialize debug frame
+            debug_frame = np.zeros((debug_height, debug_width, 3), dtype=np.uint8)
+            
+            # Calculate and display FPS on a new cv2 window
+            curr_time = time.time()
+            fps = 1 / (curr_time - prev_time)
+            prev_time = curr_time
+            fps_display = f"FPS: {int(fps)}"
+            cv2.putText(debug_frame, fps_display, (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+            
+            is_touching_index_finger_and_thumb_left = hand_recognition.isTouchingIndexFingerAndThumb('left')
+            is_touching_index_finger_and_thumb_right = hand_recognition.isTouchingIndexFingerAndThumb('right')
+            
+            cv2.putText(debug_frame, 'Detected Gestures:', (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+            touching_index_finger_and_thumb_left_display = f'    Left fingers touching: {is_touching_index_finger_and_thumb_left}'
+            cv2.putText(debug_frame, touching_index_finger_and_thumb_left_display, (10, 120), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+            touching_index_finger_and_thumb_right_display = f'    Right fingers touching: {is_touching_index_finger_and_thumb_right}'
+            cv2.putText(debug_frame, touching_index_finger_and_thumb_right_display, (10, 150), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+            
+            # is_v_shape_left = hand_recognition.isVShape('left')
+            # is_v_shape_right = hand_recognition.isVShape('right')
+            
+            cv2.imshow('Debug Info', debug_frame)
 
-            for event in pygame.event.get():    #Ends hand_recognition when pong is closed
+            for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    del hand_recognition
                     pygame.quit()
                     exit()
                     
-
         elif status == 'quit_pong':
             pong.quitGame()
             status = 'main'
-            del hand_recognition
-
 
 pygame.quit()
