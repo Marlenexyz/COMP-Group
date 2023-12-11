@@ -36,8 +36,8 @@ class PongGame:
 
         # Set up the ball
         self.ball_radius = 5
-        self.ball_speed_x = 1
-        self.ball_speed_y = 1
+        self.ball_speed_x = 3
+        self.ball_speed_y = 3
         self.ball_x = self.screen_width // 2
         self.ball_y = self.screen_height // 2
 
