@@ -293,7 +293,6 @@ class Menu:
         return self.menu_state
     
     def getPlayerNameA(self):
-        print(self.playerNameA)
         return self.playerNameA
     
     def getPlayerNameB(self):
