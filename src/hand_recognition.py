@@ -41,9 +41,8 @@ class HandRecognition:
         # Show frame
         cv2.imshow('Hand Tracking', frame)
         
-        return self.index_finger_coordinates
         
-    def getIndexFingerCoordinates(self):
+    def storeIndexFingerCoordinates(self):
         # adjust this function to match the paddel y-coordinate to the finger tips
         # Get fingertip positions
         self.fingertip_pos_left = None
@@ -58,14 +57,16 @@ class HandRecognition:
             self.fingertip_coord_right = fingertips_array[np.argmin(fingertips_array[:,0]),:]
         else: 
             if fingertips_array.shape[0] == 1:
-                self.fingertip_pos_left = fingertips_array[0,1]
-                self.fingertip_coord_left = fingertips_array[0,:]
-                self.fingertip_pos_right = fingertips_array[0,1]
-                self.fingertip_coord_right = fingertips_array[0,:]
+                if fingertips_array[0,0] < 0.5*frame.shape[1]:
+                    self.fingertip_pos_left = fingertips_array[0,1]
+                    self.fingertip_coord_left = fingertips_array[0,:]
+                else:
+                    self.fingertip_pos_right = fingertips_array[0,1]
+                    self.fingertip_coord_right = fingertips_array[0,:]
         
     # define function to return the coordinates of the middle finger
 
-    def getMiddleFingerCoordinates(self):
+    def storeMiddleFingerCoordinates(self):
         self.middlefingertip_pos_left = None
         self.middlefingertip_pos_right = None
         self.middlefingertip_coord_right = None
@@ -78,14 +79,16 @@ class HandRecognition:
             self.middlefingertip_pos_right = fingertips_array[np.argmin(fingertips_array[:,0]),1]
         else:
             if fingertips_array.shape[0] == 1:
-                self.middlefingertip_pos_left = fingertips_array[0,1]
-                self.middlefingertip_coord_left = fingertips_array[0,:]
-                self.middlefingertip_pos_right = fingertips_array[0,1]
-                self.middlefingertip_coord_right = fingertips_array[0,:]
+                if fingertips_array[0,0] < 0.5*frame.shape[1]:
+                    self.middlefingertip_pos_left = fingertips_array[0,1]
+                    self.middlefingertip_coord_left = fingertips_array[0,:]
+                else:
+                    self.middlefingertip_pos_right = fingertips_array[0,1]
+                    self.middlefingertip_coord_right = fingertips_array[0,:]
         # Get the coordinates of middle fingers
         
 
-    def getThumbCoordinates(self):
+    def storeThumbCoordinates(self):
         # adjust this function to match the paddel y-coordinate to the finger tips
         # Get fingertip positions
         self.thumbtip_coord_right = None
@@ -94,50 +97,51 @@ class HandRecognition:
         if fingertips_array.shape[0] >= 2:
             self.thumbtip_coord_left = fingertips_array[np.argmax(fingertips_array[:,0]),:]
             self.thumbtip_coord_right = fingertips_array[np.argmin(fingertips_array[:,0]),:]
-        else: 
-            if fingertips_array.shape[0] == 1:
-                self.thumbtip_coord_left = fingertips_array[0,:]
-                self.thumbtip_coord_right = fingertips_array[0,:]
-        
+        elif fingertips_array.shape[0] == 1:
+                if fingertips_array[0,0] < 0.5*frame.shape[1]:
+                    self.thumbtip_coord_left = fingertips_array[0,:]
+                else:
+                    self.thumbtip_coord_right = fingertips_array[0,:]
 
+        
     def getIndexFingerPosLeft(self):
-        self.getIndexFingerCoordinates()
+        self.storeIndexFingerCoordinates()
         return self.fingertip_pos_left
     
     def getIndexFingerPosRight(self):
-        self.getIndexFingerCoordinates()
+        self.storeIndexFingerCoordinates()
         return self.fingertip_pos_right
         
     def getMiddleFingerPosLeft(self):
-        self.getMiddleFingerCoordinates()
+        self.storeMiddleFingerCoordinates()
         return self.middlefingertip_pos_left
     
     def getMiddleFingerPosRight(self):
-        self.getMiddleFingerCoordinates()
+        self.storeMiddleFingerCoordinates()
         return self.middlefingertip_pos_right
     
     def getIndexFingerCoordLeft(self):
-        self.getIndexFingerCoordinates()
+        self.storeIndexFingerCoordinates()
         return self.fingertip_coord_left
     
     def getIndexFingerCoordRight(self):
-        self.getIndexFingerCoordinates()
+        self.storeIndexFingerCoordinates()
         return self.fingertip_coord_right
     
     def getMiddleFingerCoordLeft(self):
-        self.getMiddleFingerCoordinates()
+        self.storeMiddleFingerCoordinates()
         return self.middlefingertip_coord_left
     
     def getMiddleFingerCoordRight(self):
-        self.getMiddleFingerCoordinates()
+        self.storeMiddleFingerCoordinates()
         return self.middlefingertip_coord_right
     
     def getThumbCoordLeft(self):
-        self.getThumbCoordinates()
+        self.storeThumbCoordinates()
         return self.thumbtip_coord_left
     
     def getThumbCoordRight(self):
-        self.getThumbCoordinates()
+        self.storeThumbCoordinates()
         return self.thumbtip_coord_right
 
     # define a function to detect if index finger and thumb are touching
