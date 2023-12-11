@@ -34,6 +34,10 @@ class FrameMatching:
 
         # Find the four largest contours based on area
         contours = sorted(contours, key=cv2.contourArea, reverse=True)[:4]
+        
+        # return only if 4 corners were found
+        if len(contours) < 4:
+            return None
 
         # List to hold the corners
         corners = []
