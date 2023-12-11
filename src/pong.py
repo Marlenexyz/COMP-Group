@@ -102,12 +102,12 @@ class PongGame:
 
     def move_paddle_left(self,fingertip_pos_left):
         if fingertip_pos_left is not None:  # Ensure the fingertip was detected
-            fingertip_pos_left += self.paddle_height // 2
+            fingertip_pos_left += (self.paddle_height // 2)
             self.player_a_paddle_y = max(min(fingertip_pos_left, self.screen_height - self.paddle_height), 0)
 
     def move_paddle_right(self,fingertip_pos_right):
         if fingertip_pos_right is not None:  # Ensure the fingertip was detected
-            fingertip_pos_right += self.paddle_height // 2
+            fingertip_pos_right += (self.paddle_height // 2)
             self.player_b_paddle_y = max(min(fingertip_pos_right, self.screen_height - self.paddle_height), 0)
 
 
