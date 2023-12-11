@@ -91,8 +91,8 @@ class PongGame:
         self._draw_l_marker(self.screen_width, self.screen_height)
 
         # Draw the paddles
-        pygame.draw.rect(self.screen, self.BLACK, (self.player_a_paddle_x, self.player_a_paddle_y, self.paddle_width, self.paddle_height))
-        pygame.draw.rect(self.screen, self.BLACK, (self.player_b_paddle_x, self.player_b_paddle_y, self.paddle_width, self.paddle_height))
+        pygame.draw.rect(self.screen, self.BLACK, (self.player_a_paddle_x, self.player_a_paddle_y_middle, self.paddle_width, self.paddle_height))
+        pygame.draw.rect(self.screen, self.BLACK, (self.player_b_paddle_x, self.player_b_paddle_y_middle, self.paddle_width, self.paddle_height))
 
         # Draw the ball
         pygame.draw.circle(self.screen, self.BLACK, (self.ball_x, self.ball_y), self.ball_radius)
@@ -103,10 +103,12 @@ class PongGame:
     def move_paddle_left(self,fingertip_pos_left):
         if fingertip_pos_left is not None:  # Ensure the fingertip was detected
             self.player_a_paddle_y = max(min(fingertip_pos_left, self.screen_height - self.paddle_height), 0)
+            self.player_a_paddle_y_middle = self.player_a_paddle_y + self.paddle_height // 2
 
     def move_paddle_right(self,fingertip_pos_right):
         if fingertip_pos_right is not None:  # Ensure the fingertip was detected
             self.player_b_paddle_y = max(min(fingertip_pos_right, self.screen_height - self.paddle_height), 0)
+            self.player_b_paddle_y_middle = self.player_b_paddle_y + self.paddle_height // 2
 
 
         
