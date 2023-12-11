@@ -34,8 +34,8 @@ class PongGame:
 
         # Set up the ball
         self.ball_radius = 5
-        self.ball_speed_x = 1
-        self.ball_speed_y = 1
+        self.ball_speed_x = 3
+        self.ball_speed_y = 3
         self.ball_x = self.screen_width // 2
         self.ball_y = self.screen_height // 2
 
@@ -51,9 +51,9 @@ class PongGame:
 
     def _check_collision_with_paddle(self):
         # Check for collisions with paddles
-        if self.ball_x == self.player_a_paddle_x + self.paddle_width and self.player_a_paddle_y <= self.ball_y <= self.player_a_paddle_y + self.paddle_height:
+        if self.player_a_paddle_x <= self.ball_x <= self.player_a_paddle_x + self.paddle_width and self.player_a_paddle_y <= self.ball_y <= self.player_a_paddle_y + self.paddle_height:
             self.ball_speed_x *= -1
-        if self.ball_x == self.player_b_paddle_x - self.paddle_width and self.player_b_paddle_y <= self.ball_y <= self.player_b_paddle_y + self.paddle_height:
+        if self.player_b_paddle_x >= self.ball_x >= self.player_b_paddle_x - self.paddle_width and self.player_b_paddle_y <= self.ball_y <= self.player_b_paddle_y + self.paddle_height:
             self.ball_speed_x *= -1
 
     def _check_collision_with_wall(self):
@@ -111,16 +111,17 @@ class PongGame:
 
         
     def move_paddles_by_keys(self):
-        # Move the paddles
+    # Move the paddles
         keys = pygame.key.get_pressed()
         if keys[pygame.K_w] and self.player_a_paddle_y > 0:
             self.player_a_paddle_y -= self.paddle_speed
-        if keys[pygame.K_s] and self.player_a_self.paddle_y < self.screen_height - self.paddle_height:
-            self.player_a_self.paddle_y += self.paddle_speed
-        if keys[pygame.K_UP] and self.player_b_self.paddle_y > 0:
-            self.player_b_self.paddle_y -= self.paddle_speed
-        if keys[pygame.K_DOWN] and self.player_b_self.paddle_y < self.screen_height - self.paddle_height:
-            self.player_b_self.paddle_y += self.paddle_speed
+        if keys[pygame.K_s] and self.player_a_paddle_y < self.screen_height - self.paddle_height:
+            self.player_a_paddle_y += self.paddle_speed
+        if keys[pygame.K_UP] and self.player_b_paddle_y > 0:
+            self.player_b_paddle_y -= self.paddle_speed
+        if keys[pygame.K_DOWN] and self.player_b_paddle_y < self.screen_height - self.paddle_height:
+            self.player_b_paddle_y += self.paddle_speed
+
 
     def _calibrate_corners(self):
         # Define corner points
