@@ -7,6 +7,8 @@ class PongGame:
         # Initialize the game
         pygame.init()
 
+        self.paused = False
+
         # Set up the display
         self.screen_height = screen_height
         self.screen_width = screen_width
@@ -39,12 +41,31 @@ class PongGame:
         self.ball_x = self.screen_width // 2
         self.ball_y = self.screen_height // 2
 
+
+        self.player_name_a = "Player A"
+        self.player_name_b = "Player B"
+
         # Set up the score
         self.player_a_score = 0
         self.player_b_score = 0
         self.font = pygame.font.Font(None, 36)
-        self.score_text = self.font.render("Player A: {}     Player B: {}".format(self.player_a_score, self.player_b_score), True, self.BLACK)
+        self.score_text = self.font.render("{}: {}     {}: {}".format(self.player_name_a, self.player_a_score, self.player_name_b, self.player_b_score), True, self.WHITE)
 
+
+    def setPlayerNameA(self,inputName):
+        self.player_name_a = inputName
+        self._update_score()
+
+    def setPlayerNameB(self,inputName):
+        self.player_name_b = inputName
+        self._update_score()
+
+    def togglePause(self):
+        self.paused = not self.paused
+
+    def isPaused(self):
+        return self.paused
+    
     def _move_ball(self):
         self.ball_x += self.ball_speed_x
         self.ball_y += self.ball_speed_y
@@ -71,7 +92,8 @@ class PongGame:
 
     def _update_score(self):
         # Update the score text
-        self.score_text = self.font.render("Player A: {}     Player B: {}".format(self.player_a_score, self.player_b_score), True, self.BLACK)
+        self.score_text = self.font.render("{}: {}     {}: {}".format(self.player_name_a, self.player_a_score, self.player_name_b,self.player_b_score), True, self.WHITE)
+
 
     def _draw_l_marker(self, x, y):
         # Vertical bar of the L
