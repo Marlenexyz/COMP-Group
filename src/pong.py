@@ -49,7 +49,7 @@ class PongGame:
         self.player_a_score = 0
         self.player_b_score = 0
         self.font = pygame.font.Font(None, 36)
-        self.score_text = self.font.render("{}: {}     {}: {}".format(self.player_name_a, self.player_a_score, self.player_name_b, self.player_b_score), True, self.WHITE)
+        self.score_text = self.font.render("{}: {}     {}: {}".format(self.player_name_a, self.player_a_score, self.player_name_b, self.player_b_score), True, self.BLACK)
 
 
     def setPlayerNameA(self,inputName):
@@ -92,7 +92,7 @@ class PongGame:
 
     def _update_score(self):
         # Update the score text
-        self.score_text = self.font.render("{}: {}     {}: {}".format(self.player_name_a, self.player_a_score, self.player_name_b,self.player_b_score), True, self.WHITE)
+        self.score_text = self.font.render("{}: {}     {}: {}".format(self.player_name_a, self.player_a_score, self.player_name_b,self.player_b_score), True, self.BLACK)
 
 
     def _draw_l_marker(self, x, y):
@@ -104,7 +104,7 @@ class PongGame:
 
     def _draw_game(self):
         # Clear the screen
-        self.screen.fill(self.BLACK)
+        self.screen.fill(self.WHITE)
 
         # Draw L-shaped marker function
         self._draw_l_marker(0, 0)
@@ -113,21 +113,23 @@ class PongGame:
         self._draw_l_marker(self.screen_width, self.screen_height)
 
         # Draw the paddles
-        pygame.draw.rect(self.screen, self.WHITE, (self.player_a_paddle_x, self.player_a_paddle_y, self.paddle_width, self.paddle_height))
-        pygame.draw.rect(self.screen, self.WHITE, (self.player_b_paddle_x, self.player_b_paddle_y, self.paddle_width, self.paddle_height))
+        pygame.draw.rect(self.screen, self.BLACK, (self.player_a_paddle_x, self.player_a_paddle_y, self.paddle_width, self.paddle_height))
+        pygame.draw.rect(self.screen, self.BLACK, (self.player_b_paddle_x, self.player_b_paddle_y, self.paddle_width, self.paddle_height))
 
         # Draw the ball
-        pygame.draw.circle(self.screen, self.WHITE, (self.ball_x, self.ball_y), self.ball_radius)
+        pygame.draw.circle(self.screen, self.BLACK, (self.ball_x, self.ball_y), self.ball_radius)
 
         # Draw the score
         self.screen.blit(self.score_text, (self.screen_width // 2 - self.score_text.get_width() // 2, 10))
 
     def move_paddle_left(self,fingertip_pos_left):
         if fingertip_pos_left is not None:  # Ensure the fingertip was detected
+            fingertip_pos_left += (self.paddle_width // 2)
             self.player_a_paddle_y = max(min(fingertip_pos_left, self.screen_height - self.paddle_height), 0)
 
     def move_paddle_right(self,fingertip_pos_right):
         if fingertip_pos_right is not None:  # Ensure the fingertip was detected
+            fingertip_pos_right += (self.paddle_width // 2)
             self.player_b_paddle_y = max(min(fingertip_pos_right, self.screen_height - self.paddle_height), 0)
 
 
@@ -137,12 +139,12 @@ class PongGame:
         keys = pygame.key.get_pressed()
         if keys[pygame.K_w] and self.player_a_paddle_y > 0:
             self.player_a_paddle_y -= self.paddle_speed
-        if keys[pygame.K_s] and self.player_a_self.paddle_y < self.screen_height - self.paddle_height:
-            self.player_a_self.paddle_y += self.paddle_speed
-        if keys[pygame.K_UP] and self.player_b_self.paddle_y > 0:
-            self.player_b_self.paddle_y -= self.paddle_speed
-        if keys[pygame.K_DOWN] and self.player_b_self.paddle_y < self.screen_height - self.paddle_height:
-            self.player_b_self.paddle_y += self.paddle_speed
+        if keys[pygame.K_s] and self.player_a_paddle_y < self.screen_height - self.paddle_height:
+            self.player_a_paddle_y += self.paddle_speed
+        if keys[pygame.K_UP] and self.player_b_paddle_y > 0:
+            self.player_b_paddle_y -= self.paddle_speed
+        if keys[pygame.K_DOWN] and self.player_b_paddle_y < self.screen_height - self.paddle_height:
+            self.player_b_paddle_y += self.paddle_speed
 
     def _calibrate_corners(self):
         # Define corner points
