@@ -1,15 +1,21 @@
 from hand_recognition import *
+from frame_matching import *
 from pong import *
 from menu import *
-from FrameMatching import *
 
 import cv2
-
 
 # Hyperparameters ----------
 video = 0
 game_height = 400
 game_width = 600
+
+debug_height = 100
+debug_width = 200
+
+# --------------------------
+
+
 
 if __name__ == '__main__':
     mainMenu = Menu(game_height, game_width)
@@ -17,32 +23,22 @@ if __name__ == '__main__':
     hand_recognition = HandRecognition()
     frame_matching = FrameMatching()
     pong = PongGame(game_height, game_width)
+    
+    prev_time = time.time()
     running = True
     
-
-    
-
-    # pause_pressed = False   #Flag to track if paused
-
-    running = True
     while running:
         status = mainMenu.getStatus()
 
         if status == 'main':
-            mainMenu.update_menu()  
-            
-
+            mainMenu.update_menu()
         elif status == 'enterNames':
             mainMenu.update_menu()          #Very important line
             pong.setPlayerNameA(mainMenu.getPlayerNameA())
             pong.setPlayerNameB(mainMenu.getPlayerNameB())
-            
             # pong.setMenuState('play')
-
-
-
         elif status == 'play':
-        # Handle events
+            # Handle events
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
@@ -50,10 +46,22 @@ if __name__ == '__main__':
             ret, frame = cap.read()
             if ret == False:
                 continue
+            
+            # Initialize debug frame
+            debug_frame = np.zeros((debug_height, debug_width, 3), dtype=np.uint8)
+            
+            # Calculate and display FPS on a new cv2 window
+            curr_time = time.time()
+            fps = 1 / (curr_time - prev_time)
+            prev_time = curr_time
+            fps_display = f"FPS: {int(fps)}"
+            cv2.putText(debug_frame, fps_display, (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+            cv2.imshow('Debug Info', debug_frame)
+            
             game_corners = frame_matching.run(frame)
             hand_recognition.run(frame)
             index_finger_pos = [hand_recognition.getIndexFingerPosLeft(), hand_recognition.getIndexFingerPosRight()]
-            cv2.imshow('frame', frame)
+            cv2.imshow('Video Feed', frame)
                 
             if game_corners is not None:
                 # check if left index finger was detected
