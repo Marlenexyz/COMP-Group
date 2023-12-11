@@ -72,9 +72,9 @@ class PongGame:
 
     def _check_collision_with_paddle(self):
         # Check for collisions with paddles
-        if self.ball_x == self.player_a_paddle_x + self.paddle_width and self.player_a_paddle_y <= self.ball_y <= self.player_a_paddle_y + self.paddle_height:
+        if self.player_a_paddle_x <= self.ball_x <= self.player_a_paddle_x + self.paddle_width and self.player_a_paddle_y <= self.ball_y <= self.player_a_paddle_y + self.paddle_height:
             self.ball_speed_x *= -1
-        if self.ball_x == self.player_b_paddle_x - self.paddle_width and self.player_b_paddle_y <= self.ball_y <= self.player_b_paddle_y + self.paddle_height:
+        if self.player_b_paddle_x >= self.ball_x >= self.player_b_paddle_x - self.paddle_width and self.player_b_paddle_y <= self.ball_y <= self.player_b_paddle_y + self.paddle_height:
             self.ball_speed_x *= -1
 
     def _check_collision_with_wall(self):
