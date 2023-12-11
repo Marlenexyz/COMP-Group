@@ -82,7 +82,7 @@ class PongGame:
 
     def _draw_game(self):
         # Clear the screen
-        self.screen.fill(self.BLACK)
+        self.screen.fill(self.WHITE)
 
         # Draw L-shaped marker function
         self._draw_l_marker(0, 0)
@@ -91,11 +91,11 @@ class PongGame:
         self._draw_l_marker(self.screen_width, self.screen_height)
 
         # Draw the paddles
-        pygame.draw.rect(self.screen, self.WHITE, (self.player_a_paddle_x, self.player_a_paddle_y, self.paddle_width, self.paddle_height))
-        pygame.draw.rect(self.screen, self.WHITE, (self.player_b_paddle_x, self.player_b_paddle_y, self.paddle_width, self.paddle_height))
+        pygame.draw.rect(self.screen, self.BLACK, (self.player_a_paddle_x, self.player_a_paddle_y, self.paddle_width, self.paddle_height))
+        pygame.draw.rect(self.screen, self.BLACK, (self.player_b_paddle_x, self.player_b_paddle_y, self.paddle_width, self.paddle_height))
 
         # Draw the ball
-        pygame.draw.circle(self.screen, self.WHITE, (self.ball_x, self.ball_y), self.ball_radius)
+        pygame.draw.circle(self.screen, self.BLACK, (self.ball_x, self.ball_y), self.ball_radius)
 
         # Draw the score
         self.screen.blit(self.score_text, (self.screen_width // 2 - self.score_text.get_width() // 2, 10))
