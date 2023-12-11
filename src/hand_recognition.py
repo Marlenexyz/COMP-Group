@@ -39,7 +39,7 @@ class HandRecognition:
         if self.isVShape():
             cv2.putText(self.frame, "V-Shape", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
         # Show self.frame
-        cv2.imshow('Hand Tracking', self.frame)
+        # cv2.imshow('Hand Tracking', self.frame)
         
         
     def storeIndexFingerCoordinates(self):
@@ -235,6 +235,7 @@ if __name__ == '__main__':
         ret, frame = cap.read()
         
         hand_recognition.run(frame)
+        cv2.imshow('frame', frame)
     
     # Release webcam and destroy windows
     cap.release()

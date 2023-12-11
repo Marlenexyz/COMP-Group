@@ -55,7 +55,7 @@ class FrameMatching:
         # Print corners onto frame
         for corner in corners_sorted:
             cv2.circle(frame, corner, 5, (0, 0, 255), -1)
-        cv2.imshow('corners', frame)
+        # cv2.imshow('corners', frame)
         
         return corners_sorted
 
