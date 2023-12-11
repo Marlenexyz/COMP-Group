@@ -34,6 +34,10 @@ class FrameMatching:
 
         # Find the four largest contours based on area
         contours = sorted(contours, key=cv2.contourArea, reverse=True)[:4]
+        
+        # return only if 4 corners were found
+        if len(contours) < 4:
+            return None
 
         # List to hold the corners
         corners = []
@@ -45,12 +49,15 @@ class FrameMatching:
 
             corners.append((cx, cy))
             
+        # sort corners by upper left, lower left, upper right, lower right by using distance to (0,0)
+        corners_sorted = sorted(corners, key=lambda corner: corner[0] ** 2 + corner[1] ** 2)
+            
         # Print corners onto frame
-        for corner in corners:
+        for corner in corners_sorted:
             cv2.circle(frame, corner, 5, (0, 0, 255), -1)
         cv2.imshow('corners', frame)
         
-        return corners
+        return corners_sorted
 
 
 
