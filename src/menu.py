@@ -251,7 +251,7 @@ class Menu:
                         self.input_field["text"] += 'M'  # Füge den Buchstaben 'M' zum input_field hinzu
                     if self.keyboard_buttons[26]["rect"].collidepoint(event.pos):
                         
-                        self.playerNameA = self.input_field
+                        self.playerNameA = self.input_field["text"]
                         self.menu_state = "main"
 
 
@@ -293,6 +293,7 @@ class Menu:
         return self.menu_state
     
     def getPlayerNameA(self):
+        print(self.playerNameA)
         return self.playerNameA
     
     def getPlayerNameB(self):
