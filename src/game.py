@@ -1,7 +1,6 @@
 from hand_recognition import *
 from FrameMatching import *
 from pong import *
-from menu import *
 
 import cv2
 
@@ -13,11 +12,6 @@ game_width = 800
 # --------------------------
 
 if __name__ == '__main__':
-    mainMenu = Menu(game_height, game_width)
-    hand_recognition = HandRecognition(0)   
-
-    # pause_pressed = False   #Flag to track if paused
-
     
     cap = cv2.VideoCapture(video)
     hand_recognition = HandRecognition()
@@ -26,39 +20,6 @@ if __name__ == '__main__':
     running = True
     
     while running:
-        status = mainMenu.getStatus()
-
-        if status == 'main':
-            mainMenu.update_menu()  
-            
-
-        elif status == 'enterNames':
-            mainMenu.update_menu()          #Very important line
-            pong.setPlayerNameA(mainMenu.getPlayerNameA())
-            pong.setPlayerNameB(mainMenu.getPlayerNameB())
-            
-            # pong.setMenuState('play')
-
-
-
-        elif status == 'play':
-            # del mainMenu
-            hand_recognition.run()
-            # Handle events
-            # for event in pygame.event.get():
-            #     if event.type == pygame.QUIT:
-            #         running = False
-            #     elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-            #         if not pause_pressed:
-            #             # Toggle pause state on space press
-            #             pong.togglePause()
-            #             pause_pressed = True
-            #     elif event.type == pygame.KEYUP and event.key == pygame.K_SPACE:
-            #         # Reset flag when space key is released
-            #         pause_pressed = False
-            # if not pong.isPaused():
-            pong.move_paddle_left(hand_recognition.getIndexFingerPosLeft())
-            pong.move_paddle_right(hand_recognition.getIndexFingerPosRight())
         
         # Handle events
         for event in pygame.event.get():
@@ -97,24 +58,16 @@ if __name__ == '__main__':
                     print(right_y_new * game_height)
                     pong.move_paddle_right(right_y_new * game_height)
 
-            pong.run()
+        pong.run()
 
-            # Update the display
-            pygame.display.flip()
-                
-            time.sleep(0.005)
+        # Update the display
+        pygame.display.flip()
+        
+        time.sleep(0.005)
+        
+    # Release webcam and destroy windows
+    cap.release()
+    cv2.destroyAllWindows()
 
-            for event in pygame.event.get():    #Ends hand_recognition when pong is closed
-                if event.type == pygame.QUIT:
-                    del hand_recognition
-                    pygame.quit()
-                    exit()
-                    
-
-        elif status == 'quit_pong':
-            pong.quitGame()
-            status = 'main'
-            del hand_recognition
-
-
-pygame.quit()
+    # Quit the game
+    pygame.quit()
