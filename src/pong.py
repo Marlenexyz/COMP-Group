@@ -43,7 +43,7 @@ class PongGame:
         self.player_a_score = 0
         self.player_b_score = 0
         self.font = pygame.font.Font(None, 36)
-        self.score_text = self.font.render("Player A: {}     Player B: {}".format(self.player_a_score, self.player_b_score), True, self.WHITE)
+        self.score_text = self.font.render("Player A: {}     Player B: {}".format(self.player_a_score, self.player_b_score), True, self.BLACK)
 
     def _move_ball(self):
         self.ball_x += self.ball_speed_x
@@ -71,7 +71,7 @@ class PongGame:
 
     def _update_score(self):
         # Update the score text
-        self.score_text = self.font.render("Player A: {}     Player B: {}".format(self.player_a_score, self.player_b_score), True, self.WHITE)
+        self.score_text = self.font.render("Player A: {}     Player B: {}".format(self.player_a_score, self.player_b_score), True, self.BLACK)
 
     def _draw_l_marker(self, x, y):
         # Vertical bar of the L
