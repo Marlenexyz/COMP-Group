@@ -5,9 +5,9 @@ from pong import *
 import cv2
 
 # Hyperparameters ----------
-video = 0
-game_width = 400
-game_height = 800
+video = 2
+game_height = 400
+game_width = 800
 
 # --------------------------
 
@@ -16,7 +16,7 @@ if __name__ == '__main__':
     cap = cv2.VideoCapture(video)
     hand_recognition = HandRecognition()
     frame_matching = FrameMatching()
-    pong = PongGame(game_width, game_height)
+    pong = PongGame(game_height, game_width)
     running = True
     
     while running:
@@ -27,12 +27,13 @@ if __name__ == '__main__':
                 running = False
                 
         ret, frame = cap.read()
-        
+        if ret == False:
+            continue
         game_corners = frame_matching.run(frame)
         hand_recognition.run(frame)
         index_finger_pos = [hand_recognition.getIndexFingerPosLeft(), hand_recognition.getIndexFingerPosRight()]
         cv2.imshow('frame', frame)
-        
+            
         if game_corners is not None:
             # check if left index finger was detected
             if index_finger_pos[0] is not None:
@@ -49,9 +50,12 @@ if __name__ == '__main__':
                 # get right y values
                 right_y_min, right_y_max = game_corners[2][1], game_corners[3][1]
                 right_y_crt = index_finger_pos[1]
+
                 # check if right index finger is in game frame
                 if right_y_crt >= right_y_min and right_y_crt < right_y_max:
                     right_y_new = (right_y_crt - right_y_min) / (right_y_max - right_y_min)
+                    print(right_y_new)
+                    print(right_y_new * game_height)
                     pong.move_paddle_right(right_y_new * game_height)
 
         pong.run()

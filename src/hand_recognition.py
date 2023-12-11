@@ -4,19 +4,19 @@ import time
 import numpy as np
 
 class HandRecognition:
-    '''hand recognition class which uses mediapipe library to recognize hand landmarks and draw them on frame'''
+    '''hand recognition class which uses mediapipe library to recognize hand landmarks and draw them on self.frame'''
     def __init__(self):
         # Initialize hand tracking module
         self.mp_hands = mp.solutions.hands.Hands()
     
     def run(self, frame):
-        # Convert frame to RGB
-        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        self.frame = frame
+        frame_rgb = cv2.cvtColor(self.frame, cv2.COLOR_BGR2RGB)
 
-        # Process frame with hand tracking module
+        # Process self.frame with hand tracking module
         results = self.mp_hands.process(frame_rgb)
-
-        # Draw landmarks on frame
+        
+        # Draw landmarks on self.frame
         self.index_finger_coordinates = []
         self.middle_finger_coordinates = []
         self.thumb_coordinates = []
@@ -24,22 +24,22 @@ class HandRecognition:
             for hand_landmarks in results.multi_hand_landmarks:
                 for idx, landmark in enumerate(hand_landmarks.landmark):
                     if idx == mp.solutions.hands.HandLandmark.INDEX_FINGER_TIP:
-                        self.index_finger_coordinates.append((int(landmark.x * frame.shape[1]), int(landmark.y * frame.shape[0])))
-                        cv2.circle(frame, (int(landmark.x * frame.shape[1]), int(landmark.y * frame.shape[0])), 5, (0, 255, 0), -1)
+                        self.index_finger_coordinates.append((int(landmark.x * self.frame.shape[1]), int(landmark.y * self.frame.shape[0])))
+                        cv2.circle(self.frame, (int(landmark.x * self.frame.shape[1]), int(landmark.y * self.frame.shape[0])), 5, (0, 255, 0), -1)
                     if idx == mp.solutions.hands.HandLandmark.MIDDLE_FINGER_TIP:
-                        self.middle_finger_coordinates.append((int(landmark.x * frame.shape[1]), int(landmark.y * frame.shape[0])))
-                        cv2.circle(frame, (int(landmark.x * frame.shape[1]), int(landmark.y * frame.shape[0])), 5, (0, 255, 255), -1)
+                        self.middle_finger_coordinates.append((int(landmark.x * self.frame.shape[1]), int(landmark.y * self.frame.shape[0])))
+                        cv2.circle(self.frame, (int(landmark.x * self.frame.shape[1]), int(landmark.y * self.frame.shape[0])), 5, (0, 255, 255), -1)
                     if idx == mp.solutions.hands.HandLandmark.THUMB_TIP:
-                        self.thumb_coordinates.append((int(landmark.x * frame.shape[1]), int(landmark.y * frame.shape[0])))
-                        cv2.circle(frame, (int(landmark.x * frame.shape[1]), int(landmark.y * frame.shape[0])), 5, (0, 255, 255), -1)  
+                        self.thumb_coordinates.append((int(landmark.x * self.frame.shape[1]), int(landmark.y * self.frame.shape[0])))
+                        cv2.circle(self.frame, (int(landmark.x * self.frame.shape[1]), int(landmark.y * self.frame.shape[0])), 5, (0, 255, 255), -1)  
         
         if self.isTouchingIndexFingerAndThumb('left'):
-            cv2.putText(frame, "touching", (10, 80), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+            cv2.putText(self.frame, "touching", (10, 80), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
         # Check for V-Shape
-        if self.isVShape(frame):
-            cv2.putText(frame, "V-Shape", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-        # Show frame
-        cv2.imshow('Hand Tracking', frame)
+        if self.isVShape():
+            cv2.putText(self.frame, "V-Shape", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+        # Show self.frame
+        cv2.imshow('Hand Tracking', self.frame)
         
         
     def storeIndexFingerCoordinates(self):
@@ -57,7 +57,7 @@ class HandRecognition:
             self.fingertip_coord_right = fingertips_array[np.argmin(fingertips_array[:,0]),:]
         else: 
             if fingertips_array.shape[0] == 1:
-                if fingertips_array[0,0] < 0.5*frame.shape[1]:
+                if fingertips_array[0,0] < 0.5*self.frame.shape[1]:
                     self.fingertip_pos_left = fingertips_array[0,1]
                     self.fingertip_coord_left = fingertips_array[0,:]
                 else:
@@ -79,7 +79,7 @@ class HandRecognition:
             self.middlefingertip_pos_right = fingertips_array[np.argmin(fingertips_array[:,0]),1]
         else:
             if fingertips_array.shape[0] == 1:
-                if fingertips_array[0,0] < 0.5*frame.shape[1]:
+                if fingertips_array[0,0] < 0.5*self.frame.shape[1]:
                     self.middlefingertip_pos_left = fingertips_array[0,1]
                     self.middlefingertip_coord_left = fingertips_array[0,:]
                 else:
@@ -98,8 +98,8 @@ class HandRecognition:
             self.thumbtip_coord_left = fingertips_array[np.argmax(fingertips_array[:,0]),:]
             self.thumbtip_coord_right = fingertips_array[np.argmin(fingertips_array[:,0]),:]
         elif fingertips_array.shape[0] == 1:
-                if fingertips_array[0,0] < 0.5*frame.shape[1]:
-                    self.thumbtip_coord_left = fingertips_array[0,:]
+                if fingertips_array[0,0] < 0.5 * self.frame.shape[1]:
+                    self.thumbtip_coord_left = fingertips_array[0, :]
                 else:
                     self.thumbtip_coord_right = fingertips_array[0,:]
 
@@ -178,7 +178,7 @@ class HandRecognition:
             return True
         else:
             return False
-    def isVShape(self, frame):
+    def isVShape(self):
         """Check if the index finger and middle finger are held up in a V-shape."""
         # Assuming index_finger_coordinates and middle_finger_coordinates are available
         # and each contains (x, y) tuples for the respective fingertip positions.
@@ -234,8 +234,7 @@ if __name__ == '__main__':
         
         ret, frame = cap.read()
         
-        index_finger_pos = hand_recognition.run(frame)
-        print(index_finger_pos)
+        hand_recognition.run(frame)
     
     # Release webcam and destroy windows
     cap.release()
