@@ -51,10 +51,10 @@ class HandRecognition:
         self.fingertip_coord_left = None
         fingertips_array = np.array(self.index_finger_coordinates)
         if fingertips_array.shape[0] >= 2:
-            self.fingertip_pos_left = fingertips_array[np.argmax(fingertips_array[:,0]),1]
-            self.fingertip_coord_left = fingertips_array[np.argmax(fingertips_array[:,0]),:]
-            self.fingertip_pos_right = fingertips_array[np.argmin(fingertips_array[:,0]),1]
-            self.fingertip_coord_right = fingertips_array[np.argmin(fingertips_array[:,0]),:]
+            self.fingertip_pos_left = fingertips_array[np.argmin(fingertips_array[:,0]),1]
+            self.fingertip_coord_left = fingertips_array[np.argmin(fingertips_array[:,0]),:]
+            self.fingertip_pos_right = fingertips_array[np.argmax(fingertips_array[:,0]),1]
+            self.fingertip_coord_right = fingertips_array[np.argmax(fingertips_array[:,0]),:]
         else: 
             if fingertips_array.shape[0] == 1:
                 if fingertips_array[0,0] < 0.5*self.frame.shape[1]:
@@ -73,10 +73,10 @@ class HandRecognition:
         self.middlefingertip_coord_left = None
         fingertips_array = np.array(self.middle_finger_coordinates)
         if fingertips_array.shape[0] >= 2:
-            self.middlefingertip_pos_left = fingertips_array[np.argmax(fingertips_array[:,0]),1]
-            self.middlefingertip_coord_left = fingertips_array[np.argmax(fingertips_array[:,0]),:]
-            self.middlefingertip_coord_right = fingertips_array[np.argmin(fingertips_array[:,0]),:]
-            self.middlefingertip_pos_right = fingertips_array[np.argmin(fingertips_array[:,0]),1]
+            self.middlefingertip_pos_left = fingertips_array[np.argmin(fingertips_array[:,0]),1]
+            self.middlefingertip_coord_left = fingertips_array[np.argmin(fingertips_array[:,0]),:]
+            self.middlefingertip_coord_right = fingertips_array[np.argmax(fingertips_array[:,0]),:]
+            self.middlefingertip_pos_right = fingertips_array[np.argmax(fingertips_array[:,0]),1]
         else:
             if fingertips_array.shape[0] == 1:
                 if fingertips_array[0,0] < 0.5*self.frame.shape[1]:
@@ -95,8 +95,8 @@ class HandRecognition:
         self.thumbtip_coord_left = None
         fingertips_array = np.array(self.thumb_coordinates)
         if fingertips_array.shape[0] >= 2:
-            self.thumbtip_coord_left = fingertips_array[np.argmax(fingertips_array[:,0]),:]
-            self.thumbtip_coord_right = fingertips_array[np.argmin(fingertips_array[:,0]),:]
+            self.thumbtip_coord_left = fingertips_array[np.argmin(fingertips_array[:,0]),:]
+            self.thumbtip_coord_right = fingertips_array[np.argmax(fingertips_array[:,0]),:]
         elif fingertips_array.shape[0] == 1:
                 if fingertips_array[0,0] < 0.5 * self.frame.shape[1]:
                     self.thumbtip_coord_left = fingertips_array[0, :]
