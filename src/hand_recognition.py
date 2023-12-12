@@ -271,7 +271,7 @@ class HandRecognition:
         thumb_tip_right = self.getThumbCoordRight()
 
         # Check if both fingertips are detected
-        if index_fingertip_right is not None and middle_fingertip_right is not None:
+        if index_fingertip_right is not None and middle_fingertip_right is not None and thumb_tip_right is not None:
             # Calculate the distance between the fingertips
             distance = calculate_distance(index_fingertip_right, middle_fingertip_right)
             
@@ -284,7 +284,7 @@ class HandRecognition:
                     return True
         
         # Check if both fingertips are detected
-        if index_fingertip_left is not None and middle_fingertip_left is not None:
+        if index_fingertip_left is not None and middle_fingertip_left is not None and thumb_tip_left is not None:
             # Calculate the distance between the fingertips
             distance = calculate_distance(index_fingertip_left, middle_fingertip_left)
             

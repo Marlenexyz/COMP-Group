@@ -162,6 +162,15 @@ class PongGame:
         self._draw_l_marker(0, self.screen_height)
         self._draw_l_marker(self.screen_width, self.screen_height)
 
+    def draw_countdown(self,countdown_value):
+        self._draw_game()                               #to overwrite old counter value
+        #increase the font size of the text
+        self.font_countdown = pygame.font.Font(None, 100)
+        countdown_text = self.font_countdown.render("{}".format(countdown_value), True, self.BLACK)
+        self.screen.blit(countdown_text, (self.screen_width // 2 - countdown_text.get_width() // 2, self.screen_height // 2))
+        pygame.display.flip()
+
+
     def move_paddle_left(self,fingertip_pos_left):
         if fingertip_pos_left is not None:  # Ensure the fingertip was detected
             fingertip_pos_left += (self.paddle_width // 2)

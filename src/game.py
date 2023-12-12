@@ -14,6 +14,8 @@ game_width = 600
 debug_height = 200
 debug_width = 600
 
+countdown = 10
+
 # --------------------------
 
 
@@ -103,9 +105,17 @@ if __name__ == '__main__':
             if not has_run_once:
                 pong.run()
                 pygame.display.flip()
-                
-                # Setze die Flagge auf True, um zu kennzeichnen, dass die Funktion aufgerufen wurde
+
+                ## Display Countdown on screen, after countdown ends game starts automatically
+                while countdown > 0:
+                    pygame.time.delay(1000)
+                    pong.draw_countdown(countdown)
+                    countdown -= 1
+
+                pong.togglePause()
+                # Setze die Flagge auf True, um zu kennzeichnen, dass die Funktion aufgerufen wurde    
                 has_run_once = True
+
 
             if not pong.isGamePaused():
                 # Handle events
