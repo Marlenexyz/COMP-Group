@@ -2,6 +2,7 @@ from hand_recognition import *
 from frame_matcher import *
 from pong import *
 from menu import *
+from setup import *
 
 import cv2
 
@@ -73,6 +74,9 @@ def displayDebugInfo():
 
 if __name__ == '__main__':
     
+    # SETUP ---------------------------
+    create_set_up_window(game_height, game_width)
+
     # INITIALIZATION -----------------
     cap = cv2.VideoCapture(video)
     frame_matcher = FrameMatcher()
