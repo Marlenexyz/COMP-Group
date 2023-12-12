@@ -51,6 +51,8 @@ class PongGame:
         self.font = pygame.font.Font(None, 36)
         self.score_text = self.font.render("{}: {}     {}: {}".format(self.player_name_a, self.player_a_score, self.player_name_b, self.player_b_score), True, self.BLACK)
 
+    def isGamePaused(self):
+        return self.paused
 
     def setPlayerNameA(self,inputName):
         self.player_name_a = inputName
@@ -60,11 +62,14 @@ class PongGame:
         self.player_name_b = inputName
         self._update_score()
 
-    def togglePause(self):
-        self.paused = not self.paused
+    # def togglePause(self):
+    #     self.paused = not self.paused
 
-    def isPaused(self):
+    def isGamePaused(self):
         return self.paused
+
+    def setGamePaused(self,paused):
+        self.paused = paused
     
     def _move_ball(self):
         self.ball_x += self.ball_speed_x
