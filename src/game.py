@@ -106,11 +106,9 @@ if __name__ == '__main__':
 
 
             keys = pygame.key.get_pressed()
-            if keys[pygame.K_w]:
-                pong.setGamePaused(True)
-                #pong.togglePause()
-            if keys[pygame.K_r]:
-                pong.setGamePaused(False)
+            if keys[pygame.K_p]:
+                pong.togglePause()
+                pygame.time.delay(100)                  #100 Milliseconds Delay
 
 
             for event in pygame.event.get():

@@ -62,14 +62,14 @@ class PongGame:
         self.player_name_b = inputName
         self._update_score()
 
-    # def togglePause(self):
-    #     self.paused = not self.paused
+    def togglePause(self):
+        self.paused = not self.paused
 
     def isGamePaused(self):
         return self.paused
 
-    def setGamePaused(self,paused):
-        self.paused = paused
+    # def setGamePaused(self,paused):
+    #     self.paused = paused
     
     def _move_ball(self):
         self.ball_x += self.ball_speed_x
