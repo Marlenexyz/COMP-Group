@@ -256,7 +256,7 @@ class HandRecognition:
         # and each contains (x, y) tuples for the respective fingertip positions.
         
         # This threshold determines how close the two fingers can be to be considered a V-shape
-        V_SHAPE_THRESHOLD = 15
+        V_SHAPE_THRESHOLD = 12
         
         # Function to calculate distance between two points
         def calculate_distance(point1, point2):
@@ -278,7 +278,7 @@ class HandRecognition:
             # Check if the distance between the fingertips is greater than the threshold
             if distance > V_SHAPE_THRESHOLD:
                 # Check if the fingertips are at a similar height to form a V-shape
-                if abs(index_fingertip_right[1] - middle_fingertip_right[1]) < V_SHAPE_THRESHOLD and (index_fingertip_right[1] - thumb_tip_right[1]) > V_SHAPE_THRESHOLD:
+                if abs(index_fingertip_right[1] - middle_fingertip_right[1]) < V_SHAPE_THRESHOLD and (thumb_tip_right[1] - index_fingertip_right[1]) > (V_SHAPE_THRESHOLD):
                     # if v shape is detected, draw a v-shape on the image 
                     # cv2.line(self.frame, index_fingertip_right, middle_fingertip_right, (0, 255, 0), 2)
                     return True
@@ -291,7 +291,7 @@ class HandRecognition:
             # Check if the distance between the fingertips is greater than the threshold
             if distance > V_SHAPE_THRESHOLD:
                 # Check if the fingertips are at a similar height to form a V-shape
-                if abs(index_fingertip_left[1] - middle_fingertip_left[1]) < V_SHAPE_THRESHOLD:
+                if abs(index_fingertip_left[1] - middle_fingertip_left[1]) < V_SHAPE_THRESHOLD and (thumb_tip_left[1] - index_fingertip_left[1]) > (V_SHAPE_THRESHOLD):
                     # if v shape is detected, draw a v-shape on the image 
                     # cv2.line(self.frame, index_fingertip_left, middle_fingertip_left, (0, 255, 0), 2)
                     return True
@@ -299,7 +299,7 @@ class HandRecognition:
         return False
 
 if __name__ == '__main__':
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(2)
     hand_recognition = HandRecognition()
     while True:
         # Break loop if 'q' is pressed
@@ -319,17 +319,6 @@ if __name__ == '__main__':
             cv2.putText(frame, "V-Shape", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
         cv2.imshow('frame', frame)
-        # if cv2.waitKey(1) & 0xFF == ord('k'):
-        #     HandRecognition.measure = 1
-        # if HandRecognition.measure == 1:
-        #     hand_recognition.measureAccuracy()
-        # if cv2.waitKey(1) & 0xFF == ord('l'):
-        #     HandRecognition.measure = 2
-        # if HandRecognition.measure == 2:
-        #     acc = hand_recognition.stopAccuracyMeasurement()
-        #     print(acc)
-        #     HandRecognition.measure = 0
-        # print (HandRecognition.measure)
     # Release webcam and destroy windows
     cap.release()
     cv2.destroyAllWindows()
