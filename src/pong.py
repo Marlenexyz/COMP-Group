@@ -20,6 +20,7 @@ class PongGame:
         self.BLACK = (0, 0, 0)
         self.WHITE = (255, 255, 255)
         self.RED = (255, 0, 0)
+        self.YELLOW = (255, 255, 0)
         
         # Set up the corners
         self.l_thickness = 15 * 2
@@ -102,9 +103,9 @@ class PongGame:
 
     def _draw_l_marker(self, x, y):
         # Vertical bar of the L
-        pygame.draw.rect(self.screen, self.RED, (x - self.l_thickness // 2, y - self.l_length // 2, self.l_thickness, self.l_length))
+        pygame.draw.rect(self.screen, self.YELLOW, (x - self.l_thickness // 2, y - self.l_length // 2, self.l_thickness, self.l_length))
         # Horizontal bar of the L
-        pygame.draw.rect(self.screen, self.RED, (x - self.l_length // 2, y - self.l_thickness // 2, self.l_length, self.l_thickness))
+        pygame.draw.rect(self.screen, self.YELLOW, (x - self.l_length // 2, y - self.l_thickness // 2, self.l_length, self.l_thickness))
 
 
     def _draw_game(self):
@@ -159,7 +160,7 @@ class PongGame:
         corner_rects = []
         for corner in corners:
             rect = pygame.Rect(corner[0] - 5, corner[1] - 5, 10, 10)  # Erstelle ein Rechteck um die Ecke
-            pygame.draw.rect(self.screen, self.RED, rect)
+            pygame.draw.rect(self.screen, self.YELLOW, rect)
             corner_rects.append(rect)
 
         pygame.display.flip()
