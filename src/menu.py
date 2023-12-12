@@ -21,15 +21,26 @@ class Menu:
         # Define colours
         self.BLACK = (255, 255, 255)
 
-        # Create button instances
-        self.play_button = {"text": "Play", "rect": pygame.Rect(self.screen_height/2, 0.15 * self.screen_width, 200, 50)}
-        self.options_button = {"text": "Options", "rect": pygame.Rect(self.screen_height/2, 0.3 * self.screen_width, 200, 50)}
-        self.quit_button = {"text": "Quit", "rect": pygame.Rect(self.screen_height/2, 0.45*self.screen_width, 200, 50)}
-        self.video_button = {"text": "Video Settings", "rect": pygame.Rect(self.screen_height/2, 75, 200, 50)}      ##Adjust second number with self.screen_width
-        self.audio_button = {"text": "Audio Settings", "rect": pygame.Rect(self.screen_height/2, 200, 200, 50)}
-        self.keys_button = {"text": "Change Key Bindings", "rect": pygame.Rect(self.screen_height/2, 325, 200, 50)}
-        self.back_button = {"text": "Back", "rect": pygame.Rect(self.screen_height/2, 450, 200, 50)}
-        self.enter_player_names_button = {"text": "Enter Names", "rect": pygame.Rect(self.screen_height/2, 0.55 * self.screen_width, 200, 50)}
+
+        ## Button instances dependant on screen size
+        button_width, button_height = 200, 50
+
+        # Calculate x-coordinate for centering buttons
+        button_x = (self.screen_width - button_width) / 2
+
+        total_button_height = 4 * button_height
+        space_between_buttons = (self.screen_height - total_button_height) / 5
+
+        self.play_button = {"text": "Play", "rect": pygame.Rect(button_x, space_between_buttons, button_width, button_height)}
+        self.options_button = {"text": "Options", "rect": pygame.Rect(button_x, space_between_buttons + (button_height + space_between_buttons), button_width, button_height)}
+        self.enter_player_names_button = {"text": "Enter Names", "rect": pygame.Rect(button_x, space_between_buttons + 2 * (button_height + space_between_buttons), button_width, button_height)}
+        self.quit_button = {"text": "Quit", "rect": pygame.Rect(button_x, space_between_buttons + 3 * (button_height + space_between_buttons), button_width, button_height)}
+        self.video_button = {"text": "Video Settings", "rect": pygame.Rect(button_x, space_between_buttons + 4 * (button_height + space_between_buttons), button_width, button_height)}
+        self.audio_button = {"text": "Audio Settings", "rect": pygame.Rect(button_x, space_between_buttons + 5 * (button_height + space_between_buttons), button_width, button_height)}
+        self.keys_button = {"text": "Change Key Bindings", "rect": pygame.Rect(button_x, space_between_buttons + 6 * (button_height + space_between_buttons), button_width, button_height)}
+        self.back_button = {"text": "Back", "rect": pygame.Rect(button_x, space_between_buttons + 7 * (button_height + space_between_buttons), button_width, button_height)}
+
+        
         
         self.playerNameA = "Player A"
         self.playerNameB = "Player B"
@@ -37,6 +48,8 @@ class Menu:
         # Virtuelle Tastaturbuttons
         button_width, button_height = 40, 40
         button_spacing = 50
+
+        offset = 15
 
         # Create keyboard button instances
         self.keyboard_buttons = [
@@ -50,23 +63,23 @@ class Menu:
             {"text": "I", "rect": pygame.Rect(screen_width // 10 + 7 * button_spacing, screen_height - 150, button_width, button_height)},
             {"text": "O", "rect": pygame.Rect(screen_width // 10 + 8 * button_spacing, screen_height - 150, button_width, button_height)},
             {"text": "P", "rect": pygame.Rect(screen_width // 10 + 9 * button_spacing, screen_height - 150, button_width, button_height)},
-            {"text": "A", "rect": pygame.Rect(screen_width // 10, screen_height - 100, button_width, button_height)},
-            {"text": "S", "rect": pygame.Rect(screen_width // 10 + button_spacing, screen_height - 100, button_width, button_height)},
-            {"text": "D", "rect": pygame.Rect(screen_width // 10 + 2 * button_spacing, screen_height - 100, button_width, button_height)},
-            {"text": "F", "rect": pygame.Rect(screen_width // 10 + 3 * button_spacing, screen_height - 100, button_width, button_height)},
-            {"text": "G", "rect": pygame.Rect(screen_width // 10 + 4 * button_spacing, screen_height - 100, button_width, button_height)},
-            {"text": "H", "rect": pygame.Rect(screen_width // 10 + 5 * button_spacing, screen_height - 100, button_width, button_height)},
-            {"text": "J", "rect": pygame.Rect(screen_width // 10 + 6 * button_spacing, screen_height - 100, button_width, button_height)},
-            {"text": "K", "rect": pygame.Rect(screen_width // 10 + 7 * button_spacing, screen_height - 100, button_width, button_height)},
-            {"text": "L", "rect": pygame.Rect(screen_width // 10 + 8 * button_spacing, screen_height - 100, button_width, button_height)},
-            {"text": "Y", "rect": pygame.Rect(screen_width // 10, screen_height - 50, button_width, button_height)},
-            {"text": "X", "rect": pygame.Rect(screen_width // 10 + button_spacing, screen_height - 50, button_width, button_height)},
-            {"text": "C", "rect": pygame.Rect(screen_width // 10 + 2 * button_spacing, screen_height - 50, button_width, button_height)},
-            {"text": "V", "rect": pygame.Rect(screen_width // 10 + 3 * button_spacing, screen_height - 50, button_width, button_height)},
-            {"text": "B", "rect": pygame.Rect(screen_width // 10 + 4 * button_spacing, screen_height - 50, button_width, button_height)},
-            {"text": "N", "rect": pygame.Rect(screen_width // 10 + 5 * button_spacing, screen_height - 50, button_width, button_height)},
-            {"text": "M", "rect": pygame.Rect(screen_width // 10 + 6 * button_spacing, screen_height - 50, button_width, button_height)},
-            {"text": "Enter", "rect": pygame.Rect(screen_width // 10 + 9 * button_spacing, screen_height - 50, 150, button_height)},
+            {"text": "A", "rect": pygame.Rect(screen_width // 10 + offset, screen_height - 100, button_width, button_height)},
+            {"text": "S", "rect": pygame.Rect(screen_width // 10 + offset + button_spacing, screen_height - 100, button_width, button_height)},
+            {"text": "D", "rect": pygame.Rect(screen_width // 10 + offset + 2 * button_spacing, screen_height - 100, button_width, button_height)},
+            {"text": "F", "rect": pygame.Rect(screen_width // 10 + offset + 3 * button_spacing, screen_height - 100, button_width, button_height)},
+            {"text": "G", "rect": pygame.Rect(screen_width // 10 + offset + 4 * button_spacing, screen_height - 100, button_width, button_height)},
+            {"text": "H", "rect": pygame.Rect(screen_width // 10 + offset + 5 * button_spacing, screen_height - 100, button_width, button_height)},
+            {"text": "J", "rect": pygame.Rect(screen_width // 10 + offset + 6 * button_spacing, screen_height - 100, button_width, button_height)},
+            {"text": "K", "rect": pygame.Rect(screen_width // 10 + offset + 7 * button_spacing, screen_height - 100, button_width, button_height)},
+            {"text": "L", "rect": pygame.Rect(screen_width // 10 + offset + 8 * button_spacing, screen_height - 100, button_width, button_height)},
+            {"text": "Y", "rect": pygame.Rect(screen_width // 10 + 2* offset, screen_height - 50, button_width, button_height)},
+            {"text": "X", "rect": pygame.Rect(screen_width // 10 + 2* offset + button_spacing, screen_height - 50, button_width, button_height)},
+            {"text": "C", "rect": pygame.Rect(screen_width // 10 + 2* offset + 2 * button_spacing, screen_height - 50, button_width, button_height)},
+            {"text": "V", "rect": pygame.Rect(screen_width // 10 + 2* offset + 3 * button_spacing, screen_height - 50, button_width, button_height)},
+            {"text": "B", "rect": pygame.Rect(screen_width // 10 + 2* offset + 4 * button_spacing, screen_height - 50, button_width, button_height)},
+            {"text": "N", "rect": pygame.Rect(screen_width // 10 + 2* offset + 5 * button_spacing, screen_height - 50, button_width, button_height)},
+            {"text": "M", "rect": pygame.Rect(screen_width // 10 + 2* offset + 6 * button_spacing, screen_height - 50, button_width, button_height)},
+            {"text": "Enter", "rect": pygame.Rect(screen_width // 10 + 2* offset + 9 * button_spacing, screen_height - 50, 150, button_height)},
         ]
 
         # Input field variables for entering player names
