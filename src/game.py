@@ -116,12 +116,7 @@ if __name__ == '__main__':
                     pygame.quit()
                     exit()
                     
-    
-        #         elif event.type == KEYDOWN:
-        #             if event.key == K_SPACE:
-        #                 print("Leertaste wurde gedrückt!")
-        #                 # pong.setGamePaused(not pong.isGamePaused())
-        #                 pong.togglePause()
+
         elif status == 'quit_pong':
             pong.quitGame()
             status = 'main'

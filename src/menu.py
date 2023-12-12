@@ -77,9 +77,14 @@ class Menu:
         self.input_color_active = pygame.Color('dodgerblue2')
         self.input_color = self.input_color_inactive
         self.input_active = False
+
+        
         self.input_field = {"text": "", "rect": pygame.Rect(self.screen_height/2, 0.35 * self.screen_width, 200, 50)}
+        # self.input_field_B = {"text": "", "rect": pygame.Rect(self.screen_height/2, 0.35 * self.screen_width, 200, 50)}
         # Zusätzlicher Text über dem input_field
-        self.additional_text = {"text": "Enter player name:", "rect": pygame.Rect(screen_height/2, 0.30 * screen_width - 50, 200, 50)}
+        self.additional_text_A = {"text": "Enter player name:", "rect": pygame.Rect(screen_height/2, 0.30 * screen_width - 50, 200, 50)}
+
+        self.selected_input_field = "input_field_A"
 
     def __del__(self):
         pygame.quit()
@@ -149,10 +154,10 @@ class Menu:
                 button["clicked"] = False  # Reset the clicked status when the mouse button is released
         return False
     
-    def draw_input_field(self, input_field):
-        # Zusätzlicher Text über dem input_field           
-        text_surface = self.font.render(self.additional_text["text"], True, self.BLACK)
-        text_rect = text_surface.get_rect(center=self.additional_text["rect"].center)
+    def draw_input_field(self, input_field, additional_text):
+        # Zusätzlicher Text über dem input_field
+        text_surface = self.font.render(additional_text["text"], True, self.BLACK)
+        text_rect = text_surface.get_rect(center=additional_text["rect"].center)
         self.screen.blit(text_surface, text_rect)
 
         pygame.draw.rect(self.screen, (0, 0, 0), input_field["rect"])  # Weißes Rechteck für das Eingabefeld (255,255,255)
@@ -187,8 +192,8 @@ class Menu:
                 exit()
                 
         elif self.menu_state == 'enterNames':
-            self.draw_input_field(self.input_field)
-            self.draw_keyboard()  # Hier füge die Zeichnung der virtuellen Tastatur hinzu
+            self.draw_input_field(self.input_field, self.additional_text_A)
+            self.draw_keyboard()
 
             # if self.input_active:
             #     # Logik zum Hinzufügen von Buchstaben zur input_text-Zeichenkette hier hinzufügen
@@ -196,66 +201,9 @@ class Menu:
 
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    # Überprüfe, ob der Mauszeiger über dem "W"-Button ist
-                    if self.keyboard_buttons[0]["rect"].collidepoint(event.pos):
-                        self.input_field["text"] += 'Q' 
-                    if self.keyboard_buttons[1]["rect"].collidepoint(event.pos):
-                        self.input_field["text"] += 'W'  # Füge den Buchstaben 'W' zum input_field hinzu
-                    if self.keyboard_buttons[2]["rect"].collidepoint(event.pos):
-                        self.input_field["text"] += 'E'  # Füge den Buchstaben 'E' zum input_field hinzu
-                    if self.keyboard_buttons[3]["rect"].collidepoint(event.pos):
-                        self.input_field["text"] += 'R'  # Füge den Buchstaben 'R' zum input_field hinzu
-                    if self.keyboard_buttons[4]["rect"].collidepoint(event.pos):
-                        self.input_field["text"] += 'T'  # Füge den Buchstaben 'T' zum input_field hinzu
-                    if self.keyboard_buttons[5]["rect"].collidepoint(event.pos):
-                        self.input_field["text"] += 'Z'  # Füge den Buchstaben 'Z' zum input_field hinzu
-                    if self.keyboard_buttons[6]["rect"].collidepoint(event.pos):
-                        self.input_field["text"] += 'U'  # Füge den Buchstaben 'U' zum input_field hinzu
-                    if self.keyboard_buttons[7]["rect"].collidepoint(event.pos):
-                        self.input_field["text"] += 'I'  # Füge den Buchstaben 'I' zum input_field hinzu
-                    if self.keyboard_buttons[8]["rect"].collidepoint(event.pos):
-                        self.input_field["text"] += 'O'  # Füge den Buchstaben 'O' zum input_field hinzu
-                    if self.keyboard_buttons[9]["rect"].collidepoint(event.pos):
-                        self.input_field["text"] += 'P'  # Füge den Buchstaben 'P' zum input_field hinzu
-                    if self.keyboard_buttons[10]["rect"].collidepoint(event.pos):
-                        self.input_field["text"] += 'A'  # Füge den Buchstaben 'A' zum input_field hinzu
-                    if self.keyboard_buttons[11]["rect"].collidepoint(event.pos):
-                        self.input_field["text"] += 'S'  # Füge den Buchstaben 'S' zum input_field hinzu
-                    if self.keyboard_buttons[12]["rect"].collidepoint(event.pos):
-                        self.input_field["text"] += 'D'  # Füge den Buchstaben 'D' zum input_field hinzu
-                    if self.keyboard_buttons[13]["rect"].collidepoint(event.pos):
-                        self.input_field["text"] += 'F'  # Füge den Buchstaben 'F' zum input_field hinzu
-                    if self.keyboard_buttons[14]["rect"].collidepoint(event.pos):
-                        self.input_field["text"] += 'G'  # Füge den Buchstaben 'G' zum input_field hinzu
-                    if self.keyboard_buttons[15]["rect"].collidepoint(event.pos):
-                        self.input_field["text"] += 'H'  # Füge den Buchstaben 'H' zum input_field hinzu
-                    if self.keyboard_buttons[16]["rect"].collidepoint(event.pos):
-                        self.input_field["text"] += 'J'  # Füge den Buchstaben 'J' zum input_field hinzu
-                    if self.keyboard_buttons[17]["rect"].collidepoint(event.pos):
-                        self.input_field["text"] += 'K'  # Füge den Buchstaben 'K' zum input_field hinzu
-                    if self.keyboard_buttons[18]["rect"].collidepoint(event.pos):
-                        self.input_field["text"] += 'L'  # Füge den Buchstaben 'L' zum input_field hinzu
-                    if self.keyboard_buttons[19]["rect"].collidepoint(event.pos):
-                        self.input_field["text"] += 'Z'  # Füge den Buchstaben 'Z' zum input_field hinzu
-                    if self.keyboard_buttons[20]["rect"].collidepoint(event.pos):
-                        self.input_field["text"] += 'X'  # Füge den Buchstaben 'X' zum input_field hinzu
-                    if self.keyboard_buttons[21]["rect"].collidepoint(event.pos):
-                        self.input_field["text"] += 'C'  # Fü
-                    if self.keyboard_buttons[22]["rect"].collidepoint(event.pos):
-                        self.input_field["text"] += 'V'  # Füge den Buchstaben 'V' zum input_field hinzu
-                    if self.keyboard_buttons[23]["rect"].collidepoint(event.pos):
-                        self.input_field["text"] += 'B'  # Füge den Buchstaben 'B' zum input_field hinzu
-                    if self.keyboard_buttons[24]["rect"].collidepoint(event.pos):
-                        self.input_field["text"] += 'N'  # Füge den Buchstaben 'N' zum input_field hinzu
-                    if self.keyboard_buttons[25]["rect"].collidepoint(event.pos):
-                        self.input_field["text"] += 'M'  # Füge den Buchstaben 'M' zum input_field hinzu
-                    if self.keyboard_buttons[26]["rect"].collidepoint(event.pos):
                         
-                        self.playerNameA = self.input_field["text"]
-                        self.menu_state = "main"
-
-
-                   
+                        self.add_letter_to_input_field(event)
+                        
                 elif event.type == pygame.QUIT:
                     pygame.quit()
                     exit()
@@ -288,6 +236,70 @@ class Menu:
         #         self.update_input_active(event)
 
         pygame.display.update()
+
+    def add_letter_to_input_field(self,event):
+        if self.keyboard_buttons[0]["rect"].collidepoint(event.pos):
+            self.input_field["text"] += 'Q' 
+        if self.keyboard_buttons[1]["rect"].collidepoint(event.pos):
+            self.input_field["text"] += 'W'  # Füge den Buchstaben 'W' zum input_field hinzu
+        if self.keyboard_buttons[2]["rect"].collidepoint(event.pos):
+            self.input_field["text"] += 'E'  # Füge den Buchstaben 'E' zum input_field hinzu
+        if self.keyboard_buttons[3]["rect"].collidepoint(event.pos):
+            self.input_field["text"] += 'R'  # Füge den Buchstaben 'R' zum input_field hinzu
+        if self.keyboard_buttons[4]["rect"].collidepoint(event.pos):
+            self.input_field["text"] += 'T'  # Füge den Buchstaben 'T' zum input_field hinzu
+        if self.keyboard_buttons[5]["rect"].collidepoint(event.pos):
+            self.input_field["text"] += 'Z'  # Füge den Buchstaben 'Z' zum input_field hinzu
+        if self.keyboard_buttons[6]["rect"].collidepoint(event.pos):
+            self.input_field["text"] += 'U'  # Füge den Buchstaben 'U' zum input_field hinzu
+        if self.keyboard_buttons[7]["rect"].collidepoint(event.pos):
+            self.input_field["text"] += 'I'  # Füge den Buchstaben 'I' zum input_field hinzu
+        if self.keyboard_buttons[8]["rect"].collidepoint(event.pos):
+            self.input_field["text"] += 'O'  # Füge den Buchstaben 'O' zum input_field hinzu
+        if self.keyboard_buttons[9]["rect"].collidepoint(event.pos):
+            self.input_field["text"] += 'P'  # Füge den Buchstaben 'P' zum input_field hinzu
+        if self.keyboard_buttons[10]["rect"].collidepoint(event.pos):
+            self.input_field["text"] += 'A'  # Füge den Buchstaben 'A' zum input_field hinzu
+        if self.keyboard_buttons[11]["rect"].collidepoint(event.pos):
+            self.input_field["text"] += 'S'  # Füge den Buchstaben 'S' zum input_field hinzu
+        if self.keyboard_buttons[12]["rect"].collidepoint(event.pos):
+            self.input_field["text"] += 'D'  # Füge den Buchstaben 'D' zum input_field hinzu
+        if self.keyboard_buttons[13]["rect"].collidepoint(event.pos):
+            self.input_field["text"] += 'F'  # Füge den Buchstaben 'F' zum input_field hinzu
+        if self.keyboard_buttons[14]["rect"].collidepoint(event.pos):
+            self.input_field["text"] += 'G'  # Füge den Buchstaben 'G' zum input_field hinzu
+        if self.keyboard_buttons[15]["rect"].collidepoint(event.pos):
+            self.input_field["text"] += 'H'  # Füge den Buchstaben 'H' zum input_field hinzu
+        if self.keyboard_buttons[16]["rect"].collidepoint(event.pos):
+            self.input_field["text"] += 'J'  # Füge den Buchstaben 'J' zum input_field hinzu
+        if self.keyboard_buttons[17]["rect"].collidepoint(event.pos):
+            self.input_field["text"] += 'K'  # Füge den Buchstaben 'K' zum input_field hinzu
+        if self.keyboard_buttons[18]["rect"].collidepoint(event.pos):
+            self.input_field["text"] += 'L'  # Füge den Buchstaben 'L' zum input_field hinzu
+        if self.keyboard_buttons[19]["rect"].collidepoint(event.pos):
+            self.input_field["text"] += 'Z'  # Füge den Buchstaben 'Z' zum input_field hinzu
+        if self.keyboard_buttons[20]["rect"].collidepoint(event.pos):
+            self.input_field["text"] += 'X'  # Füge den Buchstaben 'X' zum input_field hinzu
+        if self.keyboard_buttons[21]["rect"].collidepoint(event.pos):
+            self.input_field["text"] += 'C'  # Fü
+        if self.keyboard_buttons[22]["rect"].collidepoint(event.pos):
+            self.input_field["text"] += 'V'  # Füge den Buchstaben 'V' zum input_field hinzu
+        if self.keyboard_buttons[23]["rect"].collidepoint(event.pos):
+            self.input_field["text"] += 'B'  # Füge den Buchstaben 'B' zum input_field hinzu
+        if self.keyboard_buttons[24]["rect"].collidepoint(event.pos):
+            self.input_field["text"] += 'N'  # Füge den Buchstaben 'N' zum input_field hinzu
+        if self.keyboard_buttons[25]["rect"].collidepoint(event.pos):
+            self.input_field["text"] += 'M'  # Füge den Buchstaben 'M' zum input_field hinzu
+        if self.keyboard_buttons[26]["rect"].collidepoint(event.pos):
+            if self.selected_input_field == "input_field_A":
+                self.playerNameA = self.input_field["text"]
+                # self.input_
+                self.input_field["text"] = ''
+                self.selected_input_field = "input_field_B"     #Switch to input_field_B
+                # self.selected_input_field = self.input_field_B
+            elif self.selected_input_field == "input_field_B":
+                self.playerNameB = self.input_field["text"]
+                self.menu_state = "main"
 
     def getStatus(self):
         return self.menu_state
