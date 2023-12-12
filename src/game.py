@@ -2,6 +2,7 @@ from hand_recognition import *
 from frame_matcher import *
 from pong import *
 from menu import *
+from setup import *
 
 import cv2
 
@@ -73,6 +74,9 @@ def displayDebugInfo():
 
 if __name__ == '__main__':
     
+    # SETUP ---------------------------
+    create_set_up_window(game_height, game_width)
+
     # INITIALIZATION -----------------
     cap = cv2.VideoCapture(video)
     frame_matcher = FrameMatcher()
@@ -81,6 +85,8 @@ if __name__ == '__main__':
     pong = PongGame(game_height, game_width)
 
     prev_time = time.time()
+
+    has_run_once = False
 
     # MAIN loop ----------------------
     while True:
@@ -92,8 +98,15 @@ if __name__ == '__main__':
             mainMenu.update_menu()
             pong.setPlayerNameA(mainMenu.getPlayerNameA())
             pong.setPlayerNameB(mainMenu.getPlayerNameB())
-            # pong.setMenuState('play')
+
         elif status == 'play':
+            if not has_run_once:
+                pong.run()
+                pygame.display.flip()
+                
+                # Setze die Flagge auf True, um zu kennzeichnen, dass die Funktion aufgerufen wurde
+                has_run_once = True
+
             if not pong.isGamePaused():
                 # Handle events
                 for event in pygame.event.get():
@@ -110,6 +123,9 @@ if __name__ == '__main__':
                 # run hand recognition for index finger positions
                 hand_recognition.run(frame)
                 index_finger_pos = [hand_recognition.getIndexFingerPosLeft(), hand_recognition.getIndexFingerPosRight()]
+
+                if hand_recognition.isVShape():
+                    pong.setBallSpeed()
                 
                 # show frame
                 cv2.imshow('Video Feed', frame)
@@ -142,4 +158,4 @@ if __name__ == '__main__':
             pong.quitGame()
             status = 'main'
 
-    pygame.quit()
+pygame.quit()

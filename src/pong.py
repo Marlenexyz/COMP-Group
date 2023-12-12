@@ -37,6 +37,9 @@ class PongGame:
 
         # Set up the ball
         self.ball_radius = 5
+
+        self.initial_ball_speed = 3
+
         self.ball_speed_x = 3
         self.ball_speed_y = 3
         self.ball_x = self.screen_width // 2
@@ -50,10 +53,11 @@ class PongGame:
         self.player_a_score = 0
         self.player_b_score = 0
         self.font = pygame.font.Font(None, 36)
-        self.score_text = self.font.render("{}: {}     {}: {}".format(self.player_name_a, self.player_a_score, self.player_name_b, self.player_b_score), True, self.BLACK)
+        self.score_text = self.font.render("{}: {}     {}: {}".format(self.player_name_a, self.player_a_score, 
+                                                                      self.player_name_b, self.player_b_score), True, self.BLACK)
 
-    def isGamePaused(self):
-        return self.paused
+        # Schreibe die Ball Geschwindigkeit
+        self.ball_speed_text = self.font.render("Ball Speed: {}".format(self.ball_speed_x), True, self.BLACK)
 
     def setPlayerNameA(self,inputName):
         self.player_name_a = inputName
@@ -145,6 +149,18 @@ class PongGame:
 
         # Draw the score
         self.screen.blit(self.score_text, (self.screen_width // 2 - self.score_text.get_width() // 2, 10))
+        # Draw current ball speed
+        self.screen.blit(self.ball_speed_text, (self.screen_width // 2 - self.ball_speed_text.get_width() // 2, 50))
+
+    def _draw_only_corners(self):
+        # Clear the screen
+        self.screen.fill(self.WHITE)
+
+        # Draw L-shaped marker function
+        self._draw_l_marker(0, 0)
+        self._draw_l_marker(self.screen_width, 0)
+        self._draw_l_marker(0, self.screen_height)
+        self._draw_l_marker(self.screen_width, self.screen_height)
 
     def move_paddle_left(self,fingertip_pos_left):
         if fingertip_pos_left is not None:  # Ensure the fingertip was detected
@@ -183,20 +199,37 @@ class PongGame:
 
         pygame.display.flip()
         return corner_rects
+    
+    def setBallSpeed(self):
+        value = 2
+        if self.ball_speed_x < 0:
+            self.ball_speed_x = -self.initial_ball_speed * value
+        elif self.ball_speed_x > 0:
+            self.ball_speed_x = self.initial_ball_speed * value
+        if self.ball_speed_y < 0:
+            self.ball_speed_y = -self.initial_ball_speed * value
+        elif self.ball_speed_y > 0:
+            self.ball_speed_y = self.initial_ball_speed * value
+
+
+    def _update_ball_speed(self):
+        self.ball_speed_text = self.font.render("Ball speed: " + str(self.ball_speed_x), True, self.BLACK)
+        
+
 
     def run(self):       
         self._move_ball()
         self._check_collision_with_paddle()
         self._check_collision_with_wall()
         self._update_score()
+        self._update_ball_speed()
         self._draw_game()
         self._calibrate_corners()
+        
 
-    def setSpeed(self, value):
-        self.ball_speed_x = value
-        self.ball_speed_y = value
+ 
 
-    
+       
 
 
 if __name__ == '__main__':
