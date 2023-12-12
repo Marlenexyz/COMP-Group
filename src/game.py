@@ -76,8 +76,7 @@ def displayDebugInfo():
 
 if __name__ == '__main__':
     
-    # SETUP ---------------------------
-    create_set_up_window(game_height, game_width)
+    
 
     # INITIALIZATION -----------------
     cap = cv2.VideoCapture(video)
@@ -89,12 +88,17 @@ if __name__ == '__main__':
     prev_time = time.time()
 
     has_run_once = False
+    set_up_done = False
 
+    create_set_up_window(game_height, game_width)
     # MAIN loop ----------------------
     while True:
         status = mainMenu.getStatus()
 
         if status == 'main':
+            if not set_up_done:
+                set_up_done = True
+                
             mainMenu.update_menu()
         elif status == 'enterNames':
             mainMenu.update_menu()
