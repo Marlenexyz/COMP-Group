@@ -10,9 +10,9 @@ class FrameMatcher:
         Initialize frame matcher
         """
         
-        # Define lower and upper bounds for yellow color
-        self.lower_yellow = np.array([30, 100, 100])
-        self.upper_yellow = np.array([60, 255, 255])
+        # Define HSV lower and upper bounds
+        self.lower_yellow = np.array([20, 100, 100])
+        self.upper_yellow = np.array([30, 255, 255])
 
     def run(self, frame):
         """
@@ -54,7 +54,7 @@ class FrameMatcher:
             corners.append((cx, cy))
             
         # Sort corners by upper left, lower left, upper right, lower right by using distance to (0,0)
-        corners_sorted = sorted(corners, key=lambda corner: corner[0] ** 2 + corner[1] ** 2)
+        corners_sorted = sorted(corners, key=lambda corner: corner[0] ** 2 + corner[1] ** 2)  
             
         # Print corners onto frame
         for corner in corners_sorted:
@@ -64,9 +64,43 @@ class FrameMatcher:
         
         return corners_sorted
     
+    def calibrateCorners(self, cap):
+        """
+        Run the frame matcher over n_iter iterations and calculate the mean average corners.
+        """
+        
+        n_iter = 100
+        delay_time = 0.01
+        
+        print('Calibrating...')
+        
+        corners_list = []
+        for i in range(n_iter):
+            time.sleep(delay_time)
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+            ret, frame = cap.read()
+            if ret == False:
+                continue
+        
+            corners = self.run(frame)
+            if corners is None:
+                continue
+            corners_list.append(corners)
+            cv2.imshow('Calibrate', frame)
+            
+        # Calculate the average over all corners
+        corners_avg = np.mean(np.array(corners_list), axis=0)
+        corners_avg = list(map(tuple, corners_avg.astype(int)))
+        print(f'    Corners calibrated: {corners_avg}')
+        
+        return corners_avg
+            
+            
+    
     def measureAccuracy(self, cap):
         """
-        Measure accuracy of frame matcher over n_iter
+        Measure accuracy of frame matcher over n_iter iterations.
         """
         n_iter = 100
         min_angle = 80
@@ -78,7 +112,6 @@ class FrameMatcher:
         n_recalled_matches = 0
         for i in range(n_iter):
             # time.sleep(0.1)
-            
             # if cv2.waitKey(1) & 0xFF == ord('q'):
             #     break
             
@@ -171,9 +204,10 @@ if __name__ == '__main__':
     # # Wait for key press
     # cv2.waitKey(0)
     
-    # cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(0)
     # frame_matcher.measureAccuracy(cap)
+    corners = frame_matcher.calibrateCorners(cap)
     
-    # cap.release()
-    # cv2.destroyAllWindows()
+    cap.release()
+    cv2.destroyAllWindows()
     
