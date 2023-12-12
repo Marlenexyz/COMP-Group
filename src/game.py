@@ -82,6 +82,8 @@ if __name__ == '__main__':
 
     prev_time = time.time()
 
+    has_run_once = False
+
     # MAIN loop ----------------------
     while True:
         status = mainMenu.getStatus()
@@ -92,8 +94,15 @@ if __name__ == '__main__':
             mainMenu.update_menu()
             pong.setPlayerNameA(mainMenu.getPlayerNameA())
             pong.setPlayerNameB(mainMenu.getPlayerNameB())
-            # pong.setMenuState('play')
+
         elif status == 'play':
+            if not has_run_once:
+                pong.run()
+                pygame.display.flip()
+                
+                # Setze die Flagge auf True, um zu kennzeichnen, dass die Funktion aufgerufen wurde
+                has_run_once = True
+
             if not pong.isGamePaused():
                 # Handle events
                 for event in pygame.event.get():
