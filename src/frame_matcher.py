@@ -6,23 +6,30 @@ import time
 
 class FrameMatcher:
     def __init__(self):
-        pass
+        """
+        Initialize frame matcher
+        """
+        
+        # Define lower and upper bounds for yellow color
+        self.lower_yellow = np.array([30, 100, 100])
+        self.upper_yellow = np.array([60, 255, 255])
 
     def run(self, frame):
+        """
+        Run the frame matcher on the given frame. Returns the center points
+        of the 4 biggest contours considering the color bounds. Returns None
+        if no contours were found.
+        """
         
         # Convert image to HSV color space
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-        # Define lower and upper bounds for yellow color
-        lower_yellow = np.array([30, 100, 100])
-        upper_yellow = np.array([60, 255, 255])
-
-        # Threshold the image to get only yellow colors
-        mask = cv2.inRange(hsv, lower_yellow, upper_yellow)
+        # Threshold the image to get only colors in range
+        mask = cv2.inRange(hsv, self.lower_yellow, self.upper_yellow)
         
         # cv2.imshow('mask', mask)
 
-        # Dilate the mask to merge adjacent red regions
+        # Dilate the mask to merge adjacent regions
         kernel = np.ones((5, 5), np.uint8)
         mask_dilated = cv2.dilate(mask, kernel, iterations=1)
         
@@ -31,36 +38,35 @@ class FrameMatcher:
         # Find contours in the mask
         contours, _ = cv2.findContours(mask_dilated, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-        # Find the four largest contours based on area
+        # Find the 4 largest contours based on area
         contours = sorted(contours, key=cv2.contourArea, reverse=True)[:4]
         
         # return only if 4 corners were found
         if len(contours) < 4:
             return None
 
-        # List to hold the corners
+        # Get the center of each contour
         corners = []
         for contour in contours:
-            
             M = cv2.moments(contour)
             cx = int(M['m10'] / M['m00'])
             cy = int(M['m01'] / M['m00'])
-
             corners.append((cx, cy))
             
-        # sort corners by upper left, lower left, upper right, lower right by using distance to (0,0)
+        # Sort corners by upper left, lower left, upper right, lower right by using distance to (0,0)
         corners_sorted = sorted(corners, key=lambda corner: corner[0] ** 2 + corner[1] ** 2)
             
         # Print corners onto frame
         for corner in corners_sorted:
             cv2.circle(frame, corner, 5, (0, 0, 255), -1)
+            
         # cv2.imshow('corners', frame)
         
         return corners_sorted
     
     def measureAccuracy(self, cap):
         """
-        Measure accuracy of frame matcher.
+        Measure accuracy of frame matcher over n_iter
         """
         n_iter = 100
         min_angle = 80
@@ -165,9 +171,9 @@ if __name__ == '__main__':
     # # Wait for key press
     # cv2.waitKey(0)
     
-    cap = cv2.VideoCapture(0)
-    frame_matcher.measureAccuracy(cap)
+    # cap = cv2.VideoCapture(0)
+    # frame_matcher.measureAccuracy(cap)
     
-    cap.release()
-    cv2.destroyAllWindows()
+    # cap.release()
+    # cv2.destroyAllWindows()
     
