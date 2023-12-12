@@ -119,6 +119,9 @@ if __name__ == '__main__':
                 # run hand recognition for index finger positions
                 hand_recognition.run(frame)
                 index_finger_pos = [hand_recognition.getIndexFingerPosLeft(), hand_recognition.getIndexFingerPosRight()]
+
+                if hand_recognition.isVShape():
+                    pong.setBallSpeed()
                 
                 # show frame
                 cv2.imshow('Video Feed', frame)
@@ -151,4 +154,4 @@ if __name__ == '__main__':
             pong.quitGame()
             status = 'main'
 
-    pygame.quit()
+pygame.quit()
