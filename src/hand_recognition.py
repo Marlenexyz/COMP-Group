@@ -33,13 +33,6 @@ class HandRecognition:
                         self.thumb_coordinates.append((int(landmark.x * self.frame.shape[1]), int(landmark.y * self.frame.shape[0])))
                         cv2.circle(self.frame, (int(landmark.x * self.frame.shape[1]), int(landmark.y * self.frame.shape[0])), 5, (0, 255, 255), -1)  
         
-        if self.isTouchingIndexFingerAndThumb('left'):
-            cv2.putText(self.frame, "touching", (10, 80), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-        # Check for V-Shape
-        if self.isVShape():
-            cv2.putText(self.frame, "V-Shape", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-        # Show self.frame
-        # cv2.imshow('Hand Tracking', self.frame)
         
         
     def storeIndexFingerCoordinates(self):
@@ -233,8 +226,17 @@ if __name__ == '__main__':
             break
         
         ret, frame = cap.read()
-        
         hand_recognition.run(frame)
+        
+        # Check for fingers touching
+        if hand_recognition.isTouchingIndexFingerAndThumb('left'):
+            cv2.putText(frame, "left fingers touching", (10, 80), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+        if hand_recognition.isTouchingIndexFingerAndThumb('right'):
+            cv2.putText(frame, "right fingers touching", (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+        # Check for V-Shape
+        if hand_recognition.isVShape():
+            cv2.putText(frame, "V-Shape", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+
         cv2.imshow('frame', frame)
     
     # Release webcam and destroy windows
