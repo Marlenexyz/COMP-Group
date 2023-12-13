@@ -5,10 +5,12 @@ import time
 
 
 class FrameMatcher:
-    def __init__(self):
+    def __init__(self, height, width):
         """
         Initialize frame matcher
         """
+        self.height = height
+        self.width = width
         
         # Define HSV lower and upper bounds
         self.lower_red1 = np.array([0, 100, 100])
@@ -64,7 +66,7 @@ class FrameMatcher:
         for corner in corners_sorted:
             cv2.circle(frame, corner, 5, (0, 0, 255), -1)
             
-        # cv2.imshow('corners', frame)
+        # cv2.imshow('corners', frame)#
         
         return corners_sorted
     
@@ -102,6 +104,28 @@ class FrameMatcher:
         print(f'    Corners calibrated: {corners_avg}')
         
         return corners_avg
+            
+            
+            
+    def mapCoords(self, coords, corners):
+        """
+        Remap the given coordinates to the frame based on the given corners.
+        """
+        
+        # get min and max values
+        x_min, x_max = np.min(np.array(corners), axis=0)[0], np.max(np.array(corners), axis=0)[0]
+        y_min, y_max = np.min(np.array(corners), axis=0)[1], np.max(np.array(corners), axis=0)[1]
+        
+        x_crt = coords[0]
+        y_crt = coords[1]
+        
+        if x_crt >= x_min and x_crt < x_max:
+            x_new = (x_crt - x_min) / (x_max - x_min) * self.width
+        
+        if y_crt >= y_min and y_crt < y_max:
+            y_new = (y_crt - y_min) / (y_max - y_min) * self.height
+            
+        return (x_new, y_new)
             
             
     

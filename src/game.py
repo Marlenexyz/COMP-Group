@@ -8,7 +8,7 @@ from setup import *
 import cv2
 
 # Hyperparameters ----------
-video = 0
+video = 2
 game_height = 400
 game_width = 600
 
@@ -19,7 +19,7 @@ initial_paddle_pos_left = game_height // 2
 initial_paddle_pos_right = game_height // 2
 countdown = 3 # increase countdown
 
-test_flag = True
+test_flag = False
 
 if test_flag:
     countdown = 0
@@ -88,10 +88,9 @@ def hand_as_mouse():
             
     hand_recognition.run(frame)
     result = hand_recognition.getIndexFingerCoordRight()         ### Both?
-    # result = hand_recognition.getIndexFingerCoordBoth()
+    x, y = frame_matcher.mapCoords(result, game_corners)
 
     try:
-        x, y = result   #[0]
         mainMenu.finger_as_mouse(x,y,hand_recognition.isTouchingIndexFingerAndThumb(None)) #None  
         # pygame.time.delay(1000)
     except:
@@ -102,14 +101,11 @@ def hand_as_mouse():
 
 
 
-
-
-
 if __name__ == '__main__':
 
     # INITIALIZATION -----------------
     cap = cv2.VideoCapture(video)
-    frame_matcher = FrameMatcher()
+    frame_matcher = FrameMatcher(game_height, game_width)
     hand_recognition = HandRecognition()
     pos_predictor = PosPredictor(initial_paddle_pos_left, initial_paddle_pos_right)
     mainMenu = Menu(game_height, game_width)
