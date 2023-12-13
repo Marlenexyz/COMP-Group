@@ -7,9 +7,16 @@ class HandRecognition:
 
     detections = 0
     iterations = 0
-    accuracy = 0
+    vdetections = 0
+    viterations = 0
+    pinchdetections = 0
+    pinchiterations = 0
+    recall = 0
+    vrecall = 0
     measure = 0
     measure_alt = 0
+    vmeasure = 0
+    vmeasure_alt = 0
 
     '''hand recognition class which uses mediapipe library to recognize hand landmarks and draw them on self.frame'''
     def __init__(self):
@@ -27,7 +34,7 @@ class HandRecognition:
         if cv2.waitKey(1) & 0xFF == ord('k'):
             self.measure = 1
         if self.measure == 1:
-            hand_recognition.measureAccuracy()
+            hand_recognition.measureRecall()
         if cv2.waitKey(1) & 0xFF == ord('l'):
             if self.measure == 0:
                 self.measure = 0
@@ -36,8 +43,8 @@ class HandRecognition:
             # don't detect the key 'l' being pressed for 1 second
             
         if self.measure == 2:
-            acc = hand_recognition.stopAccuracyMeasurement()
-            print("Hands were recognized with an accuracy of " + str(acc))
+            # acc = hand_recognition.stopAccuracyMeasurement()
+            print("Hands were recognized with a recall of " + str(self.recall))
             self.measure = 0
         if self.measure != self.measure_alt:
             if self.measure == 0:
@@ -67,27 +74,43 @@ class HandRecognition:
         
         
     # define a function to measure how often a hand is detected
-    def measureAccuracy(self):
-     
-        
+    def measureRecall(self):
+             
         if len(self.index_finger_coordinates) > 0 or len(self.middle_finger_coordinates) > 0 or len(self.thumb_coordinates) > 0:
             self.detections += 1
         
         self.iterations += 1
+        if self.iterations == 100:
+            self.measure = 2
+            self.recall = self.detections / self.iterations
+            self.iterations = 1
+            self.detections = 2
+            return self.recall
         if cv2.waitKey(1) & 0xFF == ord('l'):
             self.measure = 2
         # end the while loop when a button is pressed
         # if cv2.waitKey(1) & 0xFF == ord('l'):
             
-        #     accuracy = self.detections/self.iterations
-        #     return accuracy
+        #     recall = self.detections/self.iterations
+        #     return recall
         # else:
         #     return None
-    def stopAccuracyMeasurement(self):
-        self.accuracy = self.detections/self.iterations
-        return self.accuracy
-
-
+    def stopRecallMeasurement(self):
+        self.recall = self.detections/self.iterations
+        return self.recall
+    def measureVShapeRecall(self):
+        if len(self.isVShape):
+            self.vdetections += 1
+        
+        self.viterations += 1
+        if self.viterations == 100:
+            self.vmeasure = 2
+            self.vrecall = self.vdetections / self.viterations
+            self.viterations = 1
+            self.vdetections = 2
+            return self.vrecall
+        if cv2.waitKey(1) & 0xFF == ord('l'):
+            self.vmeasure = 2
     def storeIndexFingerCoordinates(self):
         # adjust this function to match the paddel y-coordinate to the finger tips
         # Get fingertip positions
@@ -299,7 +322,7 @@ class HandRecognition:
         return False
 
 if __name__ == '__main__':
-    cap = cv2.VideoCapture(2)
+    cap = cv2.VideoCapture(0)
     hand_recognition = HandRecognition()
     while True:
         # Break loop if 'q' is pressed
