@@ -15,6 +15,8 @@ class Menu:
         self.game_paused = False
         self.menu_state = "main"
 
+        self.setIndexFingerPos(0, 0)
+
         # Define fonts
         self.font = pygame.font.SysFont("arialblack", 40)
 
@@ -157,16 +159,7 @@ class Menu:
                     # Füge das gedrückte Zeichen zur Eingabe hinzu
                     self.input_field["text"] += event.unicode
     
-    def check_button_click(self, button):
-        mouse_pos = pygame.mouse.get_pos()
-        if button["rect"].collidepoint(mouse_pos):
-            mouse_click = pygame.mouse.get_pressed()
-            if mouse_click[0] and not button["clicked"]:  # Left mouse button clicked and button not already clicked
-                button["clicked"] = True
-                return True
-            elif not mouse_click[0]:
-                button["clicked"] = False  # Reset the clicked status when the mouse button is released
-        return False
+ 
     
     def draw_input_field(self, input_field, additional_text):
         # Zusätzlicher Text über dem input_field
@@ -190,7 +183,8 @@ class Menu:
             self.draw_button(self.quit_button)
             self.draw_button(self.enter_player_names_button)
 
-            if self.check_button_click(self.play_button):
+            # if self.check_button_click(self.play_button):
+            if self.check_pinch_button_click(self.play_button):
                 print("Play button clicked!")
                 self.menu_state = "play"
 
@@ -324,33 +318,53 @@ class Menu:
     def getPlayerNameB(self):
         return self.playerNameB
     
-    # def _draw_mouse(self, index_finger_x, index_finger_y):
-    #     # Draw Finger as mouse
-    #     pygame.draw.circle(self.screen, self.RED, (index_finger_x, index_finger_y), self.ball_radius)
-    #     # Wenn der Circle über einem Button ist, und gepincht wird dann soll das als Klick gelten
-    #     if index_finger_x is not None:
-    #         pygame.draw.circle(self.screen, self.GREEN, (index_finger_x, index_finger_y), self.ball_radius)
+    
+    
+    def setIndexFingerPos(self, x, y):
+        self.IndexFingerPos = (x, y)
 
+    def getIndexFingerPos(self):
+        return self.IndexFingerPos
+
+    def setIsPinched(self, is_pinched):
+        self.isPinched = is_pinched
+
+    def getIsPinched(self):
+        return self.isPinched
+    
     def finger_as_mouse(self, x, y, is_pinched):
         # Draw circle at the given coordinates
         mouse = pygame.draw.circle(self.screen, self.RED, (x, y), 15)
         # pygame.display.flip()
         pygame.display.update()
+        self.setIndexFingerPos(x, y)
+        self.setIsPinched(is_pinched)
         
         
         # Perform a click action if is_pinched is True
-        if is_pinched:
-            self.check_pinch_button_click(x,y)
+        # if is_pinched:
+        #     self.check_pinch_button_click(x,y)
             # and self.hand_button_collision(self.play_button, x, y):
             # self.menu_state = "play"
             # pygame.display.update()
 
-    def check_pinch_button_click(self,x,y):
-        if self.hand_button_collision(self.play_button, x, y):
-            self.menu_state = "play"
-            pygame.display.update()
+    def check_pinch_button_click(self,button):
+        x,y = self.getIndexFingerPos()
+        if self.hand_button_collision(button, x, y) and self.getIsPinched():        # If Collision and Pinched True
+            return True
+        else:
+            return False
 
-        
+    def check_button_click(self, button):
+        mouse_pos = pygame.mouse.get_pos()
+        if button["rect"].collidepoint(mouse_pos):
+            mouse_click = pygame.mouse.get_pressed()
+            if mouse_click[0] and not button["clicked"]:  # Left mouse button clicked and button not already clicked
+                button["clicked"] = True
+                return True
+            elif not mouse_click[0]:
+                button["clicked"] = False  # Reset the clicked status when the mouse button is released
+        return False
 
     def hand_button_collision(self,button,x,y):
         self.get_button_position(button)
