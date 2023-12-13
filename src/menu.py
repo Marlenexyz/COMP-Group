@@ -183,8 +183,8 @@ class Menu:
             self.draw_button(self.quit_button)
             self.draw_button(self.enter_player_names_button)
 
-            # if self.check_button_click(self.play_button):
-            if self.check_pinch_button_click(self.play_button):
+            # if self.check_pinch_button_click(self.play_button):
+            if self.check_button_click(self.play_button):
                 print("Play button clicked!")
                 self.menu_state = "play"
 
@@ -246,7 +246,7 @@ class Menu:
         pygame.display.update()
 
     def add_letter_to_input_field(self,event):
-        if self.keyboard_buttons[0]["rect"].collidepoint(event.pos):
+        if self.keyboard_buttons[0]["rect"].collidepoint(self.getIndexFingerPos()):
             self.input_field["text"] += 'Q' 
         if self.keyboard_buttons[1]["rect"].collidepoint(event.pos):
             self.input_field["text"] += 'W'  # Füge den Buchstaben 'W' zum input_field hinzu
