@@ -119,11 +119,13 @@ class FrameMatcher:
         x_crt = coords[0]
         y_crt = coords[1]
         
+        x_new = None
         if x_crt >= x_min and x_crt < x_max:
-            x_new = (x_crt - x_min) / (x_max - x_min) * self.width
+            x_new = int((x_crt - x_min) / (x_max - x_min) * self.width)
         
+        y_new = None
         if y_crt >= y_min and y_crt < y_max:
-            y_new = (y_crt - y_min) / (y_max - y_min) * self.height
+            y_new = int((y_crt - y_min) / (y_max - y_min) * self.height)
             
         return (x_new, y_new)
             

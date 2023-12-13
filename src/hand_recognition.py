@@ -246,7 +246,7 @@ class HandRecognition:
         return self.thumbtip_coord_both
 
     # define a function to detect if index finger and thumb are touching
-    def isTouchingIndexFingerAndThumb(self, side):
+    def isTouchingIndexFingerAndThumb(self, side='both'):
         """Check if the index finger and thumb are touching."""
         # Assuming index_finger_coordinates and thumb_coordinates are available
         # and each contains (x, y) tuples for the respective fingertip positions.
@@ -264,12 +264,12 @@ class HandRecognition:
         index_finger_coordinates_both = self.getIndexFingerCoordBoth()
         thumb_coordinates_both = self.getThumbCoordBoth()
         # Calculate the distance between the index finger and thumb
-        if side is None:
+        if side == 'both':
             if index_finger_coordinates_both is None or thumb_coordinates_both is None:
                 return False
             else:
                 distance_between_fingers = distance(index_finger_coordinates_both[0, :], thumb_coordinates_both[0, :])
-        if side == "left":
+        elif side == "left":
             if index_finger_coordinates_left is None or thumb_coordinates_left is None:
                 return False
             else:

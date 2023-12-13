@@ -88,13 +88,11 @@ def hand_as_mouse():
             
     hand_recognition.run(frame)
     result = hand_recognition.getIndexFingerCoordRight()         ### Both?
-    x, y = frame_matcher.mapCoords(result, game_corners)
+    if result is not None:
+        x, y = frame_matcher.mapCoords(result, game_corners)
 
-    try:
-        mainMenu.finger_as_mouse(x,y,hand_recognition.isTouchingIndexFingerAndThumb(None)) #None  
-        # pygame.time.delay(1000)
-    except:
-        pass
+        if x is not None and y is not None:
+            mainMenu.finger_as_mouse(x, y, hand_recognition.isTouchingIndexFingerAndThumb())
 
     displayDebugInfo()
     cv2.imshow('Video Feed', frame)
