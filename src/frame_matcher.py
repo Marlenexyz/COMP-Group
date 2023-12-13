@@ -11,8 +11,10 @@ class FrameMatcher:
         """
         
         # Define HSV lower and upper bounds
-        self.lower_yellow = np.array([20, 100, 100])
-        self.upper_yellow = np.array([30, 255, 255])
+        self.lower_red1 = np.array([0, 100, 100])
+        self.upper_red1 = np.array([5, 255, 255])
+        self.lower_red2 = np.array([355, 100, 100])
+        self.upper_red2 = np.array([360, 255, 255])
 
     def run(self, frame):
         """
@@ -25,7 +27,9 @@ class FrameMatcher:
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
         # Threshold the image to get only colors in range
-        mask = cv2.inRange(hsv, self.lower_yellow, self.upper_yellow)
+        mask1 = cv2.inRange(hsv, self.lower_red1, self.upper_red1)
+        mask2 = cv2.inRange(hsv, self.lower_red2, self.upper_red2)
+        mask = cv2.bitwise_or(mask1, mask2)
         
         # cv2.imshow('mask', mask)
 
