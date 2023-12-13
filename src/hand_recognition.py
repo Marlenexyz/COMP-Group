@@ -24,15 +24,12 @@ class HandRecognition:
         self.middle_finger_coordinates = []
         self.thumb_coordinates = []
 
-    def run(self, frame, capt):
+    def run(self, frame):
         self.frame = frame
         frame_rgb = cv2.cvtColor(self.frame, cv2.COLOR_BGR2RGB)
 
         # Process self.frame with hand tracking module
         results = self.mp_hands.process(frame_rgb)
-        
-        if cv2.waitKey(1 & 0xFF) == ord('k'):
-            hand_recognition.measureRecall(capt)
 
         #calculate accuracy
         # if cv2.waitKey(1) & 0xFF == ord('k'):
@@ -343,6 +340,8 @@ if __name__ == '__main__':
         # Break loop if 'q' is pressed
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
+        if cv2.waitKey(1 & 0xFF) == ord('k'):
+            hand_recognition.measureRecall(cap)
         
         ret, frame = cap.read()
         hand_recognition.run(frame, cap)
