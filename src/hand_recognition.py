@@ -4,29 +4,26 @@ import time
 import numpy as np
 
 class HandRecognition:
-
-   
-
     '''hand recognition class which uses mediapipe library to recognize hand landmarks and draw them on self.frame'''
     def __init__(self):
         # Initialize hand tracking module
         self.mp_hands = mp.solutions.hands.Hands()
-        detections = 0
-        iterations = 0
-        vdetections = 0
-        viterations = 0
-        pinchdetections = 0
-        pinchiterations = 0
-        recall = 0
-        vrecall = 0
-        measure = 0
-        measure_alt = 0
-        vmeasure = 0
-        vmeasure_alt = 0
+        self.detections = 0
+        self.iterations = 0
+        self.vdetections = 0
+        self.viterations = 0
+        self.pinchdetections = 0
+        self.pinchiterations = 0
+        self.recall = 0
+        self.vrecall = 0
+        self.measure = 0
+        self.measure_alt = 0
+        self.vmeasure = 0
+        self.vmeasure_alt = 0
         self.index_finger_coordinates = []
         self.middle_finger_coordinates = []
         self.thumb_coordinates = []
-        
+
     def run(self, frame, capt):
         self.frame = frame
         frame_rgb = cv2.cvtColor(self.frame, cv2.COLOR_BGR2RGB)
