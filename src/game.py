@@ -89,14 +89,14 @@ def hand_as_mouse():
     if ret == False:
         pass
             
-    hand_recognition.run(frame,cap)
+    hand_recognition.run(frame)
     result = hand_recognition.getIndexFingerCoordRight()         ### Both?
     # result = hand_recognition.getIndexFingerCoordBoth()
 
     try:
         x, y = result   #[0]
         mainMenu.finger_as_mouse(x,y,hand_recognition.isTouchingIndexFingerAndThumb(None)) #None  
-        pygame.time.delay(1000)
+        # pygame.time.delay(1000)
     except:
         pass
 
@@ -122,6 +122,30 @@ def predict_index_finger_pos(last_known_pos):
     kalman_filter.correct(measurement)
 
     return predicted_pos
+
+
+def hand_as_mouse():
+    ## Start Hand als Maus
+    ret, frame = cap.read()
+    if ret == False:
+        pass
+            
+    hand_recognition.run(frame)
+    result = hand_recognition.getIndexFingerCoordRight()         ### Both?
+    # result = hand_recognition.getIndexFingerCoordBoth()
+
+    try:
+        x, y = result   #[0]
+        mainMenu.finger_as_mouse(x,y,hand_recognition.isTouchingIndexFingerAndThumb(None)) #None  
+        pygame.time.delay(1000)
+    except:
+        pass
+
+    displayDebugInfo()
+
+    
+    cv2.imshow('Video Feed', frame)
+    ##End Hand as Mouse
 
 
 
