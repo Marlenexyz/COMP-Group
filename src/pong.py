@@ -110,9 +110,9 @@ class PongGame:
 
     def _draw_l_marker(self, x, y):
         # Vertical bar of the L
-        pygame.draw.rect(self.screen, self.YELLOW, (x - self.l_thickness // 2, y - self.l_length // 2, self.l_thickness, self.l_length))
+        pygame.draw.rect(self.screen, self.RED, (x - self.l_thickness // 2, y - self.l_length // 2, self.l_thickness, self.l_length))
         # Horizontal bar of the L
-        pygame.draw.rect(self.screen, self.YELLOW, (x - self.l_length // 2, y - self.l_thickness // 2, self.l_length, self.l_thickness))
+        pygame.draw.rect(self.screen, self.RED, (x - self.l_length // 2, y - self.l_thickness // 2, self.l_length, self.l_thickness))
 
 
     def _draw_game(self):
@@ -217,7 +217,7 @@ class PongGame:
         self._update_score()
         self._update_ball_speed()
         self._draw_game()
-        self._calibrate_corners()
+        # self._calibrate_corners()
         pygame.display.flip()
         
 

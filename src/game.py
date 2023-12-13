@@ -7,7 +7,7 @@ from setup import *
 import cv2
 
 # Hyperparameters ----------
-video = 0
+video = 2
 game_height = 400
 game_width = 600
 
@@ -20,7 +20,7 @@ countdown = 3 # increase countdown
 
 n_hand_recognition = 3
 
-test_flag = True
+test_flag = False
 
 if test_flag:
     countdown = 0
@@ -264,6 +264,7 @@ if __name__ == '__main__':
                 pygame.time.delay(100) # 100 Milliseconds Delay
             elif keys[pygame.K_f]:
                 pong.togglePause()
+                pong.draw_only_corners()
                 frame_matcher.measureAccuracy(cap)
                 pong.togglePause()
             elif keys[pygame.K_h]:
