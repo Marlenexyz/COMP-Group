@@ -20,6 +20,7 @@ class Menu:
 
         # Define colours
         self.BLACK = (255, 255, 255)
+        self.RED = (255, 0, 0)
 
 
         ## Button instances dependant on screen size
@@ -332,7 +333,9 @@ class Menu:
 
     def finger_as_mouse(self, x, y, is_pinched):
         # Draw circle at the given coordinates
-        pygame.draw.circle(self.screen, self.RED, (x, y), self.ball_radius)
+        pygame.draw.circle(self.screen, self.RED, (x, y), 15)
+        # pygame.display.flip()
+        pygame.display.update()
         
         # Perform a click action if is_pinched is True
         if is_pinched:
