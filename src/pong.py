@@ -206,7 +206,7 @@ class PongGame:
             self.increasedBallSpeed = True
 
     def _update_ball_speed(self):
-        self.ball_speed_text = self.font.render("Ball speed: " + str(self.ball_speed_x), True, self.BLACK)
+        self.ball_speed_text = self.font.render("Ball speed: " + str(abs(self.ball_speed_x)), True, self.BLACK)
         
 
 

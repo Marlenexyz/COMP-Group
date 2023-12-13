@@ -333,16 +333,34 @@ class Menu:
 
     def finger_as_mouse(self, x, y, is_pinched):
         # Draw circle at the given coordinates
-        pygame.draw.circle(self.screen, self.RED, (x, y), 15)
+        mouse = pygame.draw.circle(self.screen, self.RED, (x, y), 15)
         # pygame.display.flip()
         pygame.display.update()
         
+        
         # Perform a click action if is_pinched is True
         if is_pinched:
-            # Execute the click action (e.g., by simulating a mouse click event)
-            pygame.mouse.set_pos(x, y)  # Move the mouse to the coordinates
-            pygame.event.post(pygame.event.Event(pygame.MOUSEBUTTONDOWN, {'button': 1, 'pos': (x, y)}))
-            pygame.event.post(pygame.event.Event(pygame.MOUSEBUTTONUP, {'button': 1, 'pos': (x, y)}))
+            self.check_pinch_button_click(x,y)
+            # and self.hand_button_collision(self.play_button, x, y):
+            # self.menu_state = "play"
+            # pygame.display.update()
+
+    def check_pinch_button_click(self,x,y):
+        if self.hand_button_collision(self.play_button, x, y):
+            self.menu_state = "play"
+            pygame.display.update()
+
+        
+
+    def hand_button_collision(self,button,x,y):
+        self.get_button_position(button)
+        if button["rect"].collidepoint(x,y):            #Gibt zurück ob x,y, innerhalb button rect liegt
+            return True
+        
+
+    def get_button_position(self,button):          
+        'returns top left corner of button'
+        return button["rect"].topleft
 
 
 if __name__ == '__main__':

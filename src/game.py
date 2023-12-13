@@ -76,6 +76,29 @@ def displayDebugInfo():
     # is_v_shape_right = hand_recognition.isVShape('right')
     
     cv2.imshow('Debug Info', debug_frame)
+
+def hand_as_mouse():
+    ## Start Hand als Maus
+    ret, frame = cap.read()
+    if ret == False:
+        pass
+            
+    hand_recognition.run(frame,cap)
+    result = hand_recognition.getIndexFingerCoordRight()         ### Both?
+    # result = hand_recognition.getIndexFingerCoordBoth()
+
+    try:
+        x, y = result   #[0]
+        mainMenu.finger_as_mouse(x,y,hand_recognition.isTouchingIndexFingerAndThumb(None)) #None  
+        pygame.time.delay(1000)
+    except:
+        pass
+
+    displayDebugInfo()
+
+    
+    cv2.imshow('Video Feed', frame)
+    ##End Hand as Mouse
     
     
     
@@ -133,6 +156,7 @@ if __name__ == '__main__':
         
         # get game status
         status = mainMenu.getStatus()
+               
 
         if status == 'main':
             if not set_up_done:
@@ -143,6 +167,10 @@ if __name__ == '__main__':
                     game_corners = frame_matcher.calibrateCorners(cap)
                 else:
                     game_corners = [(0, 0), (0, game_height), (game_width, 0), (game_width, game_height)]
+
+
+            hand_as_mouse()
+            
                 
             mainMenu.update_menu()
         elif status == 'enterNames':
