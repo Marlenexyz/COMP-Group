@@ -23,6 +23,7 @@ test_flag = True
 
 if test_flag:
     countdown = 0
+    video = 0
 
 # --------------------------
 
@@ -171,6 +172,7 @@ if __name__ == '__main__':
             mainMenu.update_menu()
         elif status == 'enterNames':
             mainMenu.update_menu()
+            hand_as_mouse()
             pong.setPlayerNameA(mainMenu.getPlayerNameA())
             pong.setPlayerNameB(mainMenu.getPlayerNameB())
 
