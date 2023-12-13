@@ -14,7 +14,7 @@ game_width = 600
 debug_height = 200
 debug_width = 600
 
-countdown = 10       ## increase countdown
+countdown = 1       ## increase countdown
 
 test_flag = True
 
@@ -76,6 +76,23 @@ def displayDebugInfo():
     # is_v_shape_right = hand_recognition.isVShape('right')
     
     cv2.imshow('Debug Info', debug_frame)
+    
+    
+    
+def predict_index_finger_pos(last_known_pos):
+    """
+    Predicts the next index finger position using a Kalman filter.
+    """
+    
+    # Predict the new position of the index finger
+    prediction = kalman_filter.predict()
+    predicted_pos = prediction.squeeze().astype(int).tolist()
+
+    # Update the Kalman filter with the last known position
+    measurement = np.array(last_known_pos, dtype=np.float32).reshape(-1 , 1)
+    kalman_filter.correct(measurement)
+
+    return predicted_pos
 
 
 
@@ -89,8 +106,19 @@ if __name__ == '__main__':
     hand_recognition = HandRecognition()
     mainMenu = Menu(game_height, game_width)
     pong = PongGame(game_height, game_width)
+    
+    kalman_filter = cv2.KalmanFilter(4, 2)
+    kalman_filter.transitionMatrix = np.array([[1, 1],
+                                               [0, 1]], dtype=np.float32)
+    kalman_filter.measurementMatrix = np.eye(2, 2, dtype=np.float32)
+    kalman_filter.processNoiseCov = 1e-3 * np.eye(2, 2, dtype=np.float32)
+    kalman_filter.measurementNoiseCov = 1e-3 * np.eye(2, 2, dtype=np.float32)
+    kalman_filter.statePost = np.zeros((2, 1), dtype=np.float32)
+    kalman_filter.errorCovPost = np.ones((2, 2), dtype=np.float32)
 
     prev_time = time.time()
+    n_frames = 0
+    index_finger_pos = [0, 0]
 
     has_run_once = False
     set_up_done = False
@@ -101,8 +129,10 @@ if __name__ == '__main__':
     
     # MAIN loop ----------------------
     while True:
-        status = mainMenu.getStatus()
+        n_frames += 1
         
+        # get game status
+        status = mainMenu.getStatus()
 
         if status == 'main':
             if not set_up_done:
@@ -145,9 +175,11 @@ if __name__ == '__main__':
                 # game_corners = frame_matcher.run(frame)
                 
                 # run hand recognition for index finger positions
-                hand_recognition.run(frame)
-                index_finger_pos = [hand_recognition.getIndexFingerPosLeft(), hand_recognition.getIndexFingerPosRight()]
-
+                if n_frames % 5 == 0:
+                    hand_recognition.run(frame, cap)
+                    index_finger_pos = [hand_recognition.getIndexFingerPosLeft(), hand_recognition.getIndexFingerPosRight()]
+                else:
+                    index_finger_pos = predict_index_finger_pos(index_finger_pos)
                 # update paddles if index finger is in game frame
                 calculatePaddlePos(game_corners, index_finger_pos)
                 
