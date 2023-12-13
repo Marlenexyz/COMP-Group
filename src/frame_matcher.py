@@ -89,6 +89,9 @@ class FrameMatcher:
             corners_list.append(corners)
             cv2.imshow('Calibrate', frame)
             
+        if len(corners_list) == 0:
+            return None
+            
         # Calculate the average over all corners
         corners_avg = np.mean(np.array(corners_list), axis=0)
         corners_avg = list(map(tuple, corners_avg.astype(int)))
