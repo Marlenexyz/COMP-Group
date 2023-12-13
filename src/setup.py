@@ -42,7 +42,7 @@ def create_set_up_window(screen_height,screen_width):
         pygame.display.flip()
 
     # Quit the game
-    pygame.quit()
+    # pygame.quit()
 
 if __name__ == '__main__':
     create_set_up_window(600,800)
