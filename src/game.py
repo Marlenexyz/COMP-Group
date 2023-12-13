@@ -14,7 +14,11 @@ game_width = 600
 debug_height = 200
 debug_width = 600
 
-countdown = 1       ## increase countdown
+initial_paddle_pos_left = game_height // 2
+initial_paddle_pos_right = game_height // 2
+countdown = 3 # increase countdown
+
+n_hand_recognition = 3
 
 test_flag = True
 
@@ -52,14 +56,16 @@ def calculatePaddlePos(game_corners, index_finger_pos):
 
 def displayDebugInfo():
     global prev_time
+    global fps
     
     # Initialize debug frame
     debug_frame = np.zeros((debug_height, debug_width, 3), dtype=np.uint8)
     
     # Calculate and display FPS on a new cv2 window
-    curr_time = time.time()
-    fps = 1 / (curr_time - prev_time)
-    prev_time = curr_time
+    if n_frames % n_hand_recognition == 0:
+        curr_time = time.time()
+        fps = n_hand_recognition / (curr_time - prev_time)
+        prev_time = curr_time
     fps_display = f"FPS: {int(fps)}"
     cv2.putText(debug_frame, fps_display, (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
     
@@ -113,11 +119,12 @@ if __name__ == '__main__':
     kalman_filter.measurementMatrix = np.eye(2, 2, dtype=np.float32)
     kalman_filter.processNoiseCov = 1e-3 * np.eye(2, 2, dtype=np.float32)
     kalman_filter.measurementNoiseCov = 1e-3 * np.eye(2, 2, dtype=np.float32)
-    kalman_filter.statePost = np.zeros((2, 1), dtype=np.float32)
+    kalman_filter.statePost = np.array([[initial_paddle_pos_left], [initial_paddle_pos_right]], dtype=np.float32)
     kalman_filter.errorCovPost = np.ones((2, 2), dtype=np.float32)
 
     prev_time = time.time()
     n_frames = 0
+    fps = 0
     index_finger_pos = [0, 0]
 
     has_run_once = False
@@ -175,11 +182,12 @@ if __name__ == '__main__':
                 # game_corners = frame_matcher.run(frame)
                 
                 # run hand recognition for index finger positions
-                if n_frames % 5 == 0:
-                    hand_recognition.run(frame, cap)
+                if n_frames % n_hand_recognition == 0:
+                    hand_recognition.run(frame)
                     index_finger_pos = [hand_recognition.getIndexFingerPosLeft(), hand_recognition.getIndexFingerPosRight()]
                 else:
                     index_finger_pos = predict_index_finger_pos(index_finger_pos)
+                    
                 # update paddles if index finger is in game frame
                 calculatePaddlePos(game_corners, index_finger_pos)
                 
@@ -205,6 +213,10 @@ if __name__ == '__main__':
             elif keys[pygame.K_f]:
                 pong.togglePause()
                 frame_matcher.measureAccuracy(cap)
+                pong.togglePause()
+            elif keys[pygame.K_h]:
+                pong.togglePause()
+                hand_recognition.measureRecall(cap)
                 pong.togglePause()
             elif keys[pygame.K_c]:
                 pong.togglePause()
