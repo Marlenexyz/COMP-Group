@@ -1,6 +1,7 @@
 import pygame
 import time
 import numpy as np
+import random
 
 class PongGame:
     def __init__(self,screen_height,screen_width):
@@ -93,12 +94,14 @@ class PongGame:
             self.ball_speed_y *= -1
         if self.ball_x <= 0:
             self.player_b_score += 1
-            self.ball_x = self.screen_width // 2
-            self.ball_y = self.screen_height // 2
+            self.reset_ball()
+            # self.ball_x = self.screen_width // 2
+            # self.ball_y = self.screen_height // 2
         if self.ball_x >= self.screen_width - self.ball_radius:
             self.player_a_score += 1
-            self.ball_x = self.screen_width // 2
-            self.ball_y = self.screen_height // 2
+            self.reset_ball()
+            # self.ball_x = self.screen_width // 2
+            # self.ball_y = self.screen_height // 2
 
     def _update_score(self):
         # Update the score text
@@ -147,6 +150,14 @@ class PongGame:
         countdown_text = self.font_countdown.render("{}".format(countdown_value), True, self.BLACK)
         self.screen.blit(countdown_text, (self.screen_width // 2 - countdown_text.get_width() // 2, self.screen_height // 2))
         pygame.display.flip()
+
+    def reset_ball(self):
+        self.ball_x = self.screen_width // 2        # - self.ball.width // 2
+        self.ball_y = self.screen_height // 2       # - self.ball.height // 2
+        self.ball_speed_x *= random.choice([-1, 1])
+        self.ball_speed_y *= random.choice([-1, 1])
+       
+        
 
 
     def move_paddle_left(self,fingertip_pos_left):
