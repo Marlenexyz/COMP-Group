@@ -134,12 +134,6 @@ class PongGame:
         # Clear the screen
         self.screen.fill(self.WHITE)
 
-        # Draw L-shaped marker function
-        self._draw_l_marker(0, 0)
-        self._draw_l_marker(self.screen_width, 0)
-        self._draw_l_marker(0, self.screen_height)
-        self._draw_l_marker(self.screen_width, self.screen_height)
-
         # Draw the paddles
         pygame.draw.rect(self.screen, self.BLACK, (self.player_a_paddle_x, self.player_a_paddle_y, self.paddle_width, self.paddle_height))
         pygame.draw.rect(self.screen, self.BLACK, (self.player_b_paddle_x, self.player_b_paddle_y, self.paddle_width, self.paddle_height))
@@ -152,7 +146,7 @@ class PongGame:
         # Draw current ball speed
         self.screen.blit(self.ball_speed_text, (self.screen_width // 2 - self.ball_speed_text.get_width() // 2, 50))
 
-    def _draw_only_corners(self):
+    def draw_only_corners(self):
         # Clear the screen
         self.screen.fill(self.WHITE)
 
@@ -161,6 +155,8 @@ class PongGame:
         self._draw_l_marker(self.screen_width, 0)
         self._draw_l_marker(0, self.screen_height)
         self._draw_l_marker(self.screen_width, self.screen_height)
+        
+        pygame.display.flip()
 
     def draw_countdown(self,countdown_value):
         self._draw_game()                               #to overwrite old counter value
@@ -234,6 +230,7 @@ class PongGame:
         self._update_ball_speed()
         self._draw_game()
         self._calibrate_corners()
+        pygame.display.flip()
         
 
  
@@ -255,7 +252,7 @@ if __name__ == '__main__':
         pong.run()
 
         # Update the display
-        pygame.display.flip()
+        # pygame.display.flip()
         
         time.sleep(0.005)
 

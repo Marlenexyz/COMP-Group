@@ -98,6 +98,8 @@ if __name__ == '__main__':
         if status == 'main':
             if not set_up_done:
                 set_up_done = True
+                pong.draw_only_corners()
+                game_corners = frame_matcher.calibrateCorners(cap)
                 
             mainMenu.update_menu()
         elif status == 'enterNames':
@@ -108,7 +110,6 @@ if __name__ == '__main__':
         elif status == 'play':
             if not has_run_once:
                 pong.run()
-                pygame.display.flip()
 
                 ## Display Countdown on screen, after countdown ends game starts automatically
                 while countdown > 0:
@@ -131,8 +132,8 @@ if __name__ == '__main__':
                 if ret == False:
                     continue
                 
-                # run frame matcher for game corners
-                game_corners = frame_matcher.run(frame)
+                # # run frame matcher for game corners
+                # game_corners = frame_matcher.run(frame)
                 
                 # run hand recognition for index finger positions
                 hand_recognition.run(frame)
@@ -149,7 +150,6 @@ if __name__ == '__main__':
 
                 # run pong and update display
                 pong.run()
-                pygame.display.flip()
                 
 
 
@@ -161,15 +161,17 @@ if __name__ == '__main__':
                 pong.togglePause()
                 frame_matcher.measureAccuracy(cap)
                 pong.togglePause()
+            elif keys[pygame.K_c]:
+                pong.togglePause()
+                pong.draw_only_corners()
+                frame_matcher.calibrateCorners(cap)
+                pong.togglePause()
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     exit()
                     
-
         elif status == 'quit_pong':
             pong.quitGame()
             status = 'main'
-
-pygame.quit()
