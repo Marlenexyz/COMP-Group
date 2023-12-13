@@ -5,55 +5,60 @@ import numpy as np
 
 class HandRecognition:
 
-    detections = 0
-    iterations = 0
-    vdetections = 0
-    viterations = 0
-    pinchdetections = 0
-    pinchiterations = 0
-    recall = 0
-    vrecall = 0
-    measure = 0
-    measure_alt = 0
-    vmeasure = 0
-    vmeasure_alt = 0
+   
 
     '''hand recognition class which uses mediapipe library to recognize hand landmarks and draw them on self.frame'''
     def __init__(self):
         # Initialize hand tracking module
         self.mp_hands = mp.solutions.hands.Hands()
-    
-    def run(self, frame):
+        detections = 0
+        iterations = 0
+        vdetections = 0
+        viterations = 0
+        pinchdetections = 0
+        pinchiterations = 0
+        recall = 0
+        vrecall = 0
+        measure = 0
+        measure_alt = 0
+        vmeasure = 0
+        vmeasure_alt = 0
+        self.index_finger_coordinates = []
+        self.middle_finger_coordinates = []
+        self.thumb_coordinates = []
+        
+    def run(self, frame, capt):
         self.frame = frame
         frame_rgb = cv2.cvtColor(self.frame, cv2.COLOR_BGR2RGB)
 
         # Process self.frame with hand tracking module
         results = self.mp_hands.process(frame_rgb)
         
+        if cv2.waitKey(1 & 0xFF) == ord('k'):
+            hand_recognition.measureRecall(capt)
+
         #calculate accuracy
-        if cv2.waitKey(1) & 0xFF == ord('k'):
-            self.measure = 1
-        if self.measure == 1:
-            hand_recognition.measureRecall()
-        if cv2.waitKey(1) & 0xFF == ord('l'):
-            if self.measure == 0:
-                self.measure = 0
-            else:
-                self.measure = 2
-            # don't detect the key 'l' being pressed for 1 second
-            
-        if self.measure == 2:
-            # acc = hand_recognition.stopAccuracyMeasurement()
-            print("Hands were recognized with a recall of " + str(self.recall))
-            self.measure = 0
-        if self.measure != self.measure_alt:
-            if self.measure == 0:
-                print("not measuring")
-            elif self.measure == 1:
-                print("measuring")
-            elif self.measure == 2:
-                print("stopped measuring")
-            self.measure_alt = self.measure
+        # if cv2.waitKey(1) & 0xFF == ord('k'):
+        #     self.measure = 1
+        # if self.measure == 1:
+        #     hand_recognition.measureRecall()
+        # if cv2.waitKey(1) & 0xFF == ord('l'):
+        #     if self.measure == 0:
+        #         self.measure = 0
+        #     else:
+        #         self.measure = 2
+        # if self.measure == 2:
+        #     # acc = hand_recognition.stopAccuracyMeasurement()
+        #     print("Hands were recognized with a recall of " + str(self.recall))
+        #     self.measure = 0
+        # if self.measure != self.measure_alt:
+        #     if self.measure == 0:
+        #         print("not measuring")
+        #     elif self.measure == 1:
+        #         print("measuring")
+        #     elif self.measure == 2:
+        #         print("stopped measuring")
+        #     self.measure_alt = self.measure
 
         # Draw landmarks on self.frame
         self.index_finger_coordinates = []
@@ -74,20 +79,33 @@ class HandRecognition:
         
         
     # define a function to measure how often a hand is detected
-    def measureRecall(self):
-             
-        if len(self.index_finger_coordinates) > 0 or len(self.middle_finger_coordinates) > 0 or len(self.thumb_coordinates) > 0:
-            self.detections += 1
-        
-        self.iterations += 1
-        if self.iterations == 100:
-            self.measure = 2
-            self.recall = self.detections / self.iterations
-            self.iterations = 1
-            self.detections = 2
-            return self.recall
-        if cv2.waitKey(1) & 0xFF == ord('l'):
-            self.measure = 2
+    def measureRecall(self,capt):
+        #capt = cv2.VideoCapture(0)
+        while self.iterations <=100:
+            ret, measureframe = capt.read()
+            frame_rgb2 = cv2.cvtColor(measureframe, cv2.COLOR_BGR2RGB)
+
+            # Process self.frame with hand tracking module
+            results = self.mp_hands.process(frame_rgb2)
+            #cv2.imshow('Hand Tracking', measureframe)
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+            if results.multi_hand_landmarks:  
+                self.detections += 1   
+            # if len(self.index_finger_coordinates) > 0 or len(self.middle_finger_coordinates) > 0 or len(self.thumb_coordinates) > 0:
+            #     self.detections += 1
+            self.iterations += 1
+            # sleep for 10 ms
+            time.sleep(0.1)
+            #if self.iterations == 100:
+        self.measure = 2
+        self.recall = self.detections / self.iterations
+        self.iterations = 1
+        self.detections = 1
+        print ("Hands were recognized with a recall of " + str(self.recall))
+        return self.recall
+            # if cv2.waitKey(1) & 0xFF == ord('l'):
+            #     self.measure = 2
         # end the while loop when a button is pressed
         # if cv2.waitKey(1) & 0xFF == ord('l'):
             
@@ -330,7 +348,7 @@ if __name__ == '__main__':
             break
         
         ret, frame = cap.read()
-        hand_recognition.run(frame)
+        hand_recognition.run(frame, cap)
         
         # Check for fingers touching
         if hand_recognition.isTouchingIndexFingerAndThumb('left'):
