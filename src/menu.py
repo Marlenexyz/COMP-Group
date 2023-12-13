@@ -184,18 +184,18 @@ class Menu:
             self.draw_button(self.enter_player_names_button)
 
             # if self.check_pinch_button_click(self.play_button):
-            if self.check_button_click(self.play_button):
+            if self.check_button_click(self.play_button) or self.check_pinch_button_click(self.play_button):
                 print("Play button clicked!")
                 self.menu_state = "play"
 
-            elif self.check_button_click(self.options_button):
+            elif self.check_button_click(self.options_button) or self.check_pinch_button_click(self.options_button):
                 print("Options button clicked!")
                 self.menu_state = "options"
     
-            elif self.check_button_click(self.enter_player_names_button):
+            elif self.check_button_click(self.enter_player_names_button) or self.check_pinch_button_click(self.enter_player_names_button):
                 self.menu_state = "enterNames"
 
-            elif self.check_button_click(self.quit_button):
+            elif self.check_button_click(self.quit_button) or self.check_pinch_button_click(self.quit_button):
                 pygame.quit()
                 exit()
                 
@@ -222,13 +222,13 @@ class Menu:
                     self.draw_button(self.keys_button)
                     # self.draw_button(self.enter_player_names_button)
                     self.draw_button(self.back_button)
-                    if self.check_button_click(self.video_button):
+                    if self.check_button_click(self.video_button) or self.check_pinch_button_click(self.video_button):
                         print("Video Settings button clicked!")
-                    elif self.check_button_click(self.audio_button):
+                    elif self.check_button_click(self.audio_button) or self.check_pinch_button_click(self.audio_button):
                         print("Audio Settings button clicked!")
-                    elif self.check_button_click(self.keys_button):
+                    elif self.check_button_click(self.keys_button) or self.check_pinch_button_click(self.keys_button):
                         print("Change Key Bindings button clicked!")
-                    elif self.check_button_click(self.back_button):
+                    elif self.check_button_click(self.back_button) or self.check_pinch_button_click(self.back_button):
                         self.menu_state = "main"
               # Setze das Flag für Mausklicks zurück
             self.mouse_clicked = False
@@ -246,8 +246,11 @@ class Menu:
         pygame.display.update()
 
     def add_letter_to_input_field(self,event):
-        if self.keyboard_buttons[0]["rect"].collidepoint(self.getIndexFingerPos()):
-            self.input_field["text"] += 'Q' 
+        # if self.check_pinch_button_click(self.keyboard_buttons[0]["rect"]):
+        if self.check_pinch_button_click(self.keyboard_buttons[0]["rect"]):
+            self.input_field["text"] += 'Q'
+        # if self.keyboard_buttons[0]["rect"].collidepoint(self.getIndexFingerPos()):
+        #     self.input_field["text"] += 'Q' 
         if self.keyboard_buttons[1]["rect"].collidepoint(event.pos):
             self.input_field["text"] += 'W'  # Füge den Buchstaben 'W' zum input_field hinzu
         if self.keyboard_buttons[2]["rect"].collidepoint(event.pos):
