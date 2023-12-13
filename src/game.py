@@ -16,6 +16,8 @@ debug_width = 600
 
 countdown = 10
 
+test_flag = True
+
 # --------------------------
 
 
@@ -98,8 +100,12 @@ if __name__ == '__main__':
         if status == 'main':
             if not set_up_done:
                 set_up_done = True
-                pong.draw_only_corners()
-                game_corners = frame_matcher.calibrateCorners(cap)
+                
+                if not test_flag:
+                    pong.draw_only_corners()
+                    game_corners = frame_matcher.calibrateCorners(cap)
+                else:
+                    game_corners = [(0, 0), (0, game_height), (game_width, 0), (game_width, game_height)]
                 
             mainMenu.update_menu()
         elif status == 'enterNames':
@@ -123,11 +129,7 @@ if __name__ == '__main__':
 
 
             if not pong.isGamePaused():
-                # Handle events
-                for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                        running = False
-                        
+                
                 ret, frame = cap.read()
                 if ret == False:
                     continue
@@ -139,6 +141,10 @@ if __name__ == '__main__':
                 hand_recognition.run(frame)
                 index_finger_pos = [hand_recognition.getIndexFingerPosLeft(), hand_recognition.getIndexFingerPosRight()]
 
+                # update paddles if index finger is in game frame
+                calculatePaddlePos(game_corners, index_finger_pos)
+                
+                # change ball speed if v shape is recognized
                 if hand_recognition.isVShape():
                     pong.setBallSpeed()
                 
