@@ -322,6 +322,24 @@ class Menu:
     
     def getPlayerNameB(self):
         return self.playerNameB
+    
+    # def _draw_mouse(self, index_finger_x, index_finger_y):
+    #     # Draw Finger as mouse
+    #     pygame.draw.circle(self.screen, self.RED, (index_finger_x, index_finger_y), self.ball_radius)
+    #     # Wenn der Circle über einem Button ist, und gepincht wird dann soll das als Klick gelten
+    #     if index_finger_x is not None:
+    #         pygame.draw.circle(self.screen, self.GREEN, (index_finger_x, index_finger_y), self.ball_radius)
+
+    def finger_as_mouse(self, x, y, is_pinched):
+        # Draw circle at the given coordinates
+        pygame.draw.circle(self.screen, self.RED, (x, y), self.ball_radius)
+        
+        # Perform a click action if is_pinched is True
+        if is_pinched:
+            # Execute the click action (e.g., by simulating a mouse click event)
+            pygame.mouse.set_pos(x, y)  # Move the mouse to the coordinates
+            pygame.event.post(pygame.event.Event(pygame.MOUSEBUTTONDOWN, {'button': 1, 'pos': (x, y)}))
+            pygame.event.post(pygame.event.Event(pygame.MOUSEBUTTONUP, {'button': 1, 'pos': (x, y)}))
 
 
 if __name__ == '__main__':

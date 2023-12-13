@@ -14,9 +14,12 @@ game_width = 600
 debug_height = 200
 debug_width = 600
 
-countdown = 10
+countdown = 10       ## increase countdown
 
 test_flag = True
+
+if test_flag:
+    countdown = 0
 
 # --------------------------
 
@@ -92,10 +95,14 @@ if __name__ == '__main__':
     has_run_once = False
     set_up_done = False
 
-    create_set_up_window(game_height, game_width)
+    if not test_flag:
+        create_set_up_window(game_height, game_width)
+
+    
     # MAIN loop ----------------------
     while True:
         status = mainMenu.getStatus()
+        
 
         if status == 'main':
             if not set_up_done:

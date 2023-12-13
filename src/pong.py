@@ -38,8 +38,6 @@ class PongGame:
         # Set up the ball
         self.ball_radius = 5
 
-        self.initial_ball_speed = 3
-
         self.ball_speed_x = 3
         self.ball_speed_y = 3
         self.ball_x = self.screen_width // 2
@@ -58,6 +56,8 @@ class PongGame:
 
         # Schreibe die Ball Geschwindigkeit
         self.ball_speed_text = self.font.render("Ball Speed: {}".format(self.ball_speed_x), True, self.BLACK)
+
+        self.increasedBallSpeed = False
 
     def setPlayerNameA(self,inputName):
         self.player_name_a = inputName
@@ -111,24 +111,6 @@ class PongGame:
         # Horizontal bar of the L
         pygame.draw.rect(self.screen, self.YELLOW, (x - self.l_length // 2, y - self.l_thickness // 2, self.l_length, self.l_thickness))
 
-
-    # def _draw_mouse(self, index_finger_x, index_finger_y):
-    #     # Draw Finger as mouse
-    #     pygame.draw.circle(self.screen, self.RED, (index_finger_x, index_finger_y), self.ball_radius)
-    #     # Wenn der Circle über einem Button ist, und gepincht wird dann soll das als Klick gelten
-    #     if index_finger_x is not None:
-    #         pygame.draw.circle(self.screen, self.GREEN, (index_finger_x, index_finger_y), self.ball_radius)
-
-    def finger_as_mouse(self, x, y, is_pinched):
-        # Draw circle at the given coordinates
-        pygame.draw.circle(self.screen, self.RED, (x, y), self.ball_radius)
-        
-        # Perform a click action if is_pinched is True
-        if is_pinched:
-            # Execute the click action (e.g., by simulating a mouse click event)
-            pygame.mouse.set_pos(x, y)  # Move the mouse to the coordinates
-            pygame.event.post(pygame.event.Event(pygame.MOUSEBUTTONDOWN, {'button': 1, 'pos': (x, y)}))
-            pygame.event.post(pygame.event.Event(pygame.MOUSEBUTTONUP, {'button': 1, 'pos': (x, y)}))
 
     def _draw_game(self):
         # Clear the screen
@@ -207,15 +189,10 @@ class PongGame:
     
     def setBallSpeed(self):
         value = 2
-        if self.ball_speed_x < 0:
-            self.ball_speed_x = -self.initial_ball_speed * value
-        elif self.ball_speed_x > 0:
-            self.ball_speed_x = self.initial_ball_speed * value
-        if self.ball_speed_y < 0:
-            self.ball_speed_y = -self.initial_ball_speed * value
-        elif self.ball_speed_y > 0:
-            self.ball_speed_y = self.initial_ball_speed * value
-
+        if not self.increasedBallSpeed:
+            self.ball_speed_x *= value
+            self.ball_speed_y *= value
+            self.increasedBallSpeed = True
 
     def _update_ball_speed(self):
         self.ball_speed_text = self.font.render("Ball speed: " + str(self.ball_speed_x), True, self.BLACK)
