@@ -206,30 +206,33 @@ class Menu:
             # if self.input_active:
             #     # Logik zum Hinzufügen von Buchstaben zur input_text-Zeichenkette hier hinzufügen
             #     pass
+            self.add_letter_to_input_field()
+            self.add_letter_to_input_field_via_pinch()
 
             for event in pygame.event.get():
-                if event.type == pygame.MOUSEBUTTONDOWN:
+                # if event.type == pygame.MOUSEBUTTONDOWN:
                         
-                        self.add_letter_to_input_field(event)
-                        
-                elif event.type == pygame.QUIT:
+                #         self.add_letter_to_input_field(event)
+                if event.type == pygame.QUIT:   
+                # elif event.type == pygame.QUIT:
                     pygame.quit()
                     exit()
 
-                elif self.menu_state == "options":
-                    self.draw_button(self.video_button)
-                    self.draw_button(self.audio_button)
-                    self.draw_button(self.keys_button)
-                    # self.draw_button(self.enter_player_names_button)
-                    self.draw_button(self.back_button)
-                    if self.check_button_click(self.video_button) or self.check_pinch_button_click(self.video_button):
-                        print("Video Settings button clicked!")
-                    elif self.check_button_click(self.audio_button) or self.check_pinch_button_click(self.audio_button):
-                        print("Audio Settings button clicked!")
-                    elif self.check_button_click(self.keys_button) or self.check_pinch_button_click(self.keys_button):
-                        print("Change Key Bindings button clicked!")
-                    elif self.check_button_click(self.back_button) or self.check_pinch_button_click(self.back_button):
-                        self.menu_state = "main"
+                ##Das muss irgendwie eingerückt werden
+                # elif self.menu_state == "options":
+                #     self.draw_button(self.video_button)
+                #     self.draw_button(self.audio_button)
+                #     self.draw_button(self.keys_button)
+                #     # self.draw_button(self.enter_player_names_button)
+                #     self.draw_button(self.back_button)
+                #     if self.check_button_click(self.video_button) or self.check_pinch_button_click(self.video_button):
+                #         print("Video Settings button clicked!")
+                #     elif self.check_button_click(self.audio_button) or self.check_pinch_button_click(self.audio_button):
+                #         print("Audio Settings button clicked!")
+                #     elif self.check_button_click(self.keys_button) or self.check_pinch_button_click(self.keys_button):
+                #         print("Change Key Bindings button clicked!")
+                #     elif self.check_button_click(self.back_button) or self.check_pinch_button_click(self.back_button):
+                #         self.menu_state = "main"
               # Setze das Flag für Mausklicks zurück
             self.mouse_clicked = False
         for event in pygame.event.get():
@@ -242,66 +245,126 @@ class Menu:
         # for event in pygame.event.get():
         #     if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.KEYDOWN:
         #         self.update_input_active(event)
-
+        self.draw_mouse()           # Zeichne den Finger als Mouse
         pygame.display.update()
 
-    def add_letter_to_input_field(self,event):
-        # if self.check_pinch_button_click(self.keyboard_buttons[0]["rect"]):
-        if self.check_pinch_button_click(self.keyboard_buttons[0]["rect"]):
-            self.input_field["text"] += 'Q'
-        # if self.keyboard_buttons[0]["rect"].collidepoint(self.getIndexFingerPos()):
-        #     self.input_field["text"] += 'Q' 
-        if self.keyboard_buttons[1]["rect"].collidepoint(event.pos):
+    # def add_letter_to_input_field(self,event):
+    def add_letter_to_input_field(self):
+        for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.keyboard_buttons[1]["rect"].collidepoint(event.pos):
+                        self.input_field["text"] += 'W'  # Füge den Buchstaben 'W' zum input_field hinzu
+                    if self.keyboard_buttons[2]["rect"].collidepoint(event.pos):
+                        self.input_field["text"] += 'E'  # Füge den Buchstaben 'E' zum input_field hinzu
+                    if self.keyboard_buttons[3]["rect"].collidepoint(event.pos):
+                        self.input_field["text"] += 'R'  # Füge den Buchstaben 'R' zum input_field hinzu
+                    if self.keyboard_buttons[4]["rect"].collidepoint(event.pos):
+                        self.input_field["text"] += 'T'  # Füge den Buchstaben 'T' zum input_field hinzu
+                    if self.keyboard_buttons[5]["rect"].collidepoint(event.pos):
+                        self.input_field["text"] += 'Z'  # Füge den Buchstaben 'Z' zum input_field hinzu
+                    if self.keyboard_buttons[6]["rect"].collidepoint(event.pos):
+                        self.input_field["text"] += 'U'  # Füge den Buchstaben 'U' zum input_field hinzu
+                    if self.keyboard_buttons[7]["rect"].collidepoint(event.pos):
+                        self.input_field["text"] += 'I'  # Füge den Buchstaben 'I' zum input_field hinzu
+                    if self.keyboard_buttons[8]["rect"].collidepoint(event.pos):
+                        self.input_field["text"] += 'O'  # Füge den Buchstaben 'O' zum input_field hinzu
+                    if self.keyboard_buttons[9]["rect"].collidepoint(event.pos):
+                        self.input_field["text"] += 'P'  # Füge den Buchstaben 'P' zum input_field hinzu
+                    if self.keyboard_buttons[10]["rect"].collidepoint(event.pos):
+                        self.input_field["text"] += 'A'  # Füge den Buchstaben 'A' zum input_field hinzu
+                    if self.keyboard_buttons[11]["rect"].collidepoint(event.pos):
+                        self.input_field["text"] += 'S'  # Füge den Buchstaben 'S' zum input_field hinzu
+                    if self.keyboard_buttons[12]["rect"].collidepoint(event.pos):
+                        self.input_field["text"] += 'D'  # Füge den Buchstaben 'D' zum input_field hinzu
+                    if self.keyboard_buttons[13]["rect"].collidepoint(event.pos):
+                        self.input_field["text"] += 'F'  # Füge den Buchstaben 'F' zum input_field hinzu
+                    if self.keyboard_buttons[14]["rect"].collidepoint(event.pos):
+                        self.input_field["text"] += 'G'  # Füge den Buchstaben 'G' zum input_field hinzu
+                    if self.keyboard_buttons[15]["rect"].collidepoint(event.pos):
+                        self.input_field["text"] += 'H'  # Füge den Buchstaben 'H' zum input_field hinzu
+                    if self.keyboard_buttons[16]["rect"].collidepoint(event.pos):
+                        self.input_field["text"] += 'J'  # Füge den Buchstaben 'J' zum input_field hinzu
+                    if self.keyboard_buttons[17]["rect"].collidepoint(event.pos):
+                        self.input_field["text"] += 'K'  # Füge den Buchstaben 'K' zum input_field hinzu
+                    if self.keyboard_buttons[18]["rect"].collidepoint(event.pos):
+                        self.input_field["text"] += 'L'  # Füge den Buchstaben 'L' zum input_field hinzu
+                    if self.keyboard_buttons[19]["rect"].collidepoint(event.pos):
+                        self.input_field["text"] += 'Z'  # Füge den Buchstaben 'Z' zum input_field hinzu
+                    if self.keyboard_buttons[20]["rect"].collidepoint(event.pos):
+                        self.input_field["text"] += 'X'  # Füge den Buchstaben 'X' zum input_field hinzu
+                    if self.keyboard_buttons[21]["rect"].collidepoint(event.pos):
+                        self.input_field["text"] += 'C'  # Fü
+                    if self.keyboard_buttons[22]["rect"].collidepoint(event.pos):
+                        self.input_field["text"] += 'V'  # Füge den Buchstaben 'V' zum input_field hinzu
+                    if self.keyboard_buttons[23]["rect"].collidepoint(event.pos):
+                        self.input_field["text"] += 'B'  # Füge den Buchstaben 'B' zum input_field hinzu
+                    if self.keyboard_buttons[24]["rect"].collidepoint(event.pos):
+                        self.input_field["text"] += 'N'  # Füge den Buchstaben 'N' zum input_field hinzu
+                    if self.keyboard_buttons[25]["rect"].collidepoint(event.pos):
+                        self.input_field["text"] += 'M'  # Füge den Buchstaben 'M' zum input_field hinzu
+                    if self.keyboard_buttons[26]["rect"].collidepoint(event.pos):
+                        if self.selected_input_field == "input_field_A":
+                            self.playerNameA = self.input_field["text"]
+                            # self.input_
+                            self.input_field["text"] = ''
+                            self.selected_input_field = "input_field_B"     #Switch to input_field_B
+                            # self.selected_input_field = self.input_field_B
+                        elif self.selected_input_field == "input_field_B":
+                            self.playerNameB = self.input_field["text"]
+                            self.menu_state = "main"
+
+    def add_letter_to_input_field_via_pinch(self):
+        if self.check_pinch_button_click(self.keyboard_buttons[1]):
             self.input_field["text"] += 'W'  # Füge den Buchstaben 'W' zum input_field hinzu
-        if self.keyboard_buttons[2]["rect"].collidepoint(event.pos):
+        if self.check_pinch_button_click(self.keyboard_buttons[2]):
             self.input_field["text"] += 'E'  # Füge den Buchstaben 'E' zum input_field hinzu
-        if self.keyboard_buttons[3]["rect"].collidepoint(event.pos):
+        if self.check_pinch_button_click(self.keyboard_buttons[3]):
             self.input_field["text"] += 'R'  # Füge den Buchstaben 'R' zum input_field hinzu
-        if self.keyboard_buttons[4]["rect"].collidepoint(event.pos):
+        if self.check_pinch_button_click(self.keyboard_buttons[4]):
             self.input_field["text"] += 'T'  # Füge den Buchstaben 'T' zum input_field hinzu
-        if self.keyboard_buttons[5]["rect"].collidepoint(event.pos):
+        if self.check_pinch_button_click(self.keyboard_buttons[5]):
             self.input_field["text"] += 'Z'  # Füge den Buchstaben 'Z' zum input_field hinzu
-        if self.keyboard_buttons[6]["rect"].collidepoint(event.pos):
+        if self.check_pinch_button_click(self.keyboard_buttons[6]):
             self.input_field["text"] += 'U'  # Füge den Buchstaben 'U' zum input_field hinzu
-        if self.keyboard_buttons[7]["rect"].collidepoint(event.pos):
+        if self.check_pinch_button_click(self.keyboard_buttons[7]):
             self.input_field["text"] += 'I'  # Füge den Buchstaben 'I' zum input_field hinzu
-        if self.keyboard_buttons[8]["rect"].collidepoint(event.pos):
+        if self.check_pinch_button_click(self.keyboard_buttons[8]):
             self.input_field["text"] += 'O'  # Füge den Buchstaben 'O' zum input_field hinzu
-        if self.keyboard_buttons[9]["rect"].collidepoint(event.pos):
+        if self.check_pinch_button_click(self.keyboard_buttons[9]):
             self.input_field["text"] += 'P'  # Füge den Buchstaben 'P' zum input_field hinzu
-        if self.keyboard_buttons[10]["rect"].collidepoint(event.pos):
+        if self.check_pinch_button_click(self.keyboard_buttons[10]):
             self.input_field["text"] += 'A'  # Füge den Buchstaben 'A' zum input_field hinzu
-        if self.keyboard_buttons[11]["rect"].collidepoint(event.pos):
+        if self.check_pinch_button_click(self.keyboard_buttons[11]):
             self.input_field["text"] += 'S'  # Füge den Buchstaben 'S' zum input_field hinzu
-        if self.keyboard_buttons[12]["rect"].collidepoint(event.pos):
+        if self.check_pinch_button_click(self.keyboard_buttons[12]):
             self.input_field["text"] += 'D'  # Füge den Buchstaben 'D' zum input_field hinzu
-        if self.keyboard_buttons[13]["rect"].collidepoint(event.pos):
+        if self.check_pinch_button_click(self.keyboard_buttons[13]):
             self.input_field["text"] += 'F'  # Füge den Buchstaben 'F' zum input_field hinzu
-        if self.keyboard_buttons[14]["rect"].collidepoint(event.pos):
+        if self.check_pinch_button_click(self.keyboard_buttons[14]):
             self.input_field["text"] += 'G'  # Füge den Buchstaben 'G' zum input_field hinzu
-        if self.keyboard_buttons[15]["rect"].collidepoint(event.pos):
+        if self.check_pinch_button_click(self.keyboard_buttons[15]):
             self.input_field["text"] += 'H'  # Füge den Buchstaben 'H' zum input_field hinzu
-        if self.keyboard_buttons[16]["rect"].collidepoint(event.pos):
+        if self.check_pinch_button_click(self.keyboard_buttons[16]):
             self.input_field["text"] += 'J'  # Füge den Buchstaben 'J' zum input_field hinzu
-        if self.keyboard_buttons[17]["rect"].collidepoint(event.pos):
+        if self.check_pinch_button_click(self.keyboard_buttons[17]):
             self.input_field["text"] += 'K'  # Füge den Buchstaben 'K' zum input_field hinzu
-        if self.keyboard_buttons[18]["rect"].collidepoint(event.pos):
+        if self.check_pinch_button_click(self.keyboard_buttons[18]):
             self.input_field["text"] += 'L'  # Füge den Buchstaben 'L' zum input_field hinzu
-        if self.keyboard_buttons[19]["rect"].collidepoint(event.pos):
+        if self.check_pinch_button_click(self.keyboard_buttons[19]):
             self.input_field["text"] += 'Z'  # Füge den Buchstaben 'Z' zum input_field hinzu
-        if self.keyboard_buttons[20]["rect"].collidepoint(event.pos):
+        if self.check_pinch_button_click(self.keyboard_buttons[20]):
             self.input_field["text"] += 'X'  # Füge den Buchstaben 'X' zum input_field hinzu
-        if self.keyboard_buttons[21]["rect"].collidepoint(event.pos):
+        if self.check_pinch_button_click(self.keyboard_buttons[21]):
             self.input_field["text"] += 'C'  # Fü
-        if self.keyboard_buttons[22]["rect"].collidepoint(event.pos):
+        if self.check_pinch_button_click(self.keyboard_buttons[22]):
             self.input_field["text"] += 'V'  # Füge den Buchstaben 'V' zum input_field hinzu
-        if self.keyboard_buttons[23]["rect"].collidepoint(event.pos):
+        if self.check_pinch_button_click(self.keyboard_buttons[23]):
             self.input_field["text"] += 'B'  # Füge den Buchstaben 'B' zum input_field hinzu
-        if self.keyboard_buttons[24]["rect"].collidepoint(event.pos):
+        if self.check_pinch_button_click(self.keyboard_buttons[24]):
             self.input_field["text"] += 'N'  # Füge den Buchstaben 'N' zum input_field hinzu
-        if self.keyboard_buttons[25]["rect"].collidepoint(event.pos):
+        if self.check_pinch_button_click(self.keyboard_buttons[25]):
             self.input_field["text"] += 'M'  # Füge den Buchstaben 'M' zum input_field hinzu
-        if self.keyboard_buttons[26]["rect"].collidepoint(event.pos):
+        if self.check_pinch_button_click(self.keyboard_buttons[26]):
             if self.selected_input_field == "input_field_A":
                 self.playerNameA = self.input_field["text"]
                 # self.input_
@@ -337,19 +400,16 @@ class Menu:
     
     def finger_as_mouse(self, x, y, is_pinched):
         # Draw circle at the given coordinates
-        mouse = pygame.draw.circle(self.screen, self.RED, (x, y), 15)
-        # pygame.display.flip()
-        pygame.display.update()
+        self.mouse = pygame.draw.circle(self.screen, self.RED, (x, y), 15)
+        # pygame.display.flip()     #malt alles
+        pygame.display.update()     # malt nur änderungen
         self.setIndexFingerPos(x, y)
         self.setIsPinched(is_pinched)
         
-        
-        # Perform a click action if is_pinched is True
-        # if is_pinched:
-        #     self.check_pinch_button_click(x,y)
-            # and self.hand_button_collision(self.play_button, x, y):
-            # self.menu_state = "play"
-            # pygame.display.update()
+
+    def draw_mouse(self):           #delete?
+        self.mouse = pygame.draw.circle(self.screen, self.RED, (self.IndexFingerPos[0], self.IndexFingerPos[1]), 15)
+        pygame.display.update()
 
     def check_pinch_button_click(self,button):
         x,y = self.getIndexFingerPos()
@@ -357,6 +417,8 @@ class Menu:
             return True
         else:
             return False
+        
+
 
     def check_button_click(self, button):
         mouse_pos = pygame.mouse.get_pos()
