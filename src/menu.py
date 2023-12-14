@@ -293,7 +293,7 @@ class Menu:
                     if self.keyboard_buttons[20]["rect"].collidepoint(event.pos):
                         self.input_field["text"] += 'X'  # Füge den Buchstaben 'X' zum input_field hinzu
                     if self.keyboard_buttons[21]["rect"].collidepoint(event.pos):
-                        self.input_field["text"] += 'C'  # Fü
+                        self.input_field["text"] += 'C'  # Füge den Buchstaben 'C' zum input_field hinzu
                     if self.keyboard_buttons[22]["rect"].collidepoint(event.pos):
                         self.input_field["text"] += 'V'  # Füge den Buchstaben 'V' zum input_field hinzu
                     if self.keyboard_buttons[23]["rect"].collidepoint(event.pos):
@@ -355,7 +355,7 @@ class Menu:
         if self.check_pinch_button_click(self.keyboard_buttons[20]):
             self.input_field["text"] += 'X'  # Füge den Buchstaben 'X' zum input_field hinzu
         if self.check_pinch_button_click(self.keyboard_buttons[21]):
-            self.input_field["text"] += 'C'  # Fü
+            self.input_field["text"] += 'C'  # Füge den Buchstaben 'C' zum input_field hinzu
         if self.check_pinch_button_click(self.keyboard_buttons[22]):
             self.input_field["text"] += 'V'  # Füge den Buchstaben 'V' zum input_field hinzu
         if self.check_pinch_button_click(self.keyboard_buttons[23]):
