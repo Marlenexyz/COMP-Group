@@ -22,6 +22,7 @@ class PongGame:
         self.WHITE = (255, 255, 255)
         self.RED = (255, 0, 0)
         self.YELLOW = (255, 255, 0)
+        self.GRAY = (150, 150, 150)
         
         # Set up the corners
         self.l_thickness = 15 * 2
@@ -76,11 +77,23 @@ class PongGame:
         self.player_a_score = 0
         self.player_b_score = 0
         self.font = pygame.font.Font(None, 36)
+
         self.score_text = self.font.render("{}: {}     {}: {}".format(self.player_name_a, self.player_a_score, 
                                                                       self.player_name_b, self.player_b_score), True, self.BLACK)
 
         # Print ball speed
         self.ball_speed_text = self.font.render("Ball Speed: {}".format(self.ball_speed_x), True, self.BLACK)
+
+    
+        self.vshape_powerup_a_text = self.font.render("2".format(), True, self.BLACK)
+        self.vshape_powerup_b_text = self.font.render("2".format(), True, self.BLACK)
+
+        self.pinch_powerup_a_text = self.font.render("P".format(), True, self.BLACK)
+        self.pinch_powerup_b_text = self.font.render("P".format(), True, self.BLACK)
+
+        self.fist_powerup_a_text = self.font.render("B".format(), True, self.BLACK)
+        self.fist_powerup_b_text = self.font.render("B".format(), True, self.BLACK)
+
 
     def setPlayerNameA(self, inputName):
         self.player_name_a = inputName
@@ -170,6 +183,34 @@ class PongGame:
         self.screen.blit(self.score_text, (self.screen_width // 2 - self.score_text.get_width() // 2, 10))
         # Draw current ball speed
         self.screen.blit(self.ball_speed_text, (self.screen_width // 2 - self.ball_speed_text.get_width() // 2, 50))
+
+        # Draw powerups
+        if self.player_timeout_paddle_increase_a != self.max_timeout:
+            self.vshape_powerup_a_text = self.font.render("2x".format(), True, self.GRAY)
+        
+        if self.player_timeout_paddle_increase_a != self.max_timeout:
+            self.vshape_powerup_b_text = self.font.render("2x".format(), True, self.GRAY)
+
+        if self.player_timeout_paddle_increase_a != self.max_timeout:
+            self.pinch_powerup_a_text = self.font.render("P".format(), True, self.GRAY)
+
+        if self.player_timeout_paddle_increase_b != self.max_timeout:
+            self.pinch_powerup_b_text = self.font.render("P".format(), True, self.GRAY)
+
+        if self.player_timeout_barrier_a != self.max_timeout:
+            self.fist_powerup_a_text = self.font.render("B".format(), True, self.GRAY)
+
+        if self.player_timeout_barrier_b != self.max_timeout:
+            self.fist_powerup_b_text = self.font.render("B".format(), True, self.GRAY)
+        
+        self.screen.blit(self.vshape_powerup_a_text, (25, 0.01 * self.screen_height))
+        self.screen.blit(self.vshape_powerup_b_text, (self.screen_width - self.paddle_width - 25, 0.01 * self.screen_height))
+        self.screen.blit(self.pinch_powerup_a_text, (25, 0.06 * self.screen_height))
+        self.screen.blit(self.pinch_powerup_b_text, (self.screen_width - self.paddle_width - 25, 0.06 * self.screen_height))
+        self.screen.blit(self.fist_powerup_a_text, (25, 0.11 * self.screen_height))
+        self.screen.blit(self.fist_powerup_b_text, (self.screen_width - self.paddle_width - 25, 0.11 * self.screen_height))
+
+
 
     def draw_only_corners(self):
         # Clear the screen
