@@ -2,6 +2,7 @@ import cv2
 import mediapipe as mp
 import time
 import numpy as np
+from scipy.spatial.distance import cdist, pdist, squareform
 
 class HandRecognition:
     '''hand recognition class which uses mediapipe library to recognize hand landmarks and draw them on self.frame'''
@@ -23,6 +24,8 @@ class HandRecognition:
         self.index_finger_coordinates = []
         self.middle_finger_coordinates = []
         self.thumb_coordinates = []
+        # This threshold determines how close the two fingers can be to be considered a V-shape
+        self.V_SHAPE_THRESHOLD = 12
 
     def run(self, frame):
         self.frame = frame
@@ -81,7 +84,7 @@ class HandRecognition:
 
             # Process self.frame with hand tracking module
             results = self.mp_hands.process(frame_rgb2)
-            #cv2.imshow('Hand Tracking', measureframe)
+            cv2.imshow('Hand Tracking Precision', measureframe)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
             if results.multi_hand_landmarks:  
@@ -265,10 +268,12 @@ class HandRecognition:
         thumb_coordinates_both = self.getThumbCoordBoth()
         # Calculate the distance between the index finger and thumb
         if side == 'both':
-            if index_finger_coordinates_both is None or thumb_coordinates_both is None:
+            if len(index_finger_coordinates_both) == 0 or len(thumb_coordinates_both) == 0: # or index_finger_coordinates_both is None or thumb_coordinates_both is None:
                 return False
             else:
-                distance_between_fingers = distance(index_finger_coordinates_both[0, :], thumb_coordinates_both[0, :])
+                #distance_between_fingers = distance(index_finger_coordinates_both[0, :], thumb_coordinates_both[0, :])
+                distances = cdist(index_finger_coordinates_both, thumb_coordinates_both)
+                distance_between_fingers = np.min(distances)
         elif side == "left":
             if index_finger_coordinates_left is None or thumb_coordinates_left is None:
                 return False
@@ -285,14 +290,11 @@ class HandRecognition:
             return True
         else:
             return False
-    def isVShape(self):
+    def isVShape(self, side ='both'):
         """Check if the index finger and middle finger are held up in a V-shape."""
         # Assuming index_finger_coordinates and middle_finger_coordinates are available
         # and each contains (x, y) tuples for the respective fingertip positions.
-        
-        # This threshold determines how close the two fingers can be to be considered a V-shape
-        V_SHAPE_THRESHOLD = 12
-        
+            
         # Function to calculate distance between two points
         def calculate_distance(point1, point2):
             return ((point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2) ** 0.5
@@ -302,35 +304,61 @@ class HandRecognition:
         middle_fingertip_right = self.getMiddleFingerCoordRight()  
         index_fingertip_left = self.getIndexFingerCoordLeft()
         middle_fingertip_left = self.getMiddleFingerCoordLeft()
+        index_fingertip_both = self.getIndexFingerCoordBoth()
+        middle_fingertip_both = self.getMiddleFingerCoordBoth()
         thumb_tip_left = self.getThumbCoordLeft()
         thumb_tip_right = self.getThumbCoordRight()
+        thumb_tip_both = self.getThumbCoordBoth()
 
         # Check if both fingertips are detected
-        if index_fingertip_right is not None and middle_fingertip_right is not None and thumb_tip_right is not None:
-            # Calculate the distance between the fingertips
-            distance = calculate_distance(index_fingertip_right, middle_fingertip_right)
-            
-            # Check if the distance between the fingertips is greater than the threshold
-            if distance > V_SHAPE_THRESHOLD:
-                # Check if the fingertips are at a similar height to form a V-shape
-                if abs(index_fingertip_right[1] - middle_fingertip_right[1]) < V_SHAPE_THRESHOLD and (thumb_tip_right[1] - index_fingertip_right[1]) > (V_SHAPE_THRESHOLD):
-                    # if v shape is detected, draw a v-shape on the image 
-                    # cv2.line(self.frame, index_fingertip_right, middle_fingertip_right, (0, 255, 0), 2)
-                    return True
-        
-        # Check if both fingertips are detected
-        if index_fingertip_left is not None and middle_fingertip_left is not None and thumb_tip_left is not None:
-            # Calculate the distance between the fingertips
-            distance = calculate_distance(index_fingertip_left, middle_fingertip_left)
-            
-            # Check if the distance between the fingertips is greater than the threshold
-            if distance > V_SHAPE_THRESHOLD:
-                # Check if the fingertips are at a similar height to form a V-shape
-                if abs(index_fingertip_left[1] - middle_fingertip_left[1]) < V_SHAPE_THRESHOLD and (thumb_tip_left[1] - index_fingertip_left[1]) > (V_SHAPE_THRESHOLD):
-                    # if v shape is detected, draw a v-shape on the image 
-                    # cv2.line(self.frame, index_fingertip_left, middle_fingertip_left, (0, 255, 0), 2)
-                    return True
-        
+        if side == 'both':
+            if len(index_fingertip_both) > 0 and len(middle_fingertip_both) > 0 and len(thumb_tip_both) > 0: # and index_fingertip_both is not None and middle_fingertip_both is not None and thumb_tip_both is not None:
+                # distance = calculate_distance(index_fingertip_both[0, :], middle_fingertip_both[0, :])
+                # calculate the distance betweeen all the points in index_fingertip_both and all the points in middle_fingertip_both
+                distances_middle = cdist(index_fingertip_both, middle_fingertip_both)
+                distances_thumb = cdist(index_fingertip_both, thumb_tip_both)
+
+                # Find the closest middle finger point and thumb point to each index finger point
+                closest_middle_points = np.argmin(distances_middle, axis=1)
+                closest_thumb_points = np.argmin(distances_thumb, axis=1)
+
+                # Check if the distance is above the threshold
+                for i in range(len(index_fingertip_both)):
+                    index_point = index_fingertip_both[i]
+                    closest_middle_point = middle_fingertip_both[closest_middle_points[i]]
+                    closest_thumb_point = thumb_tip_both[closest_thumb_points[i]]
+                    distance_middle = distances_middle[i, closest_middle_points[i]]
+                    distance_thumb = distances_thumb[i, closest_thumb_points[i]]
+    
+                    if distance_middle > self.V_SHAPE_THRESHOLD and distance_thumb > self.V_SHAPE_THRESHOLD:
+                        if abs(index_point[1] - closest_middle_point[1]) < self.V_SHAPE_THRESHOLD and (closest_thumb_point[1] - index_point[1]) > (self.V_SHAPE_THRESHOLD):
+                            return True
+                    
+        elif side == 'right':
+            if index_fingertip_right is not None and middle_fingertip_right is not None and thumb_tip_right is not None:
+                # Calculate the distance between the fingertips
+                distance = calculate_distance(index_fingertip_right, middle_fingertip_right)
+                
+                # Check if the distance between the fingertips is greater than the threshold
+                if distance > self.V_SHAPE_THRESHOLD:
+                    # Check if the fingertips are at a similar height to form a V-shape
+                    if abs(index_fingertip_right[1] - middle_fingertip_right[1]) < self.V_SHAPE_THRESHOLD and (thumb_tip_right[1] - index_fingertip_right[1]) > (self.V_SHAPE_THRESHOLD):
+                        # if v shape is detected, draw a v-shape on the image 
+                        # cv2.line(self.frame, index_fingertip_right, middle_fingertip_right, (0, 255, 0), 2)
+                        return True
+        elif side == 'left':
+            # Check if both fingertips are detected
+            if index_fingertip_left is not None and middle_fingertip_left is not None and thumb_tip_left is not None:
+                # Calculate the distance between the fingertips
+                distance = calculate_distance(index_fingertip_left, middle_fingertip_left)
+                
+                # Check if the distance between the fingertips is greater than the threshold
+                if distance > self.V_SHAPE_THRESHOLD:
+                    # Check if the fingertips are at a similar height to form a V-shape
+                    if abs(index_fingertip_left[1] - middle_fingertip_left[1]) < self.V_SHAPE_THRESHOLD and (thumb_tip_left[1] - index_fingertip_left[1]) > (self.V_SHAPE_THRESHOLD):
+                        # if v shape is detected, draw a v-shape on the image 
+                        # cv2.line(self.frame, index_fingertip_left, middle_fingertip_left, (0, 255, 0), 2)
+                        return True
         return False
 
 if __name__ == '__main__':
@@ -344,13 +372,15 @@ if __name__ == '__main__':
             hand_recognition.measureRecall(cap)
         
         ret, frame = cap.read()
-        hand_recognition.run(frame, cap)
+        hand_recognition.run(frame)
         
         # Check for fingers touching
         if hand_recognition.isTouchingIndexFingerAndThumb('left'):
             cv2.putText(frame, "left fingers touching", (10, 80), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
         if hand_recognition.isTouchingIndexFingerAndThumb('right'):
             cv2.putText(frame, "right fingers touching", (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+        if hand_recognition.isTouchingIndexFingerAndThumb():
+            cv2.putText(frame, "any fingers touching", (10, 120), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
         # Check for V-Shape
         if hand_recognition.isVShape():
             cv2.putText(frame, "V-Shape", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
