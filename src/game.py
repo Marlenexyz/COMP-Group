@@ -84,11 +84,11 @@ def displayDebugInfo():
 def hand_as_mouse():
     ret, frame = cap.read()
     if ret == False:
-        pass
+        return
             
     hand_recognition.run(frame)
     result = hand_recognition.getIndexFingerCoordRight()         ### Both?
-    if result is not None:
+    if result is not None and game_corners is not None:
         x, y = frame_matcher.mapCoords(result, game_corners)
 
         if x is not None and y is not None:
@@ -212,7 +212,7 @@ if __name__ == '__main__':
             elif keys[pygame.K_c]:
                 pong.togglePause()
                 pong.draw_only_corners()
-                frame_matcher.calibrateCorners(cap)
+                game_corners = frame_matcher.calibrateCorners(cap)
                 pong.togglePause()
 
             for event in pygame.event.get():
