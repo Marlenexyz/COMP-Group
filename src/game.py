@@ -96,13 +96,8 @@ def hand_as_mouse(frame):
     """
     Use the hand as a mouse for the game. Presses are realized by pinching the index finger
     and the thumb.
-    """
-    
-    ret, frame = cap.read()
-    if ret == False:
-        return
-            
-    hand_recognition.run(frame)
+    """ 
+    frame = hand_recognition.run(frame)
     result = hand_recognition.getIndexFingerCoordRight()
     if result is not None and game_corners is not None:
         x, y = frame_matcher.mapCoords(result, game_corners)
@@ -190,7 +185,7 @@ if __name__ == '__main__':
             if not pong.isGamePaused():
                 
                 # run hand recognition for index finger positions
-                hand_recognition.run(frame)
+                frame = hand_recognition.run(frame)
                 index_finger_pos = [hand_recognition.getIndexFingerPosLeft(), hand_recognition.getIndexFingerPosRight()]
                 
                 # predict positions if index finger was not detected
