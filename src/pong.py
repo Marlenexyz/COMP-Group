@@ -28,25 +28,49 @@ class PongGame:
         self.l_length = 50 * 2
 
         # Set up the paddles
-        self.paddle_width = 10
-        self.paddle_height = 60
-        self.paddle_speed = 1
+        self.paddle_width = 12
+        self.paddle_height_a = 60
+        self.paddle_height_b = 60
+        self.paddle_speed = 3 # only used for keyboard inputs
+        self.paddle_increase = 60 # value added to paddle height
         self.player_a_paddle_x = 50
-        self.player_a_paddle_y = (self.screen_height - self.paddle_height) // 2
+        self.player_a_paddle_y = (self.screen_height - self.paddle_height_a) // 2
         self.player_b_paddle_x = self.screen_width - self.paddle_width - 50
-        self.player_b_paddle_y = (self.screen_height - self.paddle_height) // 2
-
+        self.player_b_paddle_y = (self.screen_height - self.paddle_height_b) // 2
+        
+        # Set up the barrier
+        self.barrier_width = 12
+        self.barrier_height = 90
+        self.player_a_barrier_x = None
+        self.player_a_barrier_y = None
+        self.player_b_barrier_x = None
+        self.player_b_barrier_y = None
+        
         # Set up the ball
-        self.ball_radius = 5
+        self.ball_radius = 6
 
         self.ball_speed_x = 3
         self.ball_speed_y = 3
+        self.ball_increase = 2 # value multiplied with ball speed
         self.ball_x = self.screen_width // 2
         self.ball_y = self.screen_height // 2
 
-
+        # Set up the players
         self.player_name_a = "Player A"
         self.player_name_b = "Player B"
+        self.player_ball_speed_active_a = False
+        self.player_ball_speed_active_b = False
+        self.player_paddle_increase_active_a = False
+        self.player_paddle_increase_active_b = False
+        self.player_barrier_active_a = False
+        self.player_barrier_active_b = False
+        self.max_timeout = 500
+        self.player_timeout_ball_speed_a = self.max_timeout
+        self.player_timeout_ball_speed_b = self.max_timeout
+        self.player_timeout_paddle_increase_a = self.max_timeout
+        self.player_timeout_paddle_increase_b = self.max_timeout
+        self.player_timeout_barrier_a = self.max_timeout
+        self.player_timeout_barrier_b = self.max_timeout
 
         # Set up the score
         self.player_a_score = 0
@@ -55,16 +79,14 @@ class PongGame:
         self.score_text = self.font.render("{}: {}     {}: {}".format(self.player_name_a, self.player_a_score, 
                                                                       self.player_name_b, self.player_b_score), True, self.BLACK)
 
-        # Schreibe die Ball Geschwindigkeit
+        # Print ball speed
         self.ball_speed_text = self.font.render("Ball Speed: {}".format(self.ball_speed_x), True, self.BLACK)
 
-        self.increasedBallSpeed = False
-
-    def setPlayerNameA(self,inputName):
+    def setPlayerNameA(self, inputName):
         self.player_name_a = inputName
         self._update_score()
 
-    def setPlayerNameB(self,inputName):
+    def setPlayerNameB(self, inputName):
         self.player_name_b = inputName
         self._update_score()
 
@@ -73,9 +95,6 @@ class PongGame:
 
     def isGamePaused(self):
         return self.paused
-
-    # def setGamePaused(self,paused):
-    #     self.paused = paused
     
     def _move_ball(self):
         self.ball_x += self.ball_speed_x
@@ -83,10 +102,31 @@ class PongGame:
 
     def _check_collision_with_paddle(self):
         # Check for collisions with paddles
-        if self.player_a_paddle_x <= self.ball_x <= self.player_a_paddle_x + self.paddle_width and self.player_a_paddle_y <= self.ball_y <= self.player_a_paddle_y + self.paddle_height:
+        if self.player_a_paddle_x <= self.ball_x - self.ball_radius <= self.player_a_paddle_x + self.paddle_width \
+            and self.player_a_paddle_y <= self.ball_y <= self.player_a_paddle_y + self.paddle_height_a:
             self.ball_speed_x *= -1
-        if self.player_b_paddle_x >= self.ball_x >= self.player_b_paddle_x - self.paddle_width and self.player_b_paddle_y <= self.ball_y <= self.player_b_paddle_y + self.paddle_height:
+        if self.player_b_paddle_x >= self.ball_x + self.ball_radius >= self.player_b_paddle_x - self.paddle_width \
+            and self.player_b_paddle_y <= self.ball_y <= self.player_b_paddle_y + self.paddle_height_b:
             self.ball_speed_x *= -1
+            
+    def _check_collision_with_barrier(self):
+        # Check for collisions with barriers
+        if self.player_barrier_active_a:
+            if self.player_a_barrier_x is not None and self.player_a_barrier_y is not None:
+                if self.player_a_barrier_x <= self.ball_x - self.ball_radius <= self.player_a_barrier_x + self.barrier_width \
+                    and self.player_a_barrier_y <= self.ball_y <= self.player_a_barrier_y + self.barrier_height:
+                    self.ball_speed_x *= -1
+                if self.player_a_barrier_x >= self.ball_x + self.ball_radius >= self.player_a_barrier_x - self.barrier_width \
+                    and self.player_a_barrier_y <= self.ball_y <= self.player_a_barrier_y + self.barrier_height:
+                    self.ball_speed_x *= -1
+        if self.player_barrier_active_b:
+            if self.player_b_barrier_x is not None and self.player_b_barrier_y is not None:
+                if self.player_b_barrier_x <= self.ball_x - self.ball_radius <= self.player_b_barrier_x + self.barrier_width \
+                    and self.player_b_barrier_y <= self.ball_y <= self.player_b_barrier_y + self.barrier_height:
+                    self.ball_speed_x *= -1
+                if self.player_b_barrier_x >= self.ball_x + self.ball_radius >= self.player_b_barrier_x - self.barrier_width \
+                    and self.player_b_barrier_y <= self.ball_y <= self.player_b_barrier_y + self.barrier_height:
+                    self.ball_speed_x *= -1
 
     def _check_collision_with_wall(self):
             # Check for collisions with walls
@@ -95,18 +135,13 @@ class PongGame:
         if self.ball_x <= 0:
             self.player_b_score += 1
             self.reset_ball()
-            # self.ball_x = self.screen_width // 2
-            # self.ball_y = self.screen_height // 2
         if self.ball_x >= self.screen_width - self.ball_radius:
             self.player_a_score += 1
             self.reset_ball()
-            # self.ball_x = self.screen_width // 2
-            # self.ball_y = self.screen_height // 2
 
     def _update_score(self):
         # Update the score text
         self.score_text = self.font.render("{}: {}     {}: {}".format(self.player_name_a, self.player_a_score, self.player_name_b,self.player_b_score), True, self.BLACK)
-
 
     def _draw_l_marker(self, x, y):
         # Vertical bar of the L
@@ -114,14 +149,19 @@ class PongGame:
         # Horizontal bar of the L
         pygame.draw.rect(self.screen, self.RED, (x - self.l_length // 2, y - self.l_thickness // 2, self.l_length, self.l_thickness))
 
-
     def _draw_game(self):
         # Clear the screen
         self.screen.fill(self.WHITE)
 
         # Draw the paddles
-        pygame.draw.rect(self.screen, self.BLACK, (self.player_a_paddle_x, self.player_a_paddle_y, self.paddle_width, self.paddle_height))
-        pygame.draw.rect(self.screen, self.BLACK, (self.player_b_paddle_x, self.player_b_paddle_y, self.paddle_width, self.paddle_height))
+        pygame.draw.rect(self.screen, self.BLACK, (self.player_a_paddle_x, self.player_a_paddle_y, self.paddle_width, self.paddle_height_a))
+        pygame.draw.rect(self.screen, self.BLACK, (self.player_b_paddle_x, self.player_b_paddle_y, self.paddle_width, self.paddle_height_b))
+        
+        # Draw barriers
+        if self.player_barrier_active_a:
+            pygame.draw.rect(self.screen, self.RED, (self.player_a_barrier_x, self.player_a_barrier_y, self.barrier_width, self.barrier_height))
+        if self.player_barrier_active_b:
+            pygame.draw.rect(self.screen, self.RED, (self.player_b_barrier_x, self.player_b_barrier_y, self.barrier_width, self.barrier_height))
 
         # Draw the ball
         pygame.draw.circle(self.screen, self.BLACK, (self.ball_x, self.ball_y), self.ball_radius)
@@ -144,8 +184,8 @@ class PongGame:
         pygame.display.flip()
 
     def draw_countdown(self,countdown_value):
-        self._draw_game()                               #to overwrite old counter value
-        #increase the font size of the text
+        self._draw_game() # to overwrite old counter value
+        # increase the font size of the text
         self.font_countdown = pygame.font.Font(None, 100)
         countdown_text = self.font_countdown.render("{}".format(countdown_value), True, self.BLACK)
         self.screen.blit(countdown_text, (self.screen_width // 2 - countdown_text.get_width() // 2, self.screen_height // 2))
@@ -156,93 +196,132 @@ class PongGame:
         self.ball_y = self.screen_height // 2       # - self.ball.height // 2
         self.ball_speed_x *= random.choice([-1, 1])
         self.ball_speed_y *= random.choice([-1, 1])
-       
-        
 
-
-    def move_paddle_left(self,fingertip_pos_left):
+    def move_paddle_left(self, fingertip_pos_left):
         if fingertip_pos_left is not None:  # Ensure the fingertip was detected
             fingertip_pos_left += (self.paddle_width // 2)
-            self.player_a_paddle_y = max(min(fingertip_pos_left, self.screen_height - self.paddle_height), 0)
+            self.player_a_paddle_y = max(min(fingertip_pos_left, self.screen_height - self.paddle_height_a), 0)
 
-    def move_paddle_right(self,fingertip_pos_right):
+    def move_paddle_right(self, fingertip_pos_right):
         if fingertip_pos_right is not None:  # Ensure the fingertip was detected
             fingertip_pos_right += (self.paddle_width // 2)
-            self.player_b_paddle_y = max(min(fingertip_pos_right, self.screen_height - self.paddle_height), 0)
-
-
+            self.player_b_paddle_y = max(min(fingertip_pos_right, self.screen_height - self.paddle_height_b), 0)
         
     def move_paddles_by_keys(self):
         # Move the paddles
         keys = pygame.key.get_pressed()
         if keys[pygame.K_w] and self.player_a_paddle_y > 0:
             self.player_a_paddle_y -= self.paddle_speed
-        if keys[pygame.K_s] and self.player_a_paddle_y < self.screen_height - self.paddle_height:
+        if keys[pygame.K_s] and self.player_a_paddle_y < self.screen_height - self.paddle_height_a:
             self.player_a_paddle_y += self.paddle_speed
         if keys[pygame.K_UP] and self.player_b_paddle_y > 0:
             self.player_b_paddle_y -= self.paddle_speed
-        if keys[pygame.K_DOWN] and self.player_b_paddle_y < self.screen_height - self.paddle_height:
+        if keys[pygame.K_DOWN] and self.player_b_paddle_y < self.screen_height - self.paddle_height_b:
             self.player_b_paddle_y += self.paddle_speed
-
-    def _calibrate_corners(self):
-        # Define corner points
-        corners = [(0, 0), (self.screen_width, 0), (0, self.screen_height), (self.screen_width, self.screen_height)]
-
-        # Draw and store the corners
-        corner_rects = []
-        for corner in corners:
-            rect = pygame.Rect(corner[0] - 5, corner[1] - 5, 10, 10)  # Erstelle ein Rechteck um die Ecke
-            pygame.draw.rect(self.screen, self.YELLOW, rect)
-            corner_rects.append(rect)
-
-        pygame.display.flip()
-        return corner_rects
+            
+    def increase_paddle_length(self, player):
+        if player == 'left' and self.player_timeout_paddle_increase_a == self.max_timeout:
+            self.player_paddle_increase_active_a = True
+            self.paddle_height_a += self.paddle_increase
+        elif player == 'right' and self.player_timeout_paddle_increase_b == self.max_timeout:
+            self.player_paddle_increase_active_b = True
+            self.paddle_height_b += self.paddle_increase
     
-    def setBallSpeed(self):
-        value = 2
-        if not self.increasedBallSpeed:
-            self.ball_speed_x *= value
-            self.ball_speed_y *= value
-            self.increasedBallSpeed = True
+    def increase_ball_speed(self, player):
+        if player == 'left' and self.player_timeout_ball_speed_a == self.max_timeout:
+            self.player_ball_speed_active_a = True
+            self.ball_speed_x *= self.ball_increase
+            self.ball_speed_y *= self.ball_increase
+        if player == 'right' and self.player_timeout_ball_speed_b == self.max_timeout:
+            self.player_ball_speed_active_b = True
+            self.ball_speed_x *= self.ball_increase
+            self.ball_speed_y *= self.ball_increase
+        
+        self._update_ball_speed()
+        
+    def set_barrier(self, player, pos):
+        if pos[0] > self.screen_width or pos[1] > self.screen_height:
+            return
+        if player == 'left' and self.player_timeout_barrier_a == self.max_timeout:
+            self.player_barrier_active_a = True
+            self.player_a_barrier_x, self.player_a_barrier_y = pos
+        if player == 'right' and self.player_timeout_barrier_b == self.max_timeout:
+            self.player_barrier_active_b = True
+            self.player_b_barrier_x, self.player_b_barrier_y = pos
 
     def _update_ball_speed(self):
         self.ball_speed_text = self.font.render("Ball speed: " + str(abs(self.ball_speed_x)), True, self.BLACK)
         
-
+    def _check_timeouts(self):
+        if self.player_ball_speed_active_a:
+            self.player_timeout_ball_speed_a -= 1
+        if self.player_ball_speed_active_b:
+            self.player_timeout_ball_speed_b -= 1
+        if self.player_paddle_increase_active_a:
+            self.player_timeout_paddle_increase_a -= 1
+        if self.player_paddle_increase_active_b:
+            self.player_timeout_paddle_increase_b -= 1
+        if self.player_barrier_active_a:
+            self.player_timeout_barrier_a -= 1
+        if self.player_barrier_active_b:
+            self.player_timeout_barrier_b -= 1
+            
+        if self.player_ball_speed_active_a and self.player_timeout_ball_speed_a == 0:
+            self.player_ball_speed_active_a = False
+            self.ball_speed_x /= self.ball_increase
+            self.ball_speed_y /= self.ball_increase
+        if self.player_ball_speed_active_b and self.player_timeout_ball_speed_b == 0:
+            self.player_ball_speed_active_b = False
+            self.ball_speed_x /= self.ball_increase
+            self.ball_speed_y /= self.ball_increase
+        if self.player_paddle_increase_active_a and self.player_timeout_paddle_increase_a == 0:
+            self.player_paddle_increase_active_a = False
+            self.paddle_height_a -= self.paddle_increase
+        if self.player_paddle_increase_active_b and self.player_timeout_paddle_increase_b == 0:
+            self.player_paddle_increase_active_b = False
+            self.paddle_height_b -= self.paddle_increase
+        if self.player_barrier_active_a and self.player_timeout_barrier_a == 0:
+            self.player_barrier_active_a = False
+        if self.player_barrier_active_b and self.player_timeout_barrier_b == 0:
+            self.player_barrier_active_b = False
 
     def run(self):       
         self._move_ball()
         self._check_collision_with_paddle()
+        self._check_collision_with_barrier()
         self._check_collision_with_wall()
         self._update_score()
         self._update_ball_speed()
         self._draw_game()
-        # self._calibrate_corners()
+        self._check_timeouts()
         pygame.display.flip()
-        
 
- 
-
-       
 
 
 if __name__ == '__main__':
     # Game loop
-    pong = PongGame(400,800)
-    running = True
-    while running:
+    pong = PongGame(400, 800)
+    frame = 0
+    while True:
+        frame += 1
         # Handle events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                pygame.quit()
+                exit()
+        
+        if frame % 60 == 0:
+            pong.increase_paddle_length('left')
+            pong.increase_ball_speed('left')
+        if frame % 120 == 0:
+            pong.increase_paddle_length('right')
+            # pong.increase_ball_speed('right')
+        if frame % 180 == 0:
+            pong.set_barrier('left', (100, 100))
+            pong.set_barrier('right', (600, 300))
 
         pong.move_paddles_by_keys()  
         pong.run()
-
-        # Update the display
-        # pygame.display.flip()
         
-        time.sleep(0.005)
+        time.sleep(0.02)
 
-    # Quit the game
-    pygame.quit()
