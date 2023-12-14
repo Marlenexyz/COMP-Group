@@ -4,7 +4,6 @@ from pos_predictor import *
 from pong import *
 from menu import *
 
-
 import cv2
 
 # Hyperparameters ----------
@@ -76,13 +75,7 @@ def displayDebugInfo():
     fps_display = f"FPS: {int(fps)}"
     cv2.putText(debug_frame, fps_display, (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
     
-    is_touching_index_finger_and_thumb_left = hand_recognition.isTouchingIndexFingerAndThumb('left')
-    is_touching_index_finger_and_thumb_right = hand_recognition.isTouchingIndexFingerAndThumb('right')
-    is_v_shape_left = hand_recognition.isVShape('left')
-    is_v_shape_right = hand_recognition.isVShape('right')
-    
     cv2.putText(debug_frame, 'Detected Gestures:', (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
-    
     touching_index_finger_and_thumb_left_display = f'    Left fingers touching: {is_touching_index_finger_and_thumb_left}'
     cv2.putText(debug_frame, touching_index_finger_and_thumb_left_display, (10, 120), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
     touching_index_finger_and_thumb_right_display = f'    Right fingers touching: {is_touching_index_finger_and_thumb_right}'
@@ -91,6 +84,10 @@ def displayDebugInfo():
     cv2.putText(debug_frame, v_shape_left_display, (10, 180), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
     v_shape_right_display = f'    Right V shape: {is_v_shape_right}'
     cv2.putText(debug_frame, v_shape_right_display, (10, 210), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+    fist_left_display = f'    Left fist: {is_fist_left}'
+    cv2.putText(debug_frame, fist_left_display, (10, 240), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+    fist_right_display = f'    Right fist: {is_fist_right}'
+    cv2.putText(debug_frame, fist_right_display, (10, 270), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
     
     cv2.imshow('Debug Info', debug_frame)
 
@@ -127,8 +124,15 @@ if __name__ == '__main__':
     has_run_once = False
     set_up_done = False
     
+    is_touching_index_finger_and_thumb_left = False
+    is_touching_index_finger_and_thumb_right = False
+    is_v_shape_left = False
+    is_v_shape_right = False
+    is_fist_left = False
+    is_fist_right = False
+    
     if test_flag:
-        hand_recognition.V_SHAPE_THRESHOLD = 40
+        hand_recognition.V_SHAPE_THRESHOLD = 30
         hand_recognition.TOUCH_THRESHOLD = 40
     
     # MAIN LOOP ----------------------
@@ -212,17 +216,31 @@ if __name__ == '__main__':
                 # update paddles if index finger is in game frame
                 calculatePaddlePos(game_corners, index_finger_pos)
                 
+                # check for gestures
+                is_touching_index_finger_and_thumb_left = hand_recognition.isTouchingIndexFingerAndThumb('left')
+                is_touching_index_finger_and_thumb_right = hand_recognition.isTouchingIndexFingerAndThumb('right')
+                is_v_shape_left = hand_recognition.isVShape('left')
+                is_v_shape_right = hand_recognition.isVShape('right')
+                is_fist_left = hand_recognition.isFist('left')
+                is_fist_right = hand_recognition.isFist('right')
+                
                 # increase paddle size if index finger and thumb are touching
-                if hand_recognition.isTouchingIndexFingerAndThumb('left'):
+                if is_touching_index_finger_and_thumb_left:
                     pong.increase_paddle_length('left')
-                if hand_recognition.isTouchingIndexFingerAndThumb('right'):
+                if is_touching_index_finger_and_thumb_right:
                     pong.increase_paddle_length('right')
                 
                 # change ball speed if v shape is recognized
-                if hand_recognition.isVShape('left'):
+                if is_v_shape_left:
                     pong.increase_ball_speed('left')
-                if hand_recognition.isVShape('right'):
+                if is_v_shape_right:
                     pong.increase_ball_speed('right')
+                    
+                # set barriers if fist is recognized
+                if is_fist_left:
+                    pong.set_barrier('left', (0, 0))
+                if is_fist_right:
+                    pong.set_barrier('right', (0, 0))
                 
                 # run pong and update display
                 pong.run()
