@@ -27,7 +27,7 @@ class HandRecognition:
         # This threshold determines how close the two fingers can be to be considered a V-shape
         self.V_SHAPE_THRESHOLD = 12
                 # This threshold determines how close the two fingers can be to be considered touching
-        self.TOUCH_THRESHOLD = 20
+        self.TOUCH_THRESHOLD = 15
         self.FIST_THRESHOLD = 40
         self.Tcounter = 0 #for touching fingers (= pinching)
         self.Vcounter = 0 #for V-shape
@@ -388,6 +388,7 @@ class HandRecognition:
             middle_finger_distance = distance(middle_finger_coordinates_left, palm_coordinates_left)
             ring_finger_distance = distance(ring_finger_coordinates_left, palm_coordinates_left)
             pinky_finger_distance = distance(pinky_finger_coordinates_left, palm_coordinates_left)
+            palm_coordinate = palm_coordinates_left
 
         if side == 'right':
             if index_finger_coordinates_right is None or palm_coordinates_right is None or thumb_coordinates_right is None or middle_finger_coordinates_right is None or ring_finger_coordinates_right is None or pinky_finger_coordinates_right is None:
@@ -397,7 +398,48 @@ class HandRecognition:
             middle_finger_distance = distance(middle_finger_coordinates_right, palm_coordinates_right)
             ring_finger_distance = distance(ring_finger_coordinates_right, palm_coordinates_right)
             pinky_finger_distance = distance(pinky_finger_coordinates_right, palm_coordinates_right)
-                    
+            palm_coordinate = palm_coordinates_right
+        
+        elif side == 'both':
+            # finds for all palms the closest index finger, thumb, middle finger, ring finger and pinky finger 
+            if len(index_finger_coordinates_both) > 0 and len(middle_finger_coordinates_both) > 0 and len(thumb_coordinates_both) > 0 and len(ring_finger_coordinates_both) > 0 and len(pinky_finger_coordinates_both) > 0 and len(palm_coordinates_both) > 0:  # and index_fingertip_both is not None and middle_fingertip_both is not None and thumb_tip_both is not None:
+                # distance = calculate_distance(index_fingertip_both[0, :], middle_fingertip_both[0, :])
+                # calculate the distance betweeen all the points in index_fingertip_both and all the points in middle_fingertip_both
+                distances_index = cdist(palm_coordinates_both, index_finger_coordinates_both)
+                distances_middle = cdist(palm_coordinates_both, middle_finger_coordinates_both)
+                distances_thumb = cdist(palm_coordinates_both, thumb_coordinates_both)
+                distances_ring = cdist(palm_coordinates_both, ring_finger_coordinates_both)
+                distances_pinky = cdist(palm_coordinates_both, pinky_finger_coordinates_both)
+
+                # Find the closest middle finger point and thumb point to each index finger point
+                closest_index_points = np.argmin(distances_index, axis=1)
+                closest_middle_points = np.argmin(distances_middle, axis=1)
+                closest_thumb_points = np.argmin(distances_thumb, axis=1)
+                closest_ring_points = np.argmin(distances_ring, axis=1)
+                closest_pinky_points = np.argmin(distances_pinky, axis=1)
+
+                # Check if the distance is above the threshold
+                for i in range(len(palm_coordinates_both)):
+                    index_point = palm_coordinates_both[i]
+                    closest_middle_point = middle_finger_coordinates_both[closest_middle_points[i]]
+                    closest_thumb_point = thumb_coordinates_both[closest_thumb_points[i]]
+                    closest_index_point = index_finger_coordinates_both[closest_index_points[i]]
+                    closest_ring_point = ring_finger_coordinates_both[closest_ring_points[i]]
+                    closest_pinky_point = pinky_finger_coordinates_both[closest_pinky_points[i]]
+                    distance_index = distances_index[i, closest_index_points[i]]
+                    distance_middle = distances_middle[i, closest_middle_points[i]]
+                    distance_thumb = distances_thumb[i, closest_thumb_points[i]]
+                    distance_index = distances_index[i, closest_index_points[i]]
+                    distance_ring = distances_ring[i, closest_ring_points[i]]
+                    distance_pinky = distances_pinky[i, closest_pinky_points[i]]
+    
+                    if distance_index < self.FIST_THRESHOLD and distance_middle < self.FIST_THRESHOLD and distance_ring < self.FIST_THRESHOLD and distance_pinky < self.FIST_THRESHOLD:
+                        if abs(index_point[1] - closest_middle_point[1]) < self.V_SHAPE_THRESHOLD and (closest_thumb_point[1] - index_point[1]) > (self.V_SHAPE_THRESHOLD):
+                            self.Vcounter += 1
+                            #return True
+                        else:
+                            self.Vcounter = max(0, self.Vcounter - 1) 
+                            return False    
         # Check if all distances are less than the threshold
         if index_finger_distance < self.FIST_THRESHOLD and middle_finger_distance < self.FIST_THRESHOLD and ring_finger_distance < self.FIST_THRESHOLD and pinky_finger_distance < self.FIST_THRESHOLD:
             self.Fcounter += 1
@@ -407,7 +449,7 @@ class HandRecognition:
             return False
         if self.Fcounter >= self.Fcounter_threshold:
             self.Fcounter = 0
-            return True
+            return True, palm_coordinate
         else:
             return False
     # define a function to detect if index finger and thumb are touching
