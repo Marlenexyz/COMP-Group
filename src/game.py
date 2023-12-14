@@ -30,6 +30,11 @@ if test_flag:
 
 
 def calculatePaddlePos(game_corners, index_finger_pos):
+    """
+    Calculate the correct y position of the paddle from the index finger position
+    and game corners.
+    """
+    
     if game_corners is not None:
         # check if left index finger was detected
         if index_finger_pos[0] is not None:
@@ -55,6 +60,10 @@ def calculatePaddlePos(game_corners, index_finger_pos):
 
 
 def displayDebugInfo():
+    """
+    Show debug information like FPS and gesture detections.
+    """
+    
     global prev_time
     
     # Initialize debug frame
@@ -81,27 +90,31 @@ def displayDebugInfo():
     
     cv2.imshow('Debug Info', debug_frame)
 
-def hand_as_mouse():
+
+
+def hand_as_mouse(frame):
+    """
+    Use the hand as a mouse for the game. Presses are realized by pinching the index finger
+    and the thumb.
+    """
+    
     ret, frame = cap.read()
     if ret == False:
         return
             
     hand_recognition.run(frame)
-    result = hand_recognition.getIndexFingerCoordRight()         ### Both?
+    result = hand_recognition.getIndexFingerCoordRight()
     if result is not None and game_corners is not None:
         x, y = frame_matcher.mapCoords(result, game_corners)
 
         if x is not None and y is not None:
             mainMenu.finger_as_mouse(x, y, hand_recognition.isTouchingIndexFingerAndThumb())
 
-    displayDebugInfo()
-    cv2.imshow('Video Feed', frame)
 
-
-
+# --------------- MAIN ---------------
 if __name__ == '__main__':
 
-    # INITIALIZATION -----------------
+    # MAIN INIT ----------------------
     cap = cv2.VideoCapture(video)
     frame_matcher = FrameMatcher(game_height, game_width)
     hand_recognition = HandRecognition()
@@ -118,13 +131,21 @@ if __name__ == '__main__':
     if not test_flag:
         create_set_up_window(game_height, game_width)
     
-    # MAIN loop ----------------------
+    # MAIN LOOP ----------------------
     while True:
+        
+        # get new frame
+        ret, frame = cap.read()
+        if ret == False:
+            continue
         
         # get game status
         status = mainMenu.getStatus()
 
+        # GAME MENU ---------------------
         if status == 'main':
+            
+            # calibrate corners once after setup screen
             if not set_up_done:
                 set_up_done = True
                 
@@ -134,46 +155,47 @@ if __name__ == '__main__':
                 else:
                     game_corners = [(0, 0), (0, game_height), (game_width, 0), (game_width, game_height)]
 
-
-            hand_as_mouse()
-            
+            # draw main menu and mouse position
+            mainMenu.update_menu()
+            hand_as_mouse(frame)
                 
-            mainMenu.update_menu()
+        # ENTER NAMES ---------------------
         elif status == 'enterNames':
+            
+            # draw main menu and mouse position
             mainMenu.update_menu()
-            hand_as_mouse()
+            hand_as_mouse(frame)
+            
+            # set player names
             pong.setPlayerNameA(mainMenu.getPlayerNameA())
             pong.setPlayerNameB(mainMenu.getPlayerNameB())
 
+        # PONG GAME ---------------------
         elif status == 'play':
             if not has_run_once:
                 pong.run()
 
-                ## Display Countdown on screen, after countdown ends game starts automatically
+                # Display Countdown on screen, after countdown ends game starts automatically
                 while countdown > 0:
-                    pygame.time.delay(1000)
                     pong.draw_countdown(countdown)
+                    pygame.time.delay(1000)
                     countdown -= 1
 
                 pong.togglePause()
                 # Setze die Flagge auf True, um zu kennzeichnen, dass die Funktion aufgerufen wurde    
                 has_run_once = True
 
-
+            # update game if not paused
             if not pong.isGamePaused():
-                
-                ret, frame = cap.read()
-                if ret == False:
-                    continue
                 
                 # run hand recognition for index finger positions
                 hand_recognition.run(frame)
                 index_finger_pos = [hand_recognition.getIndexFingerPosLeft(), hand_recognition.getIndexFingerPosRight()]
                 
+                # predict positions if index finger was not detected
                 if index_finger_pos[0] is None:
                     index_finger_pos[0] = pos_predictor.predictLeft()
                 pos_predictor.correctLeft(index_finger_pos[0])
-                
                 if index_finger_pos[1] is None:
                     index_finger_pos[1] = pos_predictor.predictRight()
                 pos_predictor.correctRight(index_finger_pos[1])
@@ -185,17 +207,10 @@ if __name__ == '__main__':
                 if hand_recognition.isVShape():
                     pong.setBallSpeed()
                 
-                # show frame
-                cv2.imshow('Video Feed', frame)
-                
-                # display debug info
-                displayDebugInfo()
-
                 # run pong and update display
                 pong.run()
-                
 
-
+            # check for keyboard inputs
             keys = pygame.key.get_pressed()
             if keys[pygame.K_p]:
                 pong.togglePause()
@@ -219,7 +234,14 @@ if __name__ == '__main__':
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     exit()
-                    
+                 
+        # QUIT GAME ---------------------   
         elif status == 'quit_pong':
             pong.quitGame()
             status = 'main'
+            
+        # show debug information
+        displayDebugInfo()
+        
+        # show the live video
+        cv2.imshow('Video Feed', frame)

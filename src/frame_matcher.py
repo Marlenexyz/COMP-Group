@@ -160,7 +160,7 @@ class FrameMatcher:
                 print('    no corners found...')
                 continue
             print(f'    Corners: {corners}')
-            # cv2.imshow('Measure Accuracy', frame)
+            cv2.imshow('Frame Matching Precision', frame)
             
             # calculate the angles
             angles = self._calculateAngles(corners)
