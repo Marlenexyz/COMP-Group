@@ -27,7 +27,7 @@ class HandRecognition:
         # This threshold determines how close the two fingers can be to be considered a V-shape
         self.V_SHAPE_THRESHOLD = 12
                 # This threshold determines how close the two fingers can be to be considered touching
-        self.TOUCH_THRESHOLD = 15
+        self.TOUCH_THRESHOLD = 20
         self.FIST_THRESHOLD = 40
         self.Tcounter = 0 #for touching fingers (= pinching)
         self.Vcounter = 0 #for V-shape
