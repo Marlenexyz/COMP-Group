@@ -80,21 +80,12 @@ class Menu:
             {"text": "Del", "rect": pygame.Rect(screen_width // 10 - 50 , screen_height - 50, 75, button_height)},
         ]
 
-        # Input field variables for entering player names
-        self.input_active = False
-        self.input_text = ""
-        self.input_rect = pygame.Rect(self.screen_width // 2 - 100, 500, 200, 50)       #del?
-        # self.input_color_inactive = pygame.Color('lightskyblue3')
-        self.input_color_inactive = pygame.Color(0,0,0)
-        self.input_color_active = pygame.Color('dodgerblue2')
-        self.input_color = self.input_color_inactive
-        self.input_active = False
-
-        
-        self.input_field = {"text": "", "rect": pygame.Rect(self.screen_height/2, 0.25 * self.screen_width, 200, 50)}
         # Zusätzlicher Text über dem input_field
-        self.additional_text = {"text": "Enter player name:", "rect": pygame.Rect(screen_height/2, 0.15 * screen_width - 50, 200, 50)}
+        self.additional_text_A = {"text": "Enter Name for Player A:", "rect": pygame.Rect(screen_height/2, 0.15 * screen_width - 50, 200, 50)}
+        self.additional_text_B = {"text": "Enter Name for Player B:", "rect": pygame.Rect(screen_height/2, 0.15 * screen_width - 50, 200, 50)}
 
+        self.input_field = {"text": "", "rect": pygame.Rect(self.screen_height/2, 0.25 * self.screen_width, 200, 50)}
+        
         self.selected_input_field = "input_field_A"
 
         
@@ -153,12 +144,9 @@ class Menu:
     def isGamePaused(self):
         return self.game_paused
     
-    def getScreenWidth(self):
-        return self.screen_width
-    
-    def toggle_input_active(self):
-        self.input_active = not self.input_active    
- 
+    # def getScreenWidth(self):
+    #     return self.screen_width
+     
     
     def draw_input_field(self, input_field, additional_text):
         # Zusätzlicher Text über dem input_field
@@ -189,24 +177,27 @@ class Menu:
             elif self.check_button_click(self.enter_player_names_button) or self.check_pinch_button_click(self.enter_player_names_button):
                 self.menu_state = "enterNames"
 
+
             elif self.check_button_click(self.quit_button) or self.check_pinch_button_click(self.quit_button):
                 pygame.quit()
                 exit()
                 
         elif self.menu_state == 'enterNames':
-            self.draw_input_field(self.input_field, self.additional_text)
+            if self.selected_input_field == "input_field_A":
+                self.draw_input_field(self.input_field, self.additional_text_A)
+            else:
+                self.draw_input_field(self.input_field, self.additional_text_B)
             self.draw_keyboard()
 
             self.add_letter_to_input_field()
             self.add_letter_to_input_field_via_pinch()
 
             for event in pygame.event.get():
-                if event.type == pygame.QUIT:   
-                    pygame.quit()
-                    exit()
+                    if event.type == pygame.QUIT:   
+                        pygame.quit()
+                        exit()
 
-              # Setze das Flag für Mausklicks zurück
-            # self.mouse_clicked = False
+
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
