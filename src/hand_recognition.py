@@ -28,10 +28,13 @@ class HandRecognition:
         self.V_SHAPE_THRESHOLD = 12
                 # This threshold determines how close the two fingers can be to be considered touching
         self.TOUCH_THRESHOLD = 15
+        self.FIST_THRESHOLD = 40
         self.Tcounter = 0 #for touching fingers (= pinching)
         self.Vcounter = 0 #for V-shape
+        self.Fcounter = 0 #for fist
         self.Tcounter_threshold = 20 # how often do we need to detect touching so it counts
         self.Vcounter_threshold = 20
+        self.Fcounter_threshold = 20
 
     def run(self, frame):
         self.frame = frame
@@ -67,6 +70,9 @@ class HandRecognition:
         self.index_finger_coordinates = []
         self.middle_finger_coordinates = []
         self.thumb_coordinates = []
+        self.ring_finger_coordinates = []
+        self.pinky_finger_coordinates = []
+        self.palm_coordinates = []
         if results.multi_hand_landmarks:
             for hand_landmarks in results.multi_hand_landmarks:
                 for idx, landmark in enumerate(hand_landmarks.landmark):
@@ -78,7 +84,16 @@ class HandRecognition:
                         cv2.circle(self.frame, (int(landmark.x * self.frame.shape[1]), int(landmark.y * self.frame.shape[0])), 5, (0, 255, 255), -1)
                     if idx == mp.solutions.hands.HandLandmark.THUMB_TIP:
                         self.thumb_coordinates.append((int(landmark.x * self.frame.shape[1]), int(landmark.y * self.frame.shape[0])))
-                        cv2.circle(self.frame, (int(landmark.x * self.frame.shape[1]), int(landmark.y * self.frame.shape[0])), 5, (0, 255, 255), -1)  
+                        cv2.circle(self.frame, (int(landmark.x * self.frame.shape[1]), int(landmark.y * self.frame.shape[0])), 5, (0, 255, 255), -1)
+                    if idx == mp.solutions.hands.HandLandmark.RING_FINGER_TIP:
+                        self.ring_finger_coordinates.append((int(landmark.x * self.frame.shape[1]), int(landmark.y * self.frame.shape[0])))
+                        cv2.circle(self.frame, (int(landmark.x * self.frame.shape[1]), int(landmark.y * self.frame.shape[0])), 5, (0, 255, 255), -1)
+                    if idx == mp.solutions.hands.HandLandmark.PINKY_TIP:
+                        self.pinky_finger_coordinates.append((int(landmark.x * self.frame.shape[1]), int(landmark.y * self.frame.shape[0])))
+                        cv2.circle(self.frame, (int(landmark.x * self.frame.shape[1]), int(landmark.y * self.frame.shape[0])), 5, (0, 255, 255), -1)
+                    if idx == mp.solutions.hands.HandLandmark.WRIST:
+                        self.palm_coordinates.append((int(landmark.x * self.frame.shape[1]), int(landmark.y * self.frame.shape[0])))
+                        cv2.circle(self.frame, (int(landmark.x * self.frame.shape[1]), int(landmark.y * self.frame.shape[0])), 5, (0, 255, 255), -1)
         return self.frame
         
     # define a function to measure how often a hand is detected
@@ -184,7 +199,6 @@ class HandRecognition:
         
 
     def storeThumbCoordinates(self):
-        # adjust this function to match the paddel y-coordinate to the finger tips
         # Get fingertip positions
         self.thumbtip_coord_right = None
         self.thumbtip_coord_left = None
@@ -201,6 +215,54 @@ class HandRecognition:
                 else:
                     self.thumbtip_coord_right = fingertips_array[0,:]
 
+    def storeRingFingerCoordinates(self):
+        # Get fingertip positions
+        self.ringfingertip_coord_right = None
+        self.ringfingertip_coord_left = None
+        self.ringfingertip_coord_both = None
+
+        fingertips_array = np.array(self.ring_finger_coordinates)
+        self.ringfingertip_coord_both = fingertips_array
+        if fingertips_array.shape[0] >= 2:
+            self.ringfingertip_coord_left = fingertips_array[np.argmin(fingertips_array[:,0]),:]
+            self.ringfingertip_coord_right = fingertips_array[np.argmax(fingertips_array[:,0]),:]
+        elif fingertips_array.shape[0] == 1:
+                if fingertips_array[0,0] < 0.5 * self.frame.shape[1]:
+                    self.ringfingertip_coord_left = fingertips_array[0, :]
+                else:
+                    self.ringfingertip_coord_right = fingertips_array[0,:]
+    def storePinkyFingerCoordinates(self):
+        # Get fingertip positions
+        self.pinkyfingertip_coord_right = None
+        self.pinkyfingertip_coord_left = None
+        self.pinkyfingertip_coord_both = None
+
+        fingertips_array = np.array(self.pinky_finger_coordinates)
+        self.pinkyfingertip_coord_both = fingertips_array
+        if fingertips_array.shape[0] >= 2:
+            self.pinkyfingertip_coord_left = fingertips_array[np.argmin(fingertips_array[:,0]),:]
+            self.pinkyfingertip_coord_right = fingertips_array[np.argmax(fingertips_array[:,0]),:]
+        elif fingertips_array.shape[0] == 1:
+                if fingertips_array[0,0] < 0.5 * self.frame.shape[1]:
+                    self.pinkyfingertip_coord_left = fingertips_array[0, :]
+                else:
+                    self.pinkyfingertip_coord_right = fingertips_array[0,:]
+    def storePalmCoordinates(self):
+        # Get fingertip positions
+        self.palm_coord_right = None
+        self.palm_coord_left = None
+        self.palm_coord_both = None
+
+        fingertips_array = np.array(self.palm_coordinates)
+        self.palm_coord_both = fingertips_array
+        if fingertips_array.shape[0] >= 2:
+            self.palm_coord_left = fingertips_array[np.argmin(fingertips_array[:,0]),:]
+            self.palm_coord_right = fingertips_array[np.argmax(fingertips_array[:,0]),:]
+        elif fingertips_array.shape[0] == 1:
+                if fingertips_array[0,0] < 0.5 * self.frame.shape[1]:
+                    self.palm_coord_left = fingertips_array[0, :]
+                else:
+                    self.palm_coord_right = fingertips_array[0,:]
         
     def getIndexFingerPosLeft(self):
         self.storeIndexFingerCoordinates()
@@ -254,6 +316,100 @@ class HandRecognition:
         self.storeThumbCoordinates()
         return self.thumbtip_coord_both
 
+    def getRingFingerCoordLeft(self):
+        self.storeRingFingerCoordinates()
+        return self.ringfingertip_coord_left
+    
+    def getRingFingerCoordRight(self):
+        self.storeRingFingerCoordinates()
+        return self.ringfingertip_coord_right
+    
+    def getRingFingerCoordBoth(self):
+        self.storeRingFingerCoordinates()
+        return self.ringfingertip_coord_both
+    
+    def getPinkyFingerCoordLeft(self):
+        self.storePinkyFingerCoordinates()
+        return self.pinkyfingertip_coord_left
+    
+    def getPinkyFingerCoordRight(self):
+        self.storePinkyFingerCoordinates()
+        return self.pinkyfingertip_coord_right
+    
+    def getPinkyFingerCoordBoth(self):
+        self.storePinkyFingerCoordinates()
+        return self.pinkyfingertip_coord_both
+    
+    def getPalmCoordLeft(self):
+        self.storePalmCoordinates()
+        return self.palm_coord_left
+    
+    def getPalmCoordRight(self):
+        self.storePalmCoordinates()
+        return self.palm_coord_right
+    
+    def getPalmCoordBoth(self):
+        self.storePalmCoordinates()
+        return self.palm_coord_both
+
+    def isFist(self, side='both'):
+        """Check if the distance of each finger to the palm is less than a certain threshold."""
+        # Assuming finger coordinates and palm coordinates are available
+        
+        # Function to calculate distance between two points
+        def distance(point1, point2):
+            return ((point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2) ** 0.5
+        
+        index_finger_coordinates_left = self.getIndexFingerCoordLeft()
+        thumb_coordinates_left = self.getThumbCoordLeft()
+        middle_finger_coordinates_left = self.getMiddleFingerCoordLeft()
+        ring_finger_coordinates_left = self.getRingFingerCoordLeft()
+        pinky_finger_coordinates_left = self.getPinkyFingerCoordLeft()
+        index_finger_coordinates_right = self.getIndexFingerCoordRight()
+        thumb_coordinates_right = self.getThumbCoordRight()
+        middle_finger_coordinates_right = self.getMiddleFingerCoordRight()
+        ring_finger_coordinates_right = self.getRingFingerCoordRight()
+        pinky_finger_coordinates_right = self.getPinkyFingerCoordRight()
+        index_finger_coordinates_both = self.getIndexFingerCoordBoth()
+        thumb_coordinates_both = self.getThumbCoordBoth()
+        middle_finger_coordinates_both = self.getMiddleFingerCoordBoth()
+        ring_finger_coordinates_both = self.getRingFingerCoordBoth()
+        pinky_finger_coordinates_both = self.getPinkyFingerCoordBoth()
+        palm_coordinates_left = self.getPalmCoordLeft()
+        palm_coordinates_right = self.getPalmCoordRight()
+        palm_coordinates_both = self.getPalmCoordBoth()
+
+        # Calculate distance for each finger
+        if side == 'left':
+            if index_finger_coordinates_left is None or palm_coordinates_left is None or thumb_coordinates_left is None or middle_finger_coordinates_left is None or ring_finger_coordinates_left is None or pinky_finger_coordinates_left is None: #len(index_finger_coordinates_left) == 0 or len(palm_coordinates_left) == 0 or len(thumb_coordinates_left) == 0 or len(middle_finger_coordinates_left) == 0 or len(ring_finger_coordinates_left) == 0 or len(pinky_finger_coordinates_left) == 0:
+                return False
+            index_finger_distance = distance(index_finger_coordinates_left, palm_coordinates_left)
+            thumb_distance = distance(thumb_coordinates_left, palm_coordinates_left)
+            middle_finger_distance = distance(middle_finger_coordinates_left, palm_coordinates_left)
+            ring_finger_distance = distance(ring_finger_coordinates_left, palm_coordinates_left)
+            pinky_finger_distance = distance(pinky_finger_coordinates_left, palm_coordinates_left)
+
+        if side == 'right':
+            if index_finger_coordinates_right is None or palm_coordinates_right is None or thumb_coordinates_right is None or middle_finger_coordinates_right is None or ring_finger_coordinates_right is None or pinky_finger_coordinates_right is None:
+                return False
+            index_finger_distance = distance(index_finger_coordinates_right, palm_coordinates_right)
+            thumb_distance = distance(thumb_coordinates_right, palm_coordinates_right)
+            middle_finger_distance = distance(middle_finger_coordinates_right, palm_coordinates_right)
+            ring_finger_distance = distance(ring_finger_coordinates_right, palm_coordinates_right)
+            pinky_finger_distance = distance(pinky_finger_coordinates_right, palm_coordinates_right)
+                    
+        # Check if all distances are less than the threshold
+        if index_finger_distance < self.FIST_THRESHOLD and middle_finger_distance < self.FIST_THRESHOLD and ring_finger_distance < self.FIST_THRESHOLD and pinky_finger_distance < self.FIST_THRESHOLD:
+            self.Fcounter += 1
+            #return True
+        else:
+            self.Fcounter = max(0, self.Fcounter - 1)
+            return False
+        if self.Fcounter >= self.Fcounter_threshold:
+            self.Fcounter = 0
+            return True
+        else:
+            return False
     # define a function to detect if index finger and thumb are touching
     def isTouchingIndexFingerAndThumb(self, side='both'):
         """Check if the index finger and thumb are touching."""
@@ -344,6 +500,9 @@ class HandRecognition:
                         if abs(index_point[1] - closest_middle_point[1]) < self.V_SHAPE_THRESHOLD and (closest_thumb_point[1] - index_point[1]) > (self.V_SHAPE_THRESHOLD):
                             self.Vcounter += 1
                             #return True
+                        else:
+                            self.Vcounter = max(0, self.Vcounter - 1) 
+                            return False
                     
         elif side == 'right':
             if index_fingertip_right is not None and middle_fingertip_right is not None and thumb_tip_right is not None:
@@ -358,6 +517,9 @@ class HandRecognition:
                         # cv2.line(self.frame, index_fingertip_right, middle_fingertip_right, (0, 255, 0), 2)
                         self.Vcounter += 1
                         #return True
+                    else:
+                            self.Vcounter = max(0, self.Vcounter - 1) 
+                            return False
         elif side == 'left':
             # Check if both fingertips are detected
             if index_fingertip_left is not None and middle_fingertip_left is not None and thumb_tip_left is not None:
@@ -372,7 +534,12 @@ class HandRecognition:
                         # cv2.line(self.frame, index_fingertip_left, middle_fingertip_left, (0, 255, 0), 2)
                         self.Vcounter += 1
                         #return True
-        self.Vcounter = max(0, self.Vcounter - 1)
+                    else:
+                            self.Vcounter = max(0, self.Vcounter - 1) 
+                            return False
+        if self.Vcounter >= self.Vcounter_threshold:
+            self.Vcounter = 0
+            return True
         return False
 
 if __name__ == '__main__':
@@ -398,7 +565,8 @@ if __name__ == '__main__':
         # Check for V-Shape
         if hand_recognition.isVShape():
             cv2.putText(frame, "V-Shape", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-
+        if hand_recognition.isFist('left'):
+            cv2.putText(frame,"left fist", (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
         cv2.imshow('frame', frame)
     # Release webcam and destroy windows
     cap.release()
