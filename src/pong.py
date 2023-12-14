@@ -7,6 +7,17 @@ class PongGame:
     def __init__(self,screen_height,screen_width):
         # Initialize the game
         pygame.init()
+        
+        # Load background music
+        pygame.mixer.music.load("music.mp3")
+
+        # Play the background music on a loop
+        pygame.mixer.music.play(-1)
+        pygame.mixer.music.set_volume(0.5)
+        
+        # Load sound effects
+        self.bounce_sound = pygame.mixer.Sound("bounce.wav")
+        self.death_sound = pygame.mixer.Sound("deathray.wav")
 
         self.paused = True
 
@@ -52,6 +63,9 @@ class PongGame:
         self.player_a_barrier_y = None
         self.player_b_barrier_x = None
         self.player_b_barrier_y = None
+        
+        self.player_a_barrier_rect = pygame.Rect(0, 0, self.barrier_width, self.barrier_height)
+        self.player_b_barrier_rect = pygame.Rect(0, 0, self.barrier_width, self.barrier_height)
         
         # Set up the ball
         self.ball_radius = 6
@@ -128,10 +142,12 @@ class PongGame:
         # Check for collisions with paddles
         if self.paddle_rect_a.colliderect(self.ball_rect):
             self.ball_speed_x *= -1
+            self.bounce_sound.play()
             # self.ball_rect = pygame.Rect(self.ball_x, self.ball_y, self.ball_radius * 2, self.ball_radius * 2)
 
         if self.paddle_rect_b.colliderect(self.ball_rect):
             self.ball_speed_x *= -1
+            self.bounce_sound.play()
             
 
         # if self.player_a_paddle_x <= self.ball_x - self.ball_radius <= self.player_a_paddle_x + self.paddle_width \
@@ -148,6 +164,7 @@ class PongGame:
                 # 
                 if self.player_a_barrier_rect.colliderect(self.ball_rect):
                     self.ball_speed_x *= -1
+                    self.bounce_sound.play()
                 # if self.player_a_barrier_x <= self.ball_x - self.ball_radius <= self.player_a_barrier_x + self.barrier_width \
                 #     and self.player_a_barrier_y <= self.ball_y <= self.player_a_barrier_y + self.barrier_height:
                 #     self.ball_speed_x *= -1
@@ -161,6 +178,7 @@ class PongGame:
             ##
                 if self.player_b_barrier_rect.colliderect(self.ball_rect):
                     self.ball_speed_x *= -1
+                    self.bounce_sound.play()
                 # if self.player_b_barrier_x <= self.ball_x - self.ball_radius <= self.player_b_barrier_x + self.barrier_width \
                 #     and self.player_b_barrier_y <= self.ball_y <= self.player_b_barrier_y + self.barrier_height:
                 #     self.ball_speed_x *= -1
@@ -172,11 +190,14 @@ class PongGame:
             # Check for collisions with walls
         if self.ball_y <= 0 or self.ball_y >= self.screen_height - self.ball_radius:
             self.ball_speed_y *= -1
+            self.bounce_sound.play()
         if self.ball_x <= 0:
             self.player_b_score += 1
+            self.death_sound.play()
             self.reset_ball()
         if self.ball_x >= self.screen_width - self.ball_radius:
             self.player_a_score += 1
+            self.death_sound.play()
             self.reset_ball()
 
     def _update_score(self):
