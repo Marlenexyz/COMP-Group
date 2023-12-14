@@ -35,11 +35,10 @@ class Menu:
         space_between_buttons = (self.screen_height - total_button_height) / 4
 
         self.play_button = {"text": "Play", "rect": pygame.Rect(button_x, space_between_buttons, button_width, button_height)}
-        self.enter_player_names_button = {"text": "Enter Names", "rect": pygame.Rect(button_x, space_between_buttons + 1 * (button_height + space_between_buttons), button_width, button_height)}
+        self.enter_player_names_button = {"text": "Names", "rect": pygame.Rect(button_x, space_between_buttons + 1 * (button_height + space_between_buttons), button_width, button_height)}
         self.quit_button = {"text": "Quit", "rect": pygame.Rect(button_x, space_between_buttons + 2 * (button_height + space_between_buttons), button_width, button_height)}
 
-        
-        
+
         self.playerNameA = "Player A"
         self.playerNameB = "Player B"
    
@@ -77,30 +76,34 @@ class Menu:
             {"text": "B", "rect": pygame.Rect(screen_width // 10 + 2* offset + 4 * button_spacing, screen_height - 50, button_width, button_height)},
             {"text": "N", "rect": pygame.Rect(screen_width // 10 + 2* offset + 5 * button_spacing, screen_height - 50, button_width, button_height)},
             {"text": "M", "rect": pygame.Rect(screen_width // 10 + 2* offset + 6 * button_spacing, screen_height - 50, button_width, button_height)},
-            {"text": "Enter", "rect": pygame.Rect(screen_width // 10 + 2* offset + 9 * button_spacing, screen_height - 50, 150, button_height)},
+            {"text": "Enter", "rect": pygame.Rect(screen_width // 10 + 2* offset + 7 * button_spacing, screen_height - 50, 150, button_height)},
         ]
 
         # Input field variables for entering player names
         self.input_active = False
         self.input_text = ""
         self.input_rect = pygame.Rect(self.screen_width // 2 - 100, 500, 200, 50)       #del?
-        self.input_color_inactive = pygame.Color('lightskyblue3')
+        # self.input_color_inactive = pygame.Color('lightskyblue3')
+        self.input_color_inactive = pygame.Color(0,0,0)
         self.input_color_active = pygame.Color('dodgerblue2')
         self.input_color = self.input_color_inactive
         self.input_active = False
 
         
-        self.input_field = {"text": "", "rect": pygame.Rect(self.screen_height/2, 0.35 * self.screen_width, 200, 50)}
+        self.input_field = {"text": "", "rect": pygame.Rect(self.screen_height/2, 0.25 * self.screen_width, 200, 50)}
         # Zusätzlicher Text über dem input_field
-        self.additional_text = {"text": "Enter player name:", "rect": pygame.Rect(screen_height/2, 0.30 * screen_width - 50, 200, 50)}
+        self.additional_text = {"text": "Enter player name:", "rect": pygame.Rect(screen_height/2, 0.15 * screen_width - 50, 200, 50)}
 
         self.selected_input_field = "input_field_A"
+
+        self.pinch_click = False
         
     def create_set_up_window(self):
 
         # Set up the font with a larger size
         font_size = 72
         font = pygame.font.Font(None, font_size)
+        font_small = pygame.font.Font(None, font_size // 2)
         
         # Event handling
         for event in pygame.event.get():
@@ -114,7 +117,7 @@ class Menu:
         # Render and display the text
         text = font.render("Pong Game", True, self.WHITE)
         text_rect = text.get_rect(center=(self.screen_width // 2, self.screen_height // 2))
-        text2 = font.render("press Enter to continue", True, self.WHITE)
+        text2 = font_small.render("press Enter to continue", True, self.WHITE)
         text_rect2 = text2.get_rect(center=(self.screen_width // 2, self.screen_height // 2 + 150))
         self.screen.blit(text, text_rect)
         self.screen.blit(text2, text_rect2)
@@ -127,15 +130,17 @@ class Menu:
         
     def draw_keyboard(self):
         for button in self.keyboard_buttons:
-            pygame.draw.rect(self.screen, (70, 70, 70), button["rect"])
+            pygame.draw.rect(self.screen, self.BLACK, button["rect"])
+            pygame.draw.rect(self.screen, self.WHITE, button["rect"], 2)
             text_surface = self.font.render(button["text"], True, self.WHITE)
             text_rect = text_surface.get_rect(center=button["rect"].center)
             self.screen.blit(text_surface, text_rect)
             
 
     def draw_button(self, button):
-        pygame.draw.rect(self.screen, (70, 70, 70), button["rect"])
-        text_surface = self.font.render(button["text"], True, self.BLACK)
+        pygame.draw.rect(self.screen, self.BLACK, button["rect"])
+        pygame.draw.rect(self.screen, self.WHITE, button["rect"], 2)    # 2 Bixel Breite ums Feld
+        text_surface = self.font.render(button["text"], True, self.WHITE)
         text_rect = text_surface.get_rect(center=button["rect"].center)
         self.screen.blit(text_surface, text_rect)
 
@@ -161,15 +166,15 @@ class Menu:
         text_rect = text_surface.get_rect(center=additional_text["rect"].center)
         self.screen.blit(text_surface, text_rect)
 
-        pygame.draw.rect(self.screen, (0, 0, 0), input_field["rect"])  # Weißes Rechteck für das Eingabefeld (255,255,255)
-        pygame.draw.rect(self.screen, (0, 0, 0), input_field["rect"], 2)  # Schwarzer Rand um das Eingabefeld
+        pygame.draw.rect(self.screen, self.BLACK, input_field["rect"])  # Schwarzes Rechteck für das Eingabefeld 
+        pygame.draw.rect(self.screen, self.WHITE, input_field["rect"], 2)  # Weißer Rand um das Eingabefeld
 
         text_surface = self.font.render(input_field["text"], True, self.WHITE)
         text_rect = text_surface.get_rect(center=input_field["rect"].center)
         self.screen.blit(text_surface, text_rect)
 
     def update_menu(self):
-        self.screen.fill((52, 78, 91))
+        self.screen.fill(self.BLACK)
 
         if self.menu_state == "main":
             self.draw_button(self.play_button)
@@ -201,7 +206,7 @@ class Menu:
                     exit()
 
               # Setze das Flag für Mausklicks zurück
-            self.mouse_clicked = False
+            # self.mouse_clicked = False
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
