@@ -31,17 +31,12 @@ class Menu:
         # Calculate x-coordinate for centering buttons
         button_x = (self.screen_width - button_width) / 2
 
-        total_button_height = 4 * button_height
-        space_between_buttons = (self.screen_height - total_button_height) / 5
+        total_button_height = 3 * button_height
+        space_between_buttons = (self.screen_height - total_button_height) / 4
 
         self.play_button = {"text": "Play", "rect": pygame.Rect(button_x, space_between_buttons, button_width, button_height)}
-        self.options_button = {"text": "Options", "rect": pygame.Rect(button_x, space_between_buttons + (button_height + space_between_buttons), button_width, button_height)}
-        self.enter_player_names_button = {"text": "Enter Names", "rect": pygame.Rect(button_x, space_between_buttons + 2 * (button_height + space_between_buttons), button_width, button_height)}
-        self.quit_button = {"text": "Quit", "rect": pygame.Rect(button_x, space_between_buttons + 3 * (button_height + space_between_buttons), button_width, button_height)}
-        self.video_button = {"text": "Video Settings", "rect": pygame.Rect(button_x, space_between_buttons + 4 * (button_height + space_between_buttons), button_width, button_height)}
-        self.audio_button = {"text": "Audio Settings", "rect": pygame.Rect(button_x, space_between_buttons + 5 * (button_height + space_between_buttons), button_width, button_height)}
-        self.keys_button = {"text": "Change Key Bindings", "rect": pygame.Rect(button_x, space_between_buttons + 6 * (button_height + space_between_buttons), button_width, button_height)}
-        self.back_button = {"text": "Back", "rect": pygame.Rect(button_x, space_between_buttons + 7 * (button_height + space_between_buttons), button_width, button_height)}
+        self.enter_player_names_button = {"text": "Enter Names", "rect": pygame.Rect(button_x, space_between_buttons + 1 * (button_height + space_between_buttons), button_width, button_height)}
+        self.quit_button = {"text": "Quit", "rect": pygame.Rect(button_x, space_between_buttons + 2 * (button_height + space_between_buttons), button_width, button_height)}
 
         
         
@@ -96,9 +91,8 @@ class Menu:
 
         
         self.input_field = {"text": "", "rect": pygame.Rect(self.screen_height/2, 0.35 * self.screen_width, 200, 50)}
-        # self.input_field_B = {"text": "", "rect": pygame.Rect(self.screen_height/2, 0.35 * self.screen_width, 200, 50)}
         # Zusätzlicher Text über dem input_field
-        self.additional_text_A = {"text": "Enter player name:", "rect": pygame.Rect(screen_height/2, 0.30 * screen_width - 50, 200, 50)}
+        self.additional_text = {"text": "Enter player name:", "rect": pygame.Rect(screen_height/2, 0.30 * screen_width - 50, 200, 50)}
 
         self.selected_input_field = "input_field_A"
         
@@ -134,7 +128,7 @@ class Menu:
     def draw_keyboard(self):
         for button in self.keyboard_buttons:
             pygame.draw.rect(self.screen, (70, 70, 70), button["rect"])
-            text_surface = self.font.render(button["text"], True, self.BLACK)
+            text_surface = self.font.render(button["text"], True, self.WHITE)
             text_rect = text_surface.get_rect(center=button["rect"].center)
             self.screen.blit(text_surface, text_rect)
             
@@ -146,7 +140,7 @@ class Menu:
         self.screen.blit(text_surface, text_rect)
 
     def draw_text(self, text, x, y):
-        text_surface = self.font.render(text, True, self.BLACK)
+        text_surface = self.font.render(text, True, self.WHITE)
         text_rect = text_surface.get_rect(center=(x, y))
         self.screen.blit(text_surface, text_rect)
 
@@ -158,45 +152,19 @@ class Menu:
         return self.screen_width
     
     def toggle_input_active(self):
-        self.input_active = not self.input_active
-
-    def update_input_active(self, event):
-        if self.menu_state == "enterNames":
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                # Überprüfe, ob die Maus im Eingabefeld liegt, um es zu aktivieren oder deaktivieren
-                #Sollte eigentlich automatisch active sein
-                if self.input_field["rect"].collidepoint(event.pos):
-                    self.toggle_input_active()
-                else:
-                    self.input_active = False
-
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
-                    # Enter-Taste wurde gedrückt, um die Eingabe zu bestätigen
-                    print("Entered text:", self.input_field["text"])
-                    self.menu_state = "main"  # Hier könntest du die Logik für die Textverarbeitung implementieren
-                elif event.key == pygame.K_BACKSPACE:
-                    # Backspace-Taste wurde gedrückt, um das letzte Zeichen zu entfernen
-                    self.input_field["text"] = self.input_field["text"][:-1]
-                elif event.key == pygame.K_ESCAPE:
-                    # Escape-Taste wurde gedrückt, um die Eingabe zu deaktivieren
-                    self.input_active = False
-                else:
-                    # Füge das gedrückte Zeichen zur Eingabe hinzu
-                    self.input_field["text"] += event.unicode
-    
+        self.input_active = not self.input_active    
  
     
     def draw_input_field(self, input_field, additional_text):
         # Zusätzlicher Text über dem input_field
-        text_surface = self.font.render(additional_text["text"], True, self.BLACK)
+        text_surface = self.font.render(additional_text["text"], True, self.WHITE)
         text_rect = text_surface.get_rect(center=additional_text["rect"].center)
         self.screen.blit(text_surface, text_rect)
 
         pygame.draw.rect(self.screen, (0, 0, 0), input_field["rect"])  # Weißes Rechteck für das Eingabefeld (255,255,255)
         pygame.draw.rect(self.screen, (0, 0, 0), input_field["rect"], 2)  # Schwarzer Rand um das Eingabefeld
 
-        text_surface = self.font.render(input_field["text"], True, self.BLACK)
+        text_surface = self.font.render(input_field["text"], True, self.WHITE)
         text_rect = text_surface.get_rect(center=input_field["rect"].center)
         self.screen.blit(text_surface, text_rect)
 
@@ -205,7 +173,6 @@ class Menu:
 
         if self.menu_state == "main":
             self.draw_button(self.play_button)
-            self.draw_button(self.options_button)
             self.draw_button(self.quit_button)
             self.draw_button(self.enter_player_names_button)
 
@@ -213,10 +180,6 @@ class Menu:
             if self.check_button_click(self.play_button) or self.check_pinch_button_click(self.play_button):
                 print("Play button clicked!")
                 self.menu_state = "play"
-
-            elif self.check_button_click(self.options_button) or self.check_pinch_button_click(self.options_button):
-                print("Options button clicked!")
-                self.menu_state = "options"
     
             elif self.check_button_click(self.enter_player_names_button) or self.check_pinch_button_click(self.enter_player_names_button):
                 self.menu_state = "enterNames"
@@ -226,39 +189,17 @@ class Menu:
                 exit()
                 
         elif self.menu_state == 'enterNames':
-            self.draw_input_field(self.input_field, self.additional_text_A)
+            self.draw_input_field(self.input_field, self.additional_text)
             self.draw_keyboard()
 
-            # if self.input_active:
-            #     # Logik zum Hinzufügen von Buchstaben zur input_text-Zeichenkette hier hinzufügen
-            #     pass
             self.add_letter_to_input_field()
             self.add_letter_to_input_field_via_pinch()
 
             for event in pygame.event.get():
-                # if event.type == pygame.MOUSEBUTTONDOWN:
-                        
-                #         self.add_letter_to_input_field(event)
                 if event.type == pygame.QUIT:   
-                # elif event.type == pygame.QUIT:
                     pygame.quit()
                     exit()
 
-                ##Das muss irgendwie eingerückt werden
-                # elif self.menu_state == "options":
-                #     self.draw_button(self.video_button)
-                #     self.draw_button(self.audio_button)
-                #     self.draw_button(self.keys_button)
-                #     # self.draw_button(self.enter_player_names_button)
-                #     self.draw_button(self.back_button)
-                #     if self.check_button_click(self.video_button) or self.check_pinch_button_click(self.video_button):
-                #         print("Video Settings button clicked!")
-                #     elif self.check_button_click(self.audio_button) or self.check_pinch_button_click(self.audio_button):
-                #         print("Audio Settings button clicked!")
-                #     elif self.check_button_click(self.keys_button) or self.check_pinch_button_click(self.keys_button):
-                #         print("Change Key Bindings button clicked!")
-                #     elif self.check_button_click(self.back_button) or self.check_pinch_button_click(self.back_button):
-                #         self.menu_state = "main"
               # Setze das Flag für Mausklicks zurück
             self.mouse_clicked = False
         for event in pygame.event.get():
@@ -268,13 +209,10 @@ class Menu:
             elif event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
-        # for event in pygame.event.get():
-        #     if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.KEYDOWN:
-        #         self.update_input_active(event)
         self.draw_mouse()           # Zeichne den Finger als Mouse
         pygame.display.update()
 
-    # def add_letter_to_input_field(self,event):
+
     def add_letter_to_input_field(self):
         for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN:
@@ -410,8 +348,6 @@ class Menu:
     def getPlayerNameB(self):
         return self.playerNameB
     
-    
-    
     def setIndexFingerPos(self, x, y):
         self.IndexFingerPos = (x, y)
 
@@ -433,7 +369,7 @@ class Menu:
         self.setIsPinched(is_pinched)
         
 
-    def draw_mouse(self):           #delete?
+    def draw_mouse(self):          
         self.mouse = pygame.draw.circle(self.screen, self.RED, (self.IndexFingerPos[0], self.IndexFingerPos[1]), 15)
         pygame.display.update()
 
@@ -444,7 +380,6 @@ class Menu:
         else:
             return False
         
-
 
     def check_button_click(self, button):
         mouse_pos = pygame.mouse.get_pos()

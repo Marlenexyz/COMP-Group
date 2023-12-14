@@ -3,7 +3,7 @@ from frame_matcher import *
 from pos_predictor import *
 from pong import *
 from menu import *
-from setup import *
+
 
 import cv2
 
@@ -19,7 +19,7 @@ initial_paddle_pos_left = game_height // 2
 initial_paddle_pos_right = game_height // 2
 countdown = 3 # increase countdown
 
-test_flag = False
+test_flag = True
 
 if test_flag:
     countdown = 0
