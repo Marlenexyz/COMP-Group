@@ -77,6 +77,7 @@ class Menu:
             {"text": "N", "rect": pygame.Rect(screen_width // 10 + 2* offset + 5 * button_spacing, screen_height - 50, button_width, button_height)},
             {"text": "M", "rect": pygame.Rect(screen_width // 10 + 2* offset + 6 * button_spacing, screen_height - 50, button_width, button_height)},
             {"text": "Enter", "rect": pygame.Rect(screen_width // 10 + 2* offset + 7 * button_spacing, screen_height - 50, 150, button_height)},
+            {"text": "Del", "rect": pygame.Rect(screen_width // 10 - 50 , screen_height - 50, 75, button_height)},
         ]
 
         # Input field variables for entering player names
@@ -96,7 +97,6 @@ class Menu:
 
         self.selected_input_field = "input_field_A"
 
-        self.pinch_click = False
         
     def create_set_up_window(self):
 
@@ -281,6 +281,8 @@ class Menu:
                         elif self.selected_input_field == "input_field_B":
                             self.playerNameB = self.input_field["text"]
                             self.menu_state = "main"
+                    if self.keyboard_buttons[27]["rect"].collidepoint(event.pos):
+                        self.input_field["text"] = self.input_field["text"][:-1]
 
     def add_letter_to_input_field_via_pinch(self):
         if self.check_pinch_button_click(self.keyboard_buttons[1]):
@@ -343,6 +345,8 @@ class Menu:
             elif self.selected_input_field == "input_field_B":
                 self.playerNameB = self.input_field["text"]
                 self.menu_state = "main"
+        if self.check_pinch_button_click(self.keyboard_buttons[27]):  # Wenn die "Del"-Taste gedrückt wird
+                self.input_field["text"] = self.input_field["text"][:-1]
 
     def getStatus(self):
         return self.menu_state
