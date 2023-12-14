@@ -12,7 +12,7 @@ video = 2
 game_height = 400
 game_width = 600
 
-debug_height = 200
+debug_height = 300
 debug_width = 600
 
 initial_paddle_pos_left = game_height // 2
@@ -78,15 +78,19 @@ def displayDebugInfo():
     
     is_touching_index_finger_and_thumb_left = hand_recognition.isTouchingIndexFingerAndThumb('left')
     is_touching_index_finger_and_thumb_right = hand_recognition.isTouchingIndexFingerAndThumb('right')
+    is_v_shape_left = hand_recognition.isVShape('left')
+    is_v_shape_right = hand_recognition.isVShape('right')
     
     cv2.putText(debug_frame, 'Detected Gestures:', (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+    
     touching_index_finger_and_thumb_left_display = f'    Left fingers touching: {is_touching_index_finger_and_thumb_left}'
     cv2.putText(debug_frame, touching_index_finger_and_thumb_left_display, (10, 120), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
     touching_index_finger_and_thumb_right_display = f'    Right fingers touching: {is_touching_index_finger_and_thumb_right}'
     cv2.putText(debug_frame, touching_index_finger_and_thumb_right_display, (10, 150), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
-    
-    # is_v_shape_left = hand_recognition.isVShape('left')
-    # is_v_shape_right = hand_recognition.isVShape('right')
+    v_shape_left_display = f'    Left V shape: {is_v_shape_left}'
+    cv2.putText(debug_frame, v_shape_left_display, (10, 180), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+    v_shape_right_display = f'    Right V shape: {is_v_shape_right}'
+    cv2.putText(debug_frame, v_shape_right_display, (10, 210), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
     
     cv2.imshow('Debug Info', debug_frame)
 
@@ -122,6 +126,10 @@ if __name__ == '__main__':
 
     has_run_once = False
     set_up_done = False
+    
+    if test_flag:
+        hand_recognition.V_SHAPE_THRESHOLD = 40
+        hand_recognition.TOUCH_THRESHOLD = 40
     
     # MAIN LOOP ----------------------
     while True:
@@ -165,6 +173,11 @@ if __name__ == '__main__':
             # set player names
             pong.setPlayerNameA(mainMenu.getPlayerNameA())
             pong.setPlayerNameB(mainMenu.getPlayerNameB())
+            
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
 
         # PONG GAME ---------------------
         elif status == 'play':
@@ -199,9 +212,17 @@ if __name__ == '__main__':
                 # update paddles if index finger is in game frame
                 calculatePaddlePos(game_corners, index_finger_pos)
                 
+                # increase paddle size if index finger and thumb are touching
+                if hand_recognition.isTouchingIndexFingerAndThumb('left'):
+                    pong.increase_paddle_length('left')
+                if hand_recognition.isTouchingIndexFingerAndThumb('right'):
+                    pong.increase_paddle_length('right')
+                
                 # change ball speed if v shape is recognized
-                if hand_recognition.isVShape():
-                    pong.setBallSpeed()
+                if hand_recognition.isVShape('left'):
+                    pong.increase_ball_speed('left')
+                if hand_recognition.isVShape('right'):
+                    pong.increase_ball_speed('right')
                 
                 # run pong and update display
                 pong.run()
