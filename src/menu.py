@@ -9,11 +9,11 @@ class Menu:
         self.screen_width = screen_width
         
         self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
-        pygame.display.set_caption("Main Menu")
+        pygame.display.set_caption("Pong")
 
         # Game variables
         self.game_paused = False
-        self.menu_state = "main"
+        self.menu_state = "setup"
 
         self.setIndexFingerPos(0, 0)
 
@@ -21,9 +21,9 @@ class Menu:
         self.font = pygame.font.SysFont("arialblack", 40)
 
         # Define colours
-        self.BLACK = (255, 255, 255)
+        self.WHITE = (255, 255, 255)
         self.RED = (255, 0, 0)
-
+        self.BLACK = (0, 0, 0)
 
         ## Button instances dependant on screen size
         button_width, button_height = 200, 50
@@ -101,6 +101,32 @@ class Menu:
         self.additional_text_A = {"text": "Enter player name:", "rect": pygame.Rect(screen_height/2, 0.30 * screen_width - 50, 200, 50)}
 
         self.selected_input_field = "input_field_A"
+        
+    def create_set_up_window(self):
+
+        # Set up the font with a larger size
+        font_size = 72
+        font = pygame.font.Font(None, font_size)
+        
+        # Event handling
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    self.menu_state = 'main'
+
+        # Fill the screen with black
+        self.screen.fill(self.BLACK)
+
+        # Render and display the text
+        text = font.render("Pong Game", True, self.WHITE)
+        text_rect = text.get_rect(center=(self.screen_width // 2, self.screen_height // 2))
+        text2 = font.render("press Enter to continue", True, self.WHITE)
+        text_rect2 = text2.get_rect(center=(self.screen_width // 2, self.screen_height // 2 + 150))
+        self.screen.blit(text, text_rect)
+        self.screen.blit(text2, text_rect2)
+
+        # Update the display
+        pygame.display.flip()
 
     def __del__(self):
         pygame.quit()

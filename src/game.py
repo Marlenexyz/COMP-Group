@@ -127,9 +127,6 @@ if __name__ == '__main__':
 
     has_run_once = False
     set_up_done = False
-
-    if not test_flag:
-        create_set_up_window(game_height, game_width)
     
     # MAIN LOOP ----------------------
     while True:
@@ -141,9 +138,13 @@ if __name__ == '__main__':
         
         # get game status
         status = mainMenu.getStatus()
+        
+        # START GAME ---------------------
+        if status == 'setup':
+            mainMenu.create_set_up_window()
 
         # GAME MENU ---------------------
-        if status == 'main':
+        elif status == 'main':
             
             # calibrate corners once after setup screen
             if not set_up_done:
