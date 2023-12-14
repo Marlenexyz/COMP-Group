@@ -26,6 +26,12 @@ class HandRecognition:
         self.thumb_coordinates = []
         # This threshold determines how close the two fingers can be to be considered a V-shape
         self.V_SHAPE_THRESHOLD = 12
+                # This threshold determines how close the two fingers can be to be considered touching
+        self.TOUCH_THRESHOLD = 15
+        self.Tcounter = 0 #for touching fingers (= pinching)
+        self.Vcounter = 0 #for V-shape
+        self.Tcounter_threshold = 20 # how often do we need to detect touching so it counts
+        self.Vcounter_threshold = 20
 
     def run(self, frame):
         self.frame = frame
@@ -73,7 +79,7 @@ class HandRecognition:
                     if idx == mp.solutions.hands.HandLandmark.THUMB_TIP:
                         self.thumb_coordinates.append((int(landmark.x * self.frame.shape[1]), int(landmark.y * self.frame.shape[0])))
                         cv2.circle(self.frame, (int(landmark.x * self.frame.shape[1]), int(landmark.y * self.frame.shape[0])), 5, (0, 255, 255), -1)  
-        
+        return self.frame
         
     # define a function to measure how often a hand is detected
     def measureRecall(self,capt):
@@ -253,10 +259,7 @@ class HandRecognition:
         """Check if the index finger and thumb are touching."""
         # Assuming index_finger_coordinates and thumb_coordinates are available
         # and each contains (x, y) tuples for the respective fingertip positions.
-        
-        # This threshold determines how close the two fingers can be to be considered touching
-        TOUCH_THRESHOLD = 15
-        
+
         # Function to calculate distance between two points
         def distance(point1, point2):
             return ((point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2) ** 0.5
@@ -286,7 +289,14 @@ class HandRecognition:
                 distance_between_fingers = distance(index_finger_coordinates_right, thumb_coordinates_right)
         
         # Check if the distance is less than the threshold
-        if distance_between_fingers < TOUCH_THRESHOLD:
+        if distance_between_fingers < self.TOUCH_THRESHOLD:
+            self.Tcounter += 1
+            #return True
+        else:
+            self.Tcounter = max(0, self.Tcounter - 1) 
+            return False
+        if self.Tcounter >= self.Tcounter_threshold:
+            self.Tcounter = 0
             return True
         else:
             return False
@@ -332,7 +342,8 @@ class HandRecognition:
     
                     if distance_middle > self.V_SHAPE_THRESHOLD and distance_thumb > self.V_SHAPE_THRESHOLD:
                         if abs(index_point[1] - closest_middle_point[1]) < self.V_SHAPE_THRESHOLD and (closest_thumb_point[1] - index_point[1]) > (self.V_SHAPE_THRESHOLD):
-                            return True
+                            self.Vcounter += 1
+                            #return True
                     
         elif side == 'right':
             if index_fingertip_right is not None and middle_fingertip_right is not None and thumb_tip_right is not None:
@@ -345,7 +356,8 @@ class HandRecognition:
                     if abs(index_fingertip_right[1] - middle_fingertip_right[1]) < self.V_SHAPE_THRESHOLD and (thumb_tip_right[1] - index_fingertip_right[1]) > (self.V_SHAPE_THRESHOLD):
                         # if v shape is detected, draw a v-shape on the image 
                         # cv2.line(self.frame, index_fingertip_right, middle_fingertip_right, (0, 255, 0), 2)
-                        return True
+                        self.Vcounter += 1
+                        #return True
         elif side == 'left':
             # Check if both fingertips are detected
             if index_fingertip_left is not None and middle_fingertip_left is not None and thumb_tip_left is not None:
@@ -358,7 +370,9 @@ class HandRecognition:
                     if abs(index_fingertip_left[1] - middle_fingertip_left[1]) < self.V_SHAPE_THRESHOLD and (thumb_tip_left[1] - index_fingertip_left[1]) > (self.V_SHAPE_THRESHOLD):
                         # if v shape is detected, draw a v-shape on the image 
                         # cv2.line(self.frame, index_fingertip_left, middle_fingertip_left, (0, 255, 0), 2)
-                        return True
+                        self.Vcounter += 1
+                        #return True
+        self.Vcounter = max(0, self.Vcounter - 1)
         return False
 
 if __name__ == '__main__':
