@@ -7,6 +7,17 @@ class PongGame:
     def __init__(self,screen_height,screen_width):
         # Initialize the game
         pygame.init()
+        
+        # Load background music
+        pygame.mixer.music.load("music.mp3")
+
+        # Play the background music on a loop
+        pygame.mixer.music.play(-1)
+        pygame.mixer.music.set_volume(0.5)
+        
+        # Load sound effects
+        self.bounce_sound = pygame.mixer.Sound("bounce.wav")
+        self.death_sound = pygame.mixer.Sound("deathray.wav")
 
         self.paused = True
 
@@ -34,11 +45,17 @@ class PongGame:
         self.paddle_height_b = 60
         self.paddle_speed = 3 # only used for keyboard inputs
         self.paddle_increase = 60 # value added to paddle height
+
+
+        
         self.player_a_paddle_x = 50
         self.player_a_paddle_y = (self.screen_height - self.paddle_height_a) // 2
         self.player_b_paddle_x = self.screen_width - self.paddle_width - 50
         self.player_b_paddle_y = (self.screen_height - self.paddle_height_b) // 2
-        
+
+        self.paddle_rect_a = pygame.Rect(self.player_a_paddle_x, self.player_a_paddle_y, self.paddle_width, self.paddle_height_a)
+        self.paddle_rect_b = pygame.Rect(self.player_b_paddle_x, self.player_b_paddle_y, self.paddle_width, self.paddle_height_b)
+
         # Set up the barrier
         self.barrier_width = 12
         self.barrier_height = 90
@@ -46,6 +63,9 @@ class PongGame:
         self.player_a_barrier_y = None
         self.player_b_barrier_x = None
         self.player_b_barrier_y = None
+        
+        self.player_a_barrier_rect = pygame.Rect(0, 0, self.barrier_width, self.barrier_height)
+        self.player_b_barrier_rect = pygame.Rect(0, 0, self.barrier_width, self.barrier_height)
         
         # Set up the ball
         self.ball_radius = 6
@@ -56,6 +76,10 @@ class PongGame:
         self.ball_x = self.screen_width // 2
         self.ball_y = self.screen_height // 2
 
+        self.ball_rect = pygame.Rect(self.ball_x, self.ball_y, self.ball_radius * 2, self.ball_radius * 2)
+        # self.ball_rect = pygame.Rect(self.ball_x-0.5*self.ball_radius, self.ball_y-0.5*self.ball_radius, self.ball_radius, self.ball_radius)
+        # self.ball_circle = pygame.draw.circle(self.screen, self.BLACK, (self.ball_x, self.ball_y), self.ball_radius)
+       
         # Set up the players
         self.player_name_a = "Player A"
         self.player_name_b = "Player B"
@@ -112,44 +136,68 @@ class PongGame:
     def _move_ball(self):
         self.ball_x += self.ball_speed_x
         self.ball_y += self.ball_speed_y
+        self.ball_rect = pygame.Rect(self.ball_x, self.ball_y, self.ball_radius * 2, self.ball_radius * 2)
 
     def _check_collision_with_paddle(self):
         # Check for collisions with paddles
-        if self.player_a_paddle_x <= self.ball_x - self.ball_radius <= self.player_a_paddle_x + self.paddle_width \
-            and self.player_a_paddle_y <= self.ball_y <= self.player_a_paddle_y + self.paddle_height_a:
+        if self.paddle_rect_a.colliderect(self.ball_rect):
             self.ball_speed_x *= -1
-        if self.player_b_paddle_x >= self.ball_x + self.ball_radius >= self.player_b_paddle_x - self.paddle_width \
-            and self.player_b_paddle_y <= self.ball_y <= self.player_b_paddle_y + self.paddle_height_b:
+            self.bounce_sound.play()
+            # self.ball_rect = pygame.Rect(self.ball_x, self.ball_y, self.ball_radius * 2, self.ball_radius * 2)
+
+        if self.paddle_rect_b.colliderect(self.ball_rect):
             self.ball_speed_x *= -1
+            self.bounce_sound.play()
+            
+
+        # if self.player_a_paddle_x <= self.ball_x - self.ball_radius <= self.player_a_paddle_x + self.paddle_width \
+        #     and self.player_a_paddle_y <= self.ball_y <= self.player_a_paddle_y + self.paddle_height_a:
+        #     self.ball_speed_x *= -1
+        # if self.player_b_paddle_x >= self.ball_x + self.ball_radius >= self.player_b_paddle_x - self.paddle_width \
+        #     and self.player_b_paddle_y <= self.ball_y <= self.player_b_paddle_y + self.paddle_height_b:
+        #     self.ball_speed_x *= -1
             
     def _check_collision_with_barrier(self):
         # Check for collisions with barriers
         if self.player_barrier_active_a:
             if self.player_a_barrier_x is not None and self.player_a_barrier_y is not None:
-                if self.player_a_barrier_x <= self.ball_x - self.ball_radius <= self.player_a_barrier_x + self.barrier_width \
-                    and self.player_a_barrier_y <= self.ball_y <= self.player_a_barrier_y + self.barrier_height:
+                # 
+                if self.player_a_barrier_rect.colliderect(self.ball_rect):
                     self.ball_speed_x *= -1
-                if self.player_a_barrier_x >= self.ball_x + self.ball_radius >= self.player_a_barrier_x - self.barrier_width \
-                    and self.player_a_barrier_y <= self.ball_y <= self.player_a_barrier_y + self.barrier_height:
-                    self.ball_speed_x *= -1
+                    self.bounce_sound.play()
+                # if self.player_a_barrier_x <= self.ball_x - self.ball_radius <= self.player_a_barrier_x + self.barrier_width \
+                #     and self.player_a_barrier_y <= self.ball_y <= self.player_a_barrier_y + self.barrier_height:
+                #     self.ball_speed_x *= -1
+
+                # if self.player_a_barrier_x >= self.ball_x + self.ball_radius >= self.player_a_barrier_x - self.barrier_width \
+                #     and self.player_a_barrier_y <= self.ball_y <= self.player_a_barrier_y + self.barrier_height:
+                #     self.ball_speed_x *= -1
         if self.player_barrier_active_b:
             if self.player_b_barrier_x is not None and self.player_b_barrier_y is not None:
-                if self.player_b_barrier_x <= self.ball_x - self.ball_radius <= self.player_b_barrier_x + self.barrier_width \
-                    and self.player_b_barrier_y <= self.ball_y <= self.player_b_barrier_y + self.barrier_height:
+
+            ##
+                if self.player_b_barrier_rect.colliderect(self.ball_rect):
                     self.ball_speed_x *= -1
-                if self.player_b_barrier_x >= self.ball_x + self.ball_radius >= self.player_b_barrier_x - self.barrier_width \
-                    and self.player_b_barrier_y <= self.ball_y <= self.player_b_barrier_y + self.barrier_height:
-                    self.ball_speed_x *= -1
+                    self.bounce_sound.play()
+                # if self.player_b_barrier_x <= self.ball_x - self.ball_radius <= self.player_b_barrier_x + self.barrier_width \
+                #     and self.player_b_barrier_y <= self.ball_y <= self.player_b_barrier_y + self.barrier_height:
+                #     self.ball_speed_x *= -1
+                # if self.player_b_barrier_x >= self.ball_x + self.ball_radius >= self.player_b_barrier_x - self.barrier_width \
+                #     and self.player_b_barrier_y <= self.ball_y <= self.player_b_barrier_y + self.barrier_height:
+                #     self.ball_speed_x *= -1
 
     def _check_collision_with_wall(self):
             # Check for collisions with walls
         if self.ball_y <= 0 or self.ball_y >= self.screen_height - self.ball_radius:
             self.ball_speed_y *= -1
+            self.bounce_sound.play()
         if self.ball_x <= 0:
             self.player_b_score += 1
+            self.death_sound.play()
             self.reset_ball()
         if self.ball_x >= self.screen_width - self.ball_radius:
             self.player_a_score += 1
+            self.death_sound.play()
             self.reset_ball()
 
     def _update_score(self):
@@ -167,17 +215,29 @@ class PongGame:
         self.screen.fill(self.WHITE)
 
         # Draw the paddles
-        pygame.draw.rect(self.screen, self.BLACK, (self.player_a_paddle_x, self.player_a_paddle_y, self.paddle_width, self.paddle_height_a))
-        pygame.draw.rect(self.screen, self.BLACK, (self.player_b_paddle_x, self.player_b_paddle_y, self.paddle_width, self.paddle_height_b))
+        # pygame.draw.rect(self.screen, self.BLACK, (self.player_a_paddle_x, self.player_a_paddle_y, self.paddle_width, self.paddle_height_a))
+        # pygame.draw.rect(self.screen, self.BLACK, (self.player_b_paddle_x, self.player_b_paddle_y, self.paddle_width, self.paddle_height_b))
         
+        self.paddle_rect_a = pygame.Rect(self.player_a_paddle_x, self.player_a_paddle_y, self.paddle_width, self.paddle_height_a)
+        self.paddle_rect_b = pygame.Rect(self.player_b_paddle_x, self.player_b_paddle_y, self.paddle_width, self.paddle_height_b)
+
+        pygame.draw.rect(self.screen, self.BLACK, self.paddle_rect_a)
+        pygame.draw.rect(self.screen, self.BLACK, self.paddle_rect_b)
+
         # Draw barriers
         if self.player_barrier_active_a:
-            pygame.draw.rect(self.screen, self.RED, (self.player_a_barrier_x, self.player_a_barrier_y, self.barrier_width, self.barrier_height))
+            self.player_a_barrier_rect = pygame.draw.rect(self.screen, self.RED, (self.player_a_barrier_x, self.player_a_barrier_y, self.barrier_width, self.barrier_height))
         if self.player_barrier_active_b:
-            pygame.draw.rect(self.screen, self.RED, (self.player_b_barrier_x, self.player_b_barrier_y, self.barrier_width, self.barrier_height))
+            self.player_b_barrier_rect = pygame.draw.rect(self.screen, self.RED, (self.player_b_barrier_x, self.player_b_barrier_y, self.barrier_width, self.barrier_height))
 
         # Draw the ball
-        pygame.draw.circle(self.screen, self.BLACK, (self.ball_x, self.ball_y), self.ball_radius)
+        # pygame.draw.circle(self.screen, self.BLACK, (self.ball_x, self.ball_y), self.ball_radius)
+        ##Test
+        self.ball_rect = pygame.Rect(self.ball_x, self.ball_y, self.ball_radius * 2, self.ball_radius * 2)
+        # self.ball_circle = pygame.circle(self.screen, self.BLACK, (self.ball_x, self.ball_y), self.ball_radius)
+        # pygame.draw.rect(self.screen, self.BLACK, self.ball_rect)
+        pygame.draw.circle(self.screen, self.RED, (self.ball_x + self.ball_radius, self.ball_y + self.ball_radius), self.ball_radius)
+
 
         # Draw the score
         self.screen.blit(self.score_text, (self.screen_width // 2 - self.score_text.get_width() // 2, 10))
