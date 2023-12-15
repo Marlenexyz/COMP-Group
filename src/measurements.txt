@@ -7,7 +7,28 @@ V recall: 0.77
 Fist recall: 0.85
 
 
+-- middle lighting conditions
+Hand recall: 0.94
+Pinch recall: 0.89
+V recall: 0.54
+Fist recall: 0.95
+
+
 -- bad lighting conditions
-Hand recall:
+Hand recall: 0.99
+Pinch recall: 0.92
+V recall: 0.66
+Fist recall: 0.87
 
+Frame Matching:
+-- good lighting
+precision: 
+recall:
 
+-- middle lighting
+precision:
+recall:
+
+-- bad lighting
+precision:
+recall:
