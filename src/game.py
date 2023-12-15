@@ -99,7 +99,7 @@ def hand_as_mouse(frame):
     and the thumb.
     """ 
     frame = hand_recognition.run(frame)
-    result = hand_recognition.getIndexFingerCoordRight()
+    result = hand_recognition.getIndexFingerCoordBoth()
     if result is not None and game_corners is not None:
         x, y = frame_matcher.mapCoords(result, game_corners)
 

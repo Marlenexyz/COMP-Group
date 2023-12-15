@@ -121,22 +121,22 @@ class Menu:
         
     def draw_keyboard(self):
         for button in self.keyboard_buttons:
-            pygame.draw.rect(self.screen, self.BLACK, button["rect"])
-            pygame.draw.rect(self.screen, self.WHITE, button["rect"], 2)
-            text_surface = self.font.render(button["text"], True, self.WHITE)
+            pygame.draw.rect(self.screen, self.WHITE, button["rect"])
+            pygame.draw.rect(self.screen, self.BLACK, button["rect"], 2)
+            text_surface = self.font.render(button["text"], True, self.BLACK)
             text_rect = text_surface.get_rect(center=button["rect"].center)
             self.screen.blit(text_surface, text_rect)
             
 
     def draw_button(self, button):
-        pygame.draw.rect(self.screen, self.BLACK, button["rect"])
-        pygame.draw.rect(self.screen, self.WHITE, button["rect"], 2)    # 2 Bixel Breite ums Feld
-        text_surface = self.font.render(button["text"], True, self.WHITE)
+        pygame.draw.rect(self.screen, self.WHITE, button["rect"])
+        pygame.draw.rect(self.screen, self.BLACK, button["rect"], 2)    # 2 Bixel Breite ums Feld
+        text_surface = self.font.render(button["text"], True, self.BLACK)
         text_rect = text_surface.get_rect(center=button["rect"].center)
         self.screen.blit(text_surface, text_rect)
 
     def draw_text(self, text, x, y):
-        text_surface = self.font.render(text, True, self.WHITE)
+        text_surface = self.font.render(text, True, self.BLACK)
         text_rect = text_surface.get_rect(center=(x, y))
         self.screen.blit(text_surface, text_rect)
 
@@ -150,19 +150,19 @@ class Menu:
     
     def draw_input_field(self, input_field, additional_text):
         # Zusätzlicher Text über dem input_field
-        text_surface = self.font.render(additional_text["text"], True, self.WHITE)
+        text_surface = self.font.render(additional_text["text"], True, self.BLACK)
         text_rect = text_surface.get_rect(center=additional_text["rect"].center)
         self.screen.blit(text_surface, text_rect)
 
-        pygame.draw.rect(self.screen, self.BLACK, input_field["rect"])  # Schwarzes Rechteck für das Eingabefeld 
-        pygame.draw.rect(self.screen, self.WHITE, input_field["rect"], 2)  # Weißer Rand um das Eingabefeld
+        pygame.draw.rect(self.screen, self.WHITE, input_field["rect"])  # Schwarzes Rechteck für das Eingabefeld 
+        pygame.draw.rect(self.screen, self.BLACK, input_field["rect"], 2)  # Weißer Rand um das Eingabefeld
 
-        text_surface = self.font.render(input_field["text"], True, self.WHITE)
+        text_surface = self.font.render(input_field["text"], True, self.BLACK)
         text_rect = text_surface.get_rect(center=input_field["rect"].center)
         self.screen.blit(text_surface, text_rect)
 
     def update_menu(self):
-        self.screen.fill(self.BLACK)
+        self.screen.fill(self.WHITE)
 
         if self.menu_state == "main":
             self.draw_button(self.play_button)
