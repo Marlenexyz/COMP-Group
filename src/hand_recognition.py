@@ -382,23 +382,23 @@ class HandRecognition:
         # Calculate distance for each finger
         if side == 'left':
             if index_finger_coordinates_left is None or palm_coordinates_left is None or thumb_coordinates_left is None or middle_finger_coordinates_left is None or ring_finger_coordinates_left is None or pinky_finger_coordinates_left is None: #len(index_finger_coordinates_left) == 0 or len(palm_coordinates_left) == 0 or len(thumb_coordinates_left) == 0 or len(middle_finger_coordinates_left) == 0 or len(ring_finger_coordinates_left) == 0 or len(pinky_finger_coordinates_left) == 0:
-                return False
+                return False, None
             index_finger_distance = distance(index_finger_coordinates_left, palm_coordinates_left)
             thumb_distance = distance(thumb_coordinates_left, palm_coordinates_left)
             middle_finger_distance = distance(middle_finger_coordinates_left, palm_coordinates_left)
             ring_finger_distance = distance(ring_finger_coordinates_left, palm_coordinates_left)
             pinky_finger_distance = distance(pinky_finger_coordinates_left, palm_coordinates_left)
-            palm_coordinate = palm_coordinates_left
+            palm_coordinate = (palm_coordinates_left[0], palm_coordinates_left[1]) # palm_coordinates_left
 
         if side == 'right':
             if index_finger_coordinates_right is None or palm_coordinates_right is None or thumb_coordinates_right is None or middle_finger_coordinates_right is None or ring_finger_coordinates_right is None or pinky_finger_coordinates_right is None:
-                return False
+                return False, None
             index_finger_distance = distance(index_finger_coordinates_right, palm_coordinates_right)
             thumb_distance = distance(thumb_coordinates_right, palm_coordinates_right)
             middle_finger_distance = distance(middle_finger_coordinates_right, palm_coordinates_right)
             ring_finger_distance = distance(ring_finger_coordinates_right, palm_coordinates_right)
             pinky_finger_distance = distance(pinky_finger_coordinates_right, palm_coordinates_right)
-            palm_coordinate = palm_coordinates_right
+            palm_coordinate = (palm_coordinates_right[0], palm_coordinates_right[1]) # palm_coordinates_right
         
         elif side == 'both':
             # finds for all palms the closest index finger, thumb, middle finger, ring finger and pinky finger 
@@ -439,19 +439,19 @@ class HandRecognition:
                             #return True
                         else:
                             self.Vcounter = max(0, self.Vcounter - 1) 
-                            return False    
+                            return False, None
         # Check if all distances are less than the threshold
         if index_finger_distance < self.FIST_THRESHOLD and middle_finger_distance < self.FIST_THRESHOLD and ring_finger_distance < self.FIST_THRESHOLD and pinky_finger_distance < self.FIST_THRESHOLD:
             self.Fcounter += 1
             #return True
         else:
             self.Fcounter = max(0, self.Fcounter - 1)
-            return False
+            return False, None
         if self.Fcounter >= self.Fcounter_threshold:
             self.Fcounter = 0
             return True, palm_coordinate
         else:
-            return False
+            return False, None
     # define a function to detect if index finger and thumb are touching
     def isTouchingIndexFingerAndThumb(self, side='both'):
         """Check if the index finger and thumb are touching."""
