@@ -258,7 +258,6 @@ if __name__ == '__main__':
                 pygame.time.delay(100) # 100 Milliseconds Delay
             elif keys[pygame.K_r]:    #Restart Game
                 pong.resetGame()
-
             elif keys[pygame.K_f]:
                 pong.togglePause()
                 pong.draw_only_corners()

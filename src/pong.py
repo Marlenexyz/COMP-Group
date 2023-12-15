@@ -116,7 +116,7 @@ class PongGame:
         self.ball_speed_text = self.font.render("Ball Speed: {}".format(self.ball_speed_x), True, self.BLACK)
 
 
-        self.win_score = 2 ## increase to 10
+        self.win_score = 10 ## increase to 10
         self.game_won = False
         
         self.collision_detected = False
