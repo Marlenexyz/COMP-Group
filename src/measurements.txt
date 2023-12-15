@@ -22,13 +22,13 @@ Fist recall: 0.87
 
 Frame Matching:
 -- good lighting
-precision: 
-recall:
+precision: 0.91
+recall: 0.92
 
 -- middle lighting
-precision:
-recall:
+precision: 0.91
+recall: 0.91
 
 -- bad lighting
-precision:
-recall:
+precision: 0.93
+recall: 0.94
