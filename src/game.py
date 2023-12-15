@@ -247,11 +247,8 @@ if __name__ == '__main__':
                 pong.run()
 
             if pong.getGameWon():
-                # pong.draw_confetti()
                 pong.draw_victory_screen()
                 pong.draw_confetti()
-                # pygame.display.flip()
-                # print("True")
 
 
             # check for keyboard inputs
@@ -259,6 +256,8 @@ if __name__ == '__main__':
             if keys[pygame.K_p]:
                 pong.togglePause()
                 pygame.time.delay(100) # 100 Milliseconds Delay
+            elif keys[pygame.K_r]:    #Restart Game
+                pong.resetGame()
             elif keys[pygame.K_f]:
                 pong.togglePause()
                 pong.draw_only_corners()
