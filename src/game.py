@@ -221,8 +221,8 @@ if __name__ == '__main__':
                 is_touching_index_finger_and_thumb_right = hand_recognition.isTouchingIndexFingerAndThumb('right')
                 is_v_shape_left = hand_recognition.isVShape('left')
                 is_v_shape_right = hand_recognition.isVShape('right')
-                is_fist_left = hand_recognition.isFist('left')
-                is_fist_right = hand_recognition.isFist('right')
+                is_fist_left, fist_pos = hand_recognition.isFist('left')
+                is_fist_right, fist_pos = hand_recognition.isFist('right')
                 
                 # increase paddle size if index finger and thumb are touching
                 if is_touching_index_finger_and_thumb_left:
@@ -238,9 +238,9 @@ if __name__ == '__main__':
                     
                 # set barriers if fist is recognized
                 if is_fist_left:
-                    pong.set_barrier('left', (0, 0))
+                    pong.set_barrier('left', fist_pos)
                 if is_fist_right:
-                    pong.set_barrier('right', (0, 0))
+                    pong.set_barrier('right', fist_pos)
                 
                 # run pong and update display
                 pong.run()
