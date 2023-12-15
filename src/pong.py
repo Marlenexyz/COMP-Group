@@ -112,10 +112,6 @@ class PongGame:
         self.player_b_score = 0
         self.font = pygame.font.Font(None, 36)
 
-        # Print ball speed
-        self.ball_speed_text = self.font.render("Ball Speed: {}".format(self.ball_speed_x), True, self.BLACK)
-
-
         self.win_score = 10 ## increase to 10
         self.game_won = False
         
@@ -239,8 +235,8 @@ class PongGame:
 
         # Draw the score
         self.screen.blit(self.score_text, (self.screen_width // 2 - self.score_text.get_width() // 2, 10))
-        # Draw current ball speed
-        self.screen.blit(self.ball_speed_text, (self.screen_width // 2 - self.ball_speed_text.get_width() // 2, 50))
+        # Draw current ball speed for debug
+        # self.screen.blit(self.ball_speed_text, (self.screen_width // 2 - self.ball_speed_text.get_width() // 2, 50))
 
         # Draw powerups
         self.vshape_powerup_a_text = self.font.render("2".format(), True, 
@@ -332,7 +328,7 @@ class PongGame:
             self.ball_speed_x *= self.ball_increase
             self.ball_speed_y *= self.ball_increase
         
-        self._update_ball_speed()
+        # self._update_ball_speed()
         
     def set_barrier(self, player, pos):
         if pos[0] > self.screen_width or pos[1] > self.screen_height:
@@ -344,8 +340,8 @@ class PongGame:
             self.player_barrier_active_b = True
             self.player_b_barrier_x, self.player_b_barrier_y = pos[0] - self.barrier_width, pos[1] - self.barrier_height
 
-    def _update_ball_speed(self):
-        self.ball_speed_text = self.font.render("Ball speed: " + str(abs(self.ball_speed_x)), True, self.BLACK)
+    # def _update_ball_speed(self):
+    #     self.ball_speed_text = self.font.render("Ball speed: " + str(abs(self.ball_speed_x)), True, self.BLACK)
         
     def _check_timeouts(self):
         if self.player_ball_speed_active_a:
@@ -452,7 +448,7 @@ class PongGame:
                 self.collision_detected = False
         self._check_collision_with_wall()
         self._update_score()
-        self._update_ball_speed()
+        # self._update_ball_speed()
         self._draw_game()
         self._check_timeouts()
         self._check_win_condition()

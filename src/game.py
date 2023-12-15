@@ -99,7 +99,7 @@ def hand_as_mouse(frame):
     and the thumb.
     """ 
     frame = hand_recognition.run(frame)
-    result = hand_recognition.getIndexFingerCoordBoth()
+    result = hand_recognition.getIndexFingerCoordRight() ##Right
     if result is not None and game_corners is not None:
         x, y = frame_matcher.mapCoords(result, game_corners)
 
@@ -179,11 +179,6 @@ if __name__ == '__main__':
             pong.setPlayerNameA(mainMenu.getPlayerNameA())
             pong.setPlayerNameB(mainMenu.getPlayerNameB())
             
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    exit()
-
         # PONG GAME ---------------------
         elif status == 'play':
             if not has_run_once:
@@ -272,11 +267,6 @@ if __name__ == '__main__':
                 pong.draw_only_corners()
                 game_corners = frame_matcher.calibrateCorners(cap)
                 pong.togglePause()
-
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    exit()
                  
         # QUIT GAME ---------------------   
         elif status == 'quit_pong':
@@ -288,3 +278,8 @@ if __name__ == '__main__':
         
         # show the live video
         cv2.imshow('Video Feed', frame)
+
+        for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
