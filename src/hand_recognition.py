@@ -115,7 +115,10 @@ class HandRecognition:
     def measureRecall(self,capt):
         #capt = cv2.VideoCapture(0)
         while self.iterations <=100:
+            
             ret, measureframe = capt.read()
+            self.fingerframe = measureframe
+            self.updateFingers()
             frame_rgb2 = cv2.cvtColor(measureframe, cv2.COLOR_BGR2RGB)
 
             # Process self.frame with hand tracking module
@@ -151,8 +154,11 @@ class HandRecognition:
         return self.recall
     def measureVShapeRecall(self, capt):
         while self.viterations <=100:
-            self.updateFingers()
+            
+            
             ret, measureframe = capt.read()
+            self.fingerframe = measureframe
+            self.updateFingers()
             frame_rgb2 = cv2.cvtColor(measureframe, cv2.COLOR_BGR2RGB)
 
             # Process self.frame with hand tracking module
@@ -187,8 +193,10 @@ class HandRecognition:
     
     def measurePinchRecall(self, capt):
         while self.piterations <=100:
-            self.updateFingers()
+            
             ret, measureframe = capt.read()
+            self.fingerframe = measureframe
+            self.updateFingers()
             frame_rgb2 = cv2.cvtColor(measureframe, cv2.COLOR_BGR2RGB)
 
             # Process self.frame with hand tracking module
@@ -209,8 +217,10 @@ class HandRecognition:
     
     def measureFistRecall(self, capt):
         while self.fiterations <=100:
-            self.updateFingers()
+
             ret, measureframe = capt.read()
+            self.fingerframe = measureframe
+            self.updateFingers()
             frame_rgb2 = cv2.cvtColor(measureframe, cv2.COLOR_BGR2RGB)
 
             # Process self.frame with hand tracking module
@@ -748,7 +758,7 @@ class HandRecognition:
         return False
 
 if __name__ == '__main__':
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(2)
     hand_recognition = HandRecognition()
     while True:
         # Break loop if 'q' is pressed

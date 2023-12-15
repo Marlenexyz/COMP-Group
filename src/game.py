@@ -270,6 +270,18 @@ if __name__ == '__main__':
                 pong.togglePause()
                 hand_recognition.measureRecall(cap)
                 pong.togglePause()
+            elif keys[pygame.K_j]:
+                pong.togglePause()
+                hand_recognition.measureVShapeRecall(cap)
+                pong.togglePause()
+            elif keys[pygame.K_k]:
+                pong.togglePause()
+                hand_recognition.measureFistRecall(cap)
+                pong.togglePause()
+            elif keys[pygame.K_l]:
+                pong.togglePause()
+                hand_recognition.measurePinchRecall(cap)
+                pong.togglePause()
             elif keys[pygame.K_c]:
                 pong.togglePause()
                 pong.draw_only_corners()
