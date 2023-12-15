@@ -245,6 +245,14 @@ if __name__ == '__main__':
                 # run pong and update display
                 pong.run()
 
+            if pong.getGameWon():
+                # pong.draw_confetti()
+                pong.draw_victory_screen()
+                pong.draw_confetti()
+                # pygame.display.flip()
+                # print("True")
+
+
             # check for keyboard inputs
             keys = pygame.key.get_pressed()
             if keys[pygame.K_p]:

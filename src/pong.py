@@ -2,11 +2,16 @@ import pygame
 import time
 import numpy as np
 import random
+from confetti import *
+
+
 
 class PongGame:
     def __init__(self,screen_height,screen_width):
         # Initialize the game
         pygame.init()
+
+        self.confetti_particles = []
         
         # Load background music
         pygame.mixer.music.load("music.mp3")
@@ -119,6 +124,24 @@ class PongGame:
         self.fist_powerup_b_text = self.font.render("B".format(), True, self.BLACK)
 
         self.win_score = 2 ## increase
+        self.game_won = False
+
+    def _generate_confetti(self):
+        confetti_color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+        confetti_particle = Confetti(random.randint(0, self.screen_width), random.randint(0, self.screen_height), confetti_color)
+        self.confetti_particles.append(confetti_particle)
+
+    def _update_confetti(self):
+        for particle in self.confetti_particles:
+            particle.move()
+
+    def draw_confetti(self):
+        self._generate_confetti()
+        self._update_confetti()
+        for particle in self.confetti_particles:
+            pygame.draw.circle(self.screen, particle.color, (int(particle.x), int(particle.y)), 5)
+        pygame.display.flip()
+
 
 
     def setPlayerNameA(self, inputName):
@@ -391,17 +414,22 @@ class PongGame:
     def _check_win_condition(self):
         if self.player_a_score == self.win_score or self.player_b_score == self.win_score:
             self.paused = True
-            self._draw_victory_screen()
+            self.draw_victory_screen()
     
-    def _draw_victory_screen(self):
+    def draw_victory_screen(self):
+        self.game_won = True
         self.font_big = pygame.font.Font(None, 72)
         if self.player_a_score == self.win_score:
             self.victory_text = self.font_big.render("{} wins!".format(self.player_name_a), True, self.BLACK)
         elif self.player_b_score == self.win_score:
             self.victory_text = self.font_big.render("{} wins!".format(self.player_name_b), True, self.BLACK)
-        
+
+        self.draw_confetti()
         self.screen.blit(self.victory_text, (self.screen_width / 2 - self.victory_text.get_width() / 2, self.screen_height / 2 - self.victory_text.get_height() / 2))
         # pygame.display.flip()
+
+    def getGameWon(self):
+        return self.game_won
 
     def run(self):       
         self._move_ball()
