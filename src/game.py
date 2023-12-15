@@ -18,7 +18,7 @@ initial_paddle_pos_left = game_height // 2
 initial_paddle_pos_right = game_height // 2
 countdown = 3 # increase countdown
 
-test_flag = True
+test_flag = False
 
 if test_flag:
     countdown = 0
@@ -106,6 +106,8 @@ def hand_as_mouse(frame):
         if x is not None and y is not None:
             mainMenu.finger_as_mouse(x, y, hand_recognition.isTouchingIndexFingerAndThumb())
 
+    return frame
+
 
 # --------------- MAIN ---------------
 if __name__ == '__main__':
@@ -166,14 +168,14 @@ if __name__ == '__main__':
 
             # draw main menu and mouse position
             mainMenu.update_menu()
-            hand_as_mouse(frame)
+            frame = hand_as_mouse(frame)
                 
         # ENTER NAMES ---------------------
         elif status == 'enterNames':
             
             # draw main menu and mouse position
             mainMenu.update_menu()
-            hand_as_mouse(frame)
+            frame = hand_as_mouse(frame)
             
             # set player names
             pong.setPlayerNameA(mainMenu.getPlayerNameA())

@@ -74,6 +74,7 @@ class HandRecognition:
         #     self.measure_alt = self.measure
 
         # Draw landmarks on self.frame
+        self.fingerframe = frame
         self.updateFingers()
         return self.frame
 
