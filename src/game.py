@@ -18,7 +18,9 @@ initial_paddle_pos_left = game_height // 2
 initial_paddle_pos_right = game_height // 2
 countdown = 3 # increase countdown
 
+use_projector_settings = True
 test_flag = False
+
 
 if test_flag:
     countdown = 0
@@ -99,9 +101,9 @@ def hand_as_mouse(frame):
     and the thumb.
     """ 
     frame = hand_recognition.run(frame)
-    result = hand_recognition.getIndexFingerCoordRight() ##Right
-    if result is not None and game_corners is not None:
-        x, y = frame_matcher.mapCoords(result, game_corners)
+    result = hand_recognition.getIndexFingerCoordBoth()
+    if len(result) > 0 and game_corners is not None:
+        x, y = frame_matcher.mapCoords(result[0], game_corners)
 
         if x is not None and y is not None:
             mainMenu.finger_as_mouse(x, y, hand_recognition.isTouchingIndexFingerAndThumb())
@@ -137,6 +139,10 @@ if __name__ == '__main__':
         # hand_recognition.V_SHAPE_THRESHOLD = 30
         # hand_recognition.TOUCH_THRESHOLD = 40
         pass
+    if use_projector_settings:
+        hand_recognition.V_SHAPE_THRESHOLD = 12
+        hand_recognition.TOUCH_THRESHOLD = 18
+        hand_recognition.FIST_THRESHOLD = 30
     
     # MAIN LOOP ----------------------
     while True:

@@ -37,9 +37,9 @@ class HandRecognition:
         self.Tcounter = 0 #for touching fingers (= pinching)
         self.Vcounter = 0 #for V-shape
         self.Fcounter = 0 #for fist
-        self.Tcounter_threshold = 20 # how often do we need to detect touching so it counts
-        self.Vcounter_threshold = 20
-        self.Fcounter_threshold = 20
+        self.Tcounter_threshold = 30 # how often do we need to detect touching so it counts
+        self.Vcounter_threshold = 30
+        self.Fcounter_threshold = 30
         self.fingerframe = None
         self.frame = None
 
