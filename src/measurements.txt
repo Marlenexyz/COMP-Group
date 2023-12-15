@@ -1,0 +1,13 @@
+Projector:
+
+-- good lighting conditions
+Hand recall: 0.66
+Pinch recall: 0.27
+V recall: 0.77
+Fist recall: 0.85
+
+
+-- bad lighting conditions
+Hand recall:
+
+
