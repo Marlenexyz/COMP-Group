@@ -1,7 +1,8 @@
 import matplotlib.pyplot as plt
+import numpy as np
 
 
-def _bright_lighting_conditions_plot():
+def _bright_lighting_conditions_recall_plot():
     'Bright Lighting Conditions'
     labels = ['Hand', 'Pinch', 'V-Shape', 'Fist']
     values = [0.66, 0.27, 0.77, 0.85]
@@ -17,7 +18,7 @@ def _bright_lighting_conditions_plot():
     # Zeige das Diagramm an
     plt.show()
 
-def _middle_lighting_conditions_plot():
+def _middle_lighting_conditions_recall_plot():
     'Middle Lighting Conditions'
     labels = ['Hand', 'Pinch', 'V-Shape', 'Fist']
     values = [0.94,0.89,0.54,0.95]
@@ -37,7 +38,7 @@ def _middle_lighting_conditions_plot():
     # Zeige das Diagramm an
     plt.show()
 
-def _low_lighting_conditions_plot():
+def _low_lighting_conditions_recall_plot():
     'Low Lighting Conditions'
     labels = ['Hand', 'Pinch', 'V-Shape', 'Fist']
     values = [0.99,0.92,0.66,0.87]
@@ -58,6 +59,77 @@ def _low_lighting_conditions_plot():
     # Zeige das Diagramm an
     plt.show()
 
-_bright_lighting_conditions_plot()
-_middle_lighting_conditions_plot()
-_low_lighting_conditions_plot()
+
+def _combined_lighting_conditions_recall_plot():
+    labels = ['Hand', 'Pinch', 'V-Shape', 'Fist']
+    values_bright = [0.66, 0.27, 0.77, 0.85]
+    values_middle = [0.94, 0.89, 0.54, 0.95]
+    values_low = [0.99, 0.92, 0.66, 0.87]
+
+    # Breite der Balken
+    bar_width = 0.25
+
+    color_light = 'lightgray'
+    color_middle = 'darkgray'
+    color_dark = 'gray'
+
+    # X-Positionen für die Balken
+    bar_positions_bright = np.arange(len(labels))
+    bar_positions_middle = [pos + bar_width for pos in bar_positions_bright]
+    bar_positions_low = [pos + 2 * bar_width for pos in bar_positions_bright]
+
+    # Erstelle ein kombiniertes Balkendiagramm
+    plt.bar(bar_positions_bright, values_bright, width=bar_width, label='Bright Lighting', color=color_light)
+    plt.bar(bar_positions_middle, values_middle, width=bar_width, label='Middle Lighting', color=color_middle)
+    plt.bar(bar_positions_low, values_low, width=bar_width, label='Low Lighting', color=color_dark)
+
+    # Füge Titel und Achsenbeschriftungen hinzu
+    plt.title('Recall For Hand Gestures Under Different Lighting Conditions')
+    plt.xlabel('Hand Gesture')
+    plt.ylabel('Recall')
+
+    # Zeige das Diagramm an
+    plt.xticks(bar_positions_middle, labels)
+    plt.legend()
+    plt.show()
+
+
+
+def frame_matching_plot():
+    labels = ['Good Lighting', 'Middle Lighting', 'Bad Lighting']
+    precision_values = [0.91, 0.91, 0.93]
+    recall_values = [0.92, 0.91, 0.94]
+
+    # Breite der Balken
+    bar_width = 0.35
+
+    # X-Positionen für die Balken
+    bar_positions_precision = np.arange(len(labels))
+    bar_positions_recall = [pos + bar_width for pos in bar_positions_precision]
+
+    # Erstelle ein Balkendiagramm für die Präzision und den Recall
+    plt.bar(bar_positions_precision, precision_values, width=bar_width, label='Precision')#, color='lightblue')
+    plt.bar(bar_positions_recall, recall_values, width=bar_width, label='Recall')#, color='lightgreen')
+
+    # Füge Titel und Achsenbeschriftungen hinzu
+    plt.title('Frame Matching Precision and Recall Under Different Lighting Conditions')
+    plt.xlabel('Lighting Conditions')
+    plt.ylabel('Score')
+
+    # Zeige das Diagramm an
+    plt.xticks(bar_positions_recall, labels)
+    plt.legend()
+    plt.show()
+
+
+# Rufe die Funktion auf, um das kombinierte Diagramm zu erstellen
+# _combined_lighting_conditions_recall_plot()
+
+
+
+# _bright_lighting_conditions_recall_plot()
+# _middle_lighting_conditions_recall_plot()
+# _low_lighting_conditions_recall_plot()
+
+# Rufe die Funktion auf, um das Diagramm zu erstellen
+frame_matching_plot()
