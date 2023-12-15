@@ -370,10 +370,10 @@ class PongGame:
             return
         if player == 'left' and self.player_timeout_barrier_a == self.max_timeout:
             self.player_barrier_active_a = True
-            self.player_a_barrier_x, self.player_a_barrier_y = pos
+            self.player_a_barrier_x, self.player_a_barrier_y = pos[0] - self.barrier_width, pos[1] - self.barrier_height
         if player == 'right' and self.player_timeout_barrier_b == self.max_timeout:
             self.player_barrier_active_b = True
-            self.player_b_barrier_x, self.player_b_barrier_y = pos
+            self.player_b_barrier_x, self.player_b_barrier_y = pos[0] - self.barrier_width, pos[1] - self.barrier_height
 
     def _update_ball_speed(self):
         self.ball_speed_text = self.font.render("Ball speed: " + str(abs(self.ball_speed_x)), True, self.BLACK)
