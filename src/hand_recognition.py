@@ -388,7 +388,7 @@ class HandRecognition:
             middle_finger_distance = distance(middle_finger_coordinates_left, palm_coordinates_left)
             ring_finger_distance = distance(ring_finger_coordinates_left, palm_coordinates_left)
             pinky_finger_distance = distance(pinky_finger_coordinates_left, palm_coordinates_left)
-            palm_coordinate = palm_coordinates_left
+            palm_coordinate = (palm_coordinates_left[0], palm_coordinates_left[1]) # palm_coordinates_left
 
         if side == 'right':
             if index_finger_coordinates_right is None or palm_coordinates_right is None or thumb_coordinates_right is None or middle_finger_coordinates_right is None or ring_finger_coordinates_right is None or pinky_finger_coordinates_right is None:
@@ -398,7 +398,7 @@ class HandRecognition:
             middle_finger_distance = distance(middle_finger_coordinates_right, palm_coordinates_right)
             ring_finger_distance = distance(ring_finger_coordinates_right, palm_coordinates_right)
             pinky_finger_distance = distance(pinky_finger_coordinates_right, palm_coordinates_right)
-            palm_coordinate = palm_coordinates_right
+            palm_coordinate = (palm_coordinates_right[0], palm_coordinates_right[1]) # palm_coordinates_right
         
         elif side == 'both':
             # finds for all palms the closest index finger, thumb, middle finger, ring finger and pinky finger 
