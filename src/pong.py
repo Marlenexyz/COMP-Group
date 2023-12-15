@@ -14,15 +14,15 @@ class PongGame:
         self.confetti_particles = []
         
         # Load background music
-        pygame.mixer.music.load("music.mp3")
+        pygame.mixer.music.load("music/music.mp3")
 
         # Play the background music on a loop
         pygame.mixer.music.play(-1)
         pygame.mixer.music.set_volume(0.5)
         
         # Load sound effects
-        self.bounce_sound = pygame.mixer.Sound("bounce.wav")
-        self.death_sound = pygame.mixer.Sound("deathray.wav")
+        self.bounce_sound = pygame.mixer.Sound("music/bounce.wav")
+        self.death_sound = pygame.mixer.Sound("music/deathray.wav")
 
         self.paused = True
 
