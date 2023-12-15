@@ -132,8 +132,9 @@ if __name__ == '__main__':
     is_fist_right = False
     
     if test_flag:
-        hand_recognition.V_SHAPE_THRESHOLD = 30
-        hand_recognition.TOUCH_THRESHOLD = 40
+        # hand_recognition.V_SHAPE_THRESHOLD = 30
+        # hand_recognition.TOUCH_THRESHOLD = 40
+        pass
     
     # MAIN LOOP ----------------------
     while True:
@@ -221,8 +222,8 @@ if __name__ == '__main__':
                 is_touching_index_finger_and_thumb_right = hand_recognition.isTouchingIndexFingerAndThumb('right')
                 is_v_shape_left = hand_recognition.isVShape('left')
                 is_v_shape_right = hand_recognition.isVShape('right')
-                is_fist_left = hand_recognition.isFist('left')
-                is_fist_right = hand_recognition.isFist('right')
+                is_fist_left, fist_pos_left = hand_recognition.isFist('left')
+                is_fist_right, fist_pos_right = hand_recognition.isFist('right')
                 
                 # increase paddle size if index finger and thumb are touching
                 if is_touching_index_finger_and_thumb_left:
@@ -238,19 +239,16 @@ if __name__ == '__main__':
                     
                 # set barriers if fist is recognized
                 if is_fist_left:
-                    pong.set_barrier('left', (0, 0))
+                    pong.set_barrier('left', fist_pos_left)
                 if is_fist_right:
-                    pong.set_barrier('right', (0, 0))
+                    pong.set_barrier('right', fist_pos_right)
                 
                 # run pong and update display
                 pong.run()
 
             if pong.getGameWon():
-                # pong.draw_confetti()
                 pong.draw_victory_screen()
                 pong.draw_confetti()
-                # pygame.display.flip()
-                # print("True")
 
 
             # check for keyboard inputs
@@ -258,6 +256,8 @@ if __name__ == '__main__':
             if keys[pygame.K_p]:
                 pong.togglePause()
                 pygame.time.delay(100) # 100 Milliseconds Delay
+            elif keys[pygame.K_r]:    #Restart Game
+                pong.resetGame()
             elif keys[pygame.K_f]:
                 pong.togglePause()
                 pong.draw_only_corners()
