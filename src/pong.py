@@ -118,6 +118,8 @@ class PongGame:
         self.fist_powerup_a_text = self.font.render("B".format(), True, self.BLACK)
         self.fist_powerup_b_text = self.font.render("B".format(), True, self.BLACK)
 
+        self.win_score = 2 ## increase
+
 
     def setPlayerNameA(self, inputName):
         self.player_name_a = inputName
@@ -386,6 +388,21 @@ class PongGame:
         if self.player_barrier_active_b and self.player_timeout_barrier_b == 0:
             self.player_barrier_active_b = False
 
+    def _check_win_condition(self):
+        if self.player_a_score == self.win_score or self.player_b_score == self.win_score:
+            self.paused = True
+            self._draw_victory_screen()
+    
+    def _draw_victory_screen(self):
+        self.font_big = pygame.font.Font(None, 72)
+        if self.player_a_score == self.win_score:
+            self.victory_text = self.font_big.render("{} wins!".format(self.player_name_a), True, self.BLACK)
+        elif self.player_b_score == self.win_score:
+            self.victory_text = self.font_big.render("{} wins!".format(self.player_name_b), True, self.BLACK)
+        
+        self.screen.blit(self.victory_text, (self.screen_width / 2 - self.victory_text.get_width() / 2, self.screen_height / 2 - self.victory_text.get_height() / 2))
+        # pygame.display.flip()
+
     def run(self):       
         self._move_ball()
         self._check_collision_with_paddle()
@@ -395,6 +412,7 @@ class PongGame:
         self._update_ball_speed()
         self._draw_game()
         self._check_timeouts()
+        self._check_win_condition()
         pygame.display.flip()
 
 
