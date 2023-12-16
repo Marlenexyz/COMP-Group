@@ -22,6 +22,10 @@ class PongGame:
         # Load sound effects
         self.bounce_sound = pygame.mixer.Sound("music/bounce.wav")
         self.death_sound = pygame.mixer.Sound("music/deathray.wav")
+        self.victory_sound = pygame.mixer.Sound("music/Knocking-new.wav")
+        self.paddle_sound = pygame.mixer.Sound("music/Paddel-size.wav")
+        self.speed_sound = pygame.mixer.Sound("music/Double-Speed.wav")
+        self.barrier_sound = pygame.mixer.Sound("music/Barrier.wav")
 
         self.paused = True
 
@@ -51,7 +55,7 @@ class PongGame:
         self.initial_paddle_height_b = self.paddle_height_b
 
 
-        self.paddle_speed = 3 # only used for keyboard inputs
+        self.paddle_speed = 5 # only used for keyboard inputs
         self.paddle_increase = 60 # value added to paddle height
 
 
@@ -313,19 +317,23 @@ class PongGame:
         if player == 'left' and self.player_timeout_paddle_increase_a == self.max_timeout:
             self.player_paddle_increase_active_a = True
             self.paddle_height_a += self.paddle_increase
+            self.paddle_sound.play()
         elif player == 'right' and self.player_timeout_paddle_increase_b == self.max_timeout:
             self.player_paddle_increase_active_b = True
             self.paddle_height_b += self.paddle_increase
+            self.paddle_sound.play()
     
     def increase_ball_speed(self, player):
         if player == 'left' and self.player_timeout_ball_speed_a == self.max_timeout:
             self.player_ball_speed_active_a = True
             self.ball_speed_x *= self.ball_increase
             self.ball_speed_y *= self.ball_increase
+            self.speed_sound.play()
         if player == 'right' and self.player_timeout_ball_speed_b == self.max_timeout:
             self.player_ball_speed_active_b = True
             self.ball_speed_x *= self.ball_increase
             self.ball_speed_y *= self.ball_increase
+            self.speed_sound.play()
         
         # self._update_ball_speed()
         
@@ -335,9 +343,11 @@ class PongGame:
         if player == 'left' and self.player_timeout_barrier_a == self.max_timeout:
             self.player_barrier_active_a = True
             self.player_a_barrier_x, self.player_a_barrier_y = pos[0] - self.barrier_width, pos[1] - self.barrier_height
+            self.barrier_sound.play()
         if player == 'right' and self.player_timeout_barrier_b == self.max_timeout:
             self.player_barrier_active_b = True
             self.player_b_barrier_x, self.player_b_barrier_y = pos[0] - self.barrier_width, pos[1] - self.barrier_height
+            self.barrier_sound.play()
 
     # def _update_ball_speed(self):
     #     self.ball_speed_text = self.font.render("Ball speed: " + str(abs(self.ball_speed_x)), True, self.BLACK)
