@@ -30,13 +30,19 @@ class HandRecognition:
         self.thumb_coordinates = []
         self.palm_coordinates = []
         # This threshold determines how close the two fingers can be to be considered a V-shape
-        self.V_SHAPE_THRESHOLD = 12
+        self.V_SHAPE_THRESHOLD = 18
                 # This threshold determines how close the two fingers can be to be considered touching
-        self.TOUCH_THRESHOLD = 15
-        self.FIST_THRESHOLD = 60
-        self.Tcounter = 0 #for touching fingers (= pinching)
-        self.Vcounter = 0 #for V-shape
-        self.Fcounter = 0 #for fist
+        self.TOUCH_THRESHOLD = 18
+        self.FIST_THRESHOLD = 70
+        self.Tcounterleft = 0 #for touching fingers (= pinching)
+        self.Vcounterleft = 0 #for V-shape
+        self.Fcounterleft = 0 #for fist
+        self.Tcounterright = 0
+        self.Vcounterright = 0
+        self.Fcounterright = 0
+        self.Vcounterboth = 0
+        self.Tcounterboth = 0
+        self.Fcounterboth = 0
         self.Tcounter_threshold = 30 # how often do we need to detect touching so it counts
         self.Vcounter_threshold = 30
         self.Fcounter_threshold = 30
@@ -521,7 +527,18 @@ class HandRecognition:
             ring_finger_distance = distance(ring_finger_coordinates_left, palm_coordinates_left)
             pinky_finger_distance = distance(pinky_finger_coordinates_left, palm_coordinates_left)
             palm_coordinate = (palm_coordinates_left[0], palm_coordinates_left[1]) # palm_coordinates_left
-            #print(index_finger_distance)
+            # Check if all distances are less than the threshold
+            if index_finger_distance < self.FIST_THRESHOLD and middle_finger_distance < self.FIST_THRESHOLD and ring_finger_distance < self.FIST_THRESHOLD and pinky_finger_distance < self.FIST_THRESHOLD:
+                self.Fcounterleft += 1
+                #return True
+            else:
+                self.Fcounterleft = max(0, self.Fcounterleft - 1)
+                return False, None
+            if self.Fcounterleft >= self.Fcounter_threshold:
+                self.Fcounterleft = 0
+                return True, palm_coordinate
+            else:
+                return False, None
 
         elif side == 'right':
             if index_finger_coordinates_right is None or palm_coordinates_right is None or thumb_coordinates_right is None or middle_finger_coordinates_right is None or ring_finger_coordinates_right is None or pinky_finger_coordinates_right is None:
@@ -532,7 +549,18 @@ class HandRecognition:
             ring_finger_distance = distance(ring_finger_coordinates_right, palm_coordinates_right)
             pinky_finger_distance = distance(pinky_finger_coordinates_right, palm_coordinates_right)
             palm_coordinate = (palm_coordinates_right[0], palm_coordinates_right[1]) # palm_coordinates_right
-            #print(index_finger_distance)
+            # Check if all distances are less than the threshold
+            if index_finger_distance < self.FIST_THRESHOLD and middle_finger_distance < self.FIST_THRESHOLD and ring_finger_distance < self.FIST_THRESHOLD and pinky_finger_distance < self.FIST_THRESHOLD:
+                self.Fcounterright += 1
+                #return True
+            else:
+                self.Fcounterright = max(0, self.Fcounterright - 1)
+                return False, None
+            if self.Fcounterright >= self.Fcounter_threshold:
+                self.Fcounterright = 0
+                return True, palm_coordinate
+            else:
+                return False, None
         
         elif side == 'both':
             # finds for all palms the closest index finger, thumb, middle finger, ring finger and pinky finger 
@@ -568,28 +596,19 @@ class HandRecognition:
                     distance_pinky = distances_pinky[i, closest_pinky_points[i]]
     
                     if distance_index < self.FIST_THRESHOLD and distance_middle < self.FIST_THRESHOLD and distance_ring < self.FIST_THRESHOLD and distance_pinky < self.FIST_THRESHOLD:
-                        #if abs(index_point[1] - closest_middle_point[1]) < self.V_SHAPE_THRESHOLD and (closest_thumb_point[1] - index_point[1]) > (self.V_SHAPE_THRESHOLD):
-                        self.Vcounter += 1
+                        self.Fcounterboth += 1
                             #return True
                     else:
-                        self.Vcounter = max(0, self.Vcounter - 1) 
+                        self.Fcounterboth = max(0, self.Fcounterboth - 1) 
                         return False, None
-                # print(index_finger_distance)
+                    if self.Fcounterboth >= self.Fcounter_threshold:
+                        self.Fcounterboth = 0
+                        return True, palm_coordinate
+                    else:
+                        return False, None
             else:
                 return False, None
-        # Check if all distances are less than the threshold
-        # print(index_finger_distance)
-        if index_finger_distance < self.FIST_THRESHOLD and middle_finger_distance < self.FIST_THRESHOLD and ring_finger_distance < self.FIST_THRESHOLD and pinky_finger_distance < self.FIST_THRESHOLD:
-            self.Fcounter += 1
-            #return True
-        else:
-            self.Fcounter = max(0, self.Fcounter - 1)
-            return False, None
-        if self.Fcounter >= self.Fcounter_threshold:
-            self.Fcounter = 0
-            return True, palm_coordinate
-        else:
-            return False, None
+        
     # define a function to detect if index finger and thumb are touching
     def isTouchingIndexFingerAndThumb(self, side='both'):
         """Check if the index finger and thumb are touching."""
@@ -624,29 +643,53 @@ class HandRecognition:
                 #distance_between_fingers = distance(index_finger_coordinates_both[0, :], thumb_coordinates_both[0, :])
                 distances = cdist(index_finger_coordinates_both, thumb_coordinates_both)
                 distance_between_fingers = np.min(distances)
+                if distance_between_fingers < self.TOUCH_THRESHOLD:
+                    self.Tcounterboth += 1
+                    #return True
+                else:
+                    self.Tcounterboth = max(0, self.Tcounterboth - 1) 
+                    return False
+                if self.Tcounterboth >= self.Tcounter_threshold:
+                    self.Tcounterboth = 0
+                    return True
+                else:
+                    return False
         elif side == "left":
             if index_finger_coordinates_left is None or thumb_coordinates_left is None:
                 return False
             else:
                 distance_between_fingers = distance(index_finger_coordinates_left, thumb_coordinates_left)
+                        # Check if the distance is less than the threshold
+                if distance_between_fingers < self.TOUCH_THRESHOLD:
+                    self.Tcounterleft += 1
+                    #return True
+                else:
+                    self.Tcounterleft = max(0, self.Tcounterleft - 1) 
+                    return False
+                if self.Tcounterleft >= self.Tcounter_threshold:
+                    self.Tcounterleft = 0
+                    return True
+                else:
+                    return False
         elif side == "right":
             if index_finger_coordinates_right is None or thumb_coordinates_right is None:
                 return False
             else:
                 distance_between_fingers = distance(index_finger_coordinates_right, thumb_coordinates_right)
+                        # Check if the distance is less than the threshold
+                if distance_between_fingers < self.TOUCH_THRESHOLD:
+                    self.Tcounterright += 1
+                    #return True
+                else:
+                    self.Tcounterright = max(0, self.Tcounterright - 1) 
+                    return False
+                if self.Tcounterright >= self.Tcounter_threshold:
+                    self.Tcounterright = 0
+                    return True
+                else:
+                    return False
         
-        # Check if the distance is less than the threshold
-        if distance_between_fingers < self.TOUCH_THRESHOLD:
-            self.Tcounter += 1
-            #return True
-        else:
-            self.Tcounter = max(0, self.Tcounter - 1) 
-            return False
-        if self.Tcounter >= self.Tcounter_threshold:
-            self.Tcounter = 0
-            return True
-        else:
-            return False
+
     def isVShape(self, side ='both'):
         """Check if the index finger and middle finger are held up in a V-shape."""
         # Assuming index_finger_coordinates and middle_finger_coordinates are available
@@ -686,7 +729,7 @@ class HandRecognition:
                     distance_thumb = distances_thumb[i, closest_thumb_points[i]]
     
                     if distance_middle > self.V_SHAPE_THRESHOLD and distance_thumb > self.V_SHAPE_THRESHOLD:
-                        if abs(index_point[1] - closest_middle_point[1]) < self.V_SHAPE_THRESHOLD and (closest_thumb_point[1] - index_point[1]) > (self.V_SHAPE_THRESHOLD):
+                        if abs(index_point[1] - closest_middle_point[1]) < (2 * self.V_SHAPE_THRESHOLD) and (closest_thumb_point[1] - index_point[1]) > (self.V_SHAPE_THRESHOLD):
                             # self.Vcounter += 1
                             return True
                         else:
@@ -712,12 +755,16 @@ class HandRecognition:
                     distance_thumb = distances_thumb[i, closest_thumb_points[i]]
     
                     if distance_middle > self.V_SHAPE_THRESHOLD and distance_thumb > self.V_SHAPE_THRESHOLD:
-                        if abs(index_point[1] - closest_middle_point[1]) < self.V_SHAPE_THRESHOLD and (closest_thumb_point[1] - index_point[1]) > (self.V_SHAPE_THRESHOLD):
-                            self.Vcounter += 1
+                        if abs(index_point[1] - closest_middle_point[1]) < (2 * self.V_SHAPE_THRESHOLD) and (closest_thumb_point[1] - index_point[1]) > (self.V_SHAPE_THRESHOLD):
+                            self.Vcounterboth += 1
                             #return True
                         else:
-                            self.Vcounter = max(0, self.Vcounter - 1) 
+                            self.Vcounterboth = max(0, self.Vcounterboth - 1) 
                             return False
+                        if self.Vcounterboth >= self.Vcounter_threshold:
+                            self.Vcounterboth = 0
+                            return True
+                        return False
                     
         elif side == 'right':
             if index_fingertip_right is not None and middle_fingertip_right is not None and thumb_tip_right is not None:
@@ -727,14 +774,18 @@ class HandRecognition:
                 # Check if the distance between the fingertips is greater than the threshold
                 if distance > self.V_SHAPE_THRESHOLD:
                     # Check if the fingertips are at a similar height to form a V-shape
-                    if abs(index_fingertip_right[1] - middle_fingertip_right[1]) < self.V_SHAPE_THRESHOLD and (thumb_tip_right[1] - index_fingertip_right[1]) > (self.V_SHAPE_THRESHOLD):
+                    if abs(index_fingertip_right[1] - middle_fingertip_right[1]) < (2 * self.V_SHAPE_THRESHOLD) and (thumb_tip_right[1] - index_fingertip_right[1]) > (self.V_SHAPE_THRESHOLD):
                         # if v shape is detected, draw a v-shape on the image 
                         # cv2.line(self.frame, index_fingertip_right, middle_fingertip_right, (0, 255, 0), 2)
-                        self.Vcounter += 1
+                        self.Vcounterright += 1
                         #return True
                     else:
-                            self.Vcounter = max(0, self.Vcounter - 1) 
+                            self.Vcounterright = max(0, self.Vcounterright - 1) 
                             return False
+                    if self.Vcounterright >= self.Vcounter_threshold:
+                        self.Vcounterright = 0
+                        return True
+                    return False
         elif side == 'left':
             # Check if both fingertips are detected
             if index_fingertip_left is not None and middle_fingertip_left is not None and thumb_tip_left is not None:
@@ -747,18 +798,18 @@ class HandRecognition:
                     if abs(index_fingertip_left[1] - middle_fingertip_left[1]) < self.V_SHAPE_THRESHOLD and (thumb_tip_left[1] - index_fingertip_left[1]) > (self.V_SHAPE_THRESHOLD):
                         # if v shape is detected, draw a v-shape on the image 
                         # cv2.line(self.frame, index_fingertip_left, middle_fingertip_left, (0, 255, 0), 2)
-                        self.Vcounter += 1
+                        self.Vcounterleft += 1
                         #return True
                     else:
-                            self.Vcounter = max(0, self.Vcounter - 1) 
+                            self.Vcounterleft = max(0, self.Vcounterleft - 1) 
                             return False
-        if self.Vcounter >= self.Vcounter_threshold:
-            self.Vcounter = 0
-            return True
-        return False
+                    if self.Vcounterleft >= self.Vcounter_threshold:
+                        self.Vcounterleft = 0
+                        return True
+                    return False
 
 if __name__ == '__main__':
-    cap = cv2.VideoCapture(2)
+    cap = cv2.VideoCapture(0)
     hand_recognition = HandRecognition()
     while True:
         # Break loop if 'q' is pressed
@@ -785,10 +836,14 @@ if __name__ == '__main__':
         if hand_recognition.isTouchingIndexFingerAndThumb():
             cv2.putText(frame, "any fingers touching", (10, 120), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
         # Check for V-Shape
-        if hand_recognition.isVShape():
-            cv2.putText(frame, "V-Shape", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+        if hand_recognition.isVShape('left'):
+            cv2.putText(frame, "left V-Shape", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+        if hand_recognition.isVShape('right'):
+            cv2.putText(frame, "right V-Shape", (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
         if hand_recognition.isFist('left')[0]:
-            cv2.putText(frame,"left fist", (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+            cv2.putText(frame,"left fist", (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+        if hand_recognition.isFist('right')[0]:
+            cv2.putText(frame,"right fist", (10, 10), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
         cv2.imshow('frame', frame)
     # Release webcam and destroy windows
     cap.release()
