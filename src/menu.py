@@ -103,12 +103,12 @@ class Menu:
                     self.menu_state = 'main'
 
         # Fill the screen with black
-        self.screen.fill(self.BLACK)
+        self.screen.fill(self.WHITE)
 
         # Render and display the text
-        text = font.render("Pong Game", True, self.WHITE)
+        text = font.render("Pong Game", True, self.BLACK)
         text_rect = text.get_rect(center=(self.screen_width // 2, self.screen_height // 2))
-        text2 = font_small.render("press Enter to continue", True, self.WHITE)
+        text2 = font_small.render("press Enter to continue", True, self.BLACK)
         text_rect2 = text2.get_rect(center=(self.screen_width // 2, self.screen_height // 2 + 150))
         self.screen.blit(text, text_rect)
         self.screen.blit(text2, text_rect2)
