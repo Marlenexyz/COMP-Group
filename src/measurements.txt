@@ -32,3 +32,18 @@ recall: 0.91
 -- bad lighting
 precision: 0.93
 recall: 0.94
+
+Home:
+-- bad lighting conditions
+Hand recall: 1.0
+Pinch recall: 0.73
+V recall: 0.98
+Fist recall: 0.19
+
+
+-- good lighting conditions
+Hand recall: 1.0
+Pinch recall: 1.0
+V recall: 0.18
+Fist recall: 1.0
+
