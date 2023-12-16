@@ -167,6 +167,76 @@ def _combined_lighting_conditions_recall_plot_home():
     plt.legend()
     plt.show()
 
+def threshold_variation_Vshape():
+
+    thresholds = [18, 25, 32] #12, 
+    recalls = [90.1, 100, 88.1] #100, 
+
+    # Scatter Plot erstellen
+    plt.figure(figsize=(8, 6))
+    plt.scatter(thresholds, recalls, color='blue', marker='o')
+
+    # Achsentitel und Diagrammüberschrift hinzufügen
+    plt.xlabel('Threshold')
+    plt.ylabel('Recall (%)')
+    plt.title('V-Shape')
+
+    # Gitter hinzufügen
+    plt.grid(True)
+
+    # Plot anzeigen
+    plt.show()
+    
+  
+def threshold_variation_Pinch():
+
+    # Daten für die PINCH-Geste und ihre THRESHOLD-Variationen
+    thresholds_pinch = [18, 12, 9, 6]
+    recalls_pinch = [100, 95.0, 98.0, 3.9]
+
+    # Scatter Plot erstellen
+    plt.figure(figsize=(8, 6))
+    plt.scatter(thresholds_pinch, recalls_pinch, color='blue',marker='o')
+
+    # Achsentitel und Diagrammüberschrift hinzufügen
+    plt.xlabel('THRESHOLD')
+    plt.ylabel('Recall (%)')
+    plt.title('Pinch')
+
+    # Gitter hinzufügen
+    plt.grid(True)
+
+    # Plot anzeigen
+    plt.show()
+
+def threshold_variation_Fist():
+
+    # Daten für die PINCH-Geste und ihre THRESHOLD-Variationen
+    thresholds_pinch = [70,50,40,30]
+    recalls_pinch = [100, 100, 99.0,5.0]
+
+    # FIST: 70, recall = 100%
+    # FIST: 50, recall = 100%
+    # FIST: 40, recall = 99,0%
+    # FIST: 30, recall = 5,0%
+
+    # Scatter Plot erstellen
+    plt.figure(figsize=(8, 6))
+    plt.scatter(thresholds_pinch, recalls_pinch, color='blue',marker='o')
+
+    # Achsentitel und Diagrammüberschrift hinzufügen
+    plt.xlabel('THRESHOLD')
+    plt.ylabel('Recall (%)')
+    plt.title('Fist')
+
+    # Gitter hinzufügen
+    plt.grid(True)
+
+    # Plot anzeigen
+    plt.show()
+
+
+
 
 # Rufe die Funktion auf, um das kombinierte Diagramm zu erstellen
 # _combined_lighting_conditions_recall_plot()
@@ -180,6 +250,10 @@ def _combined_lighting_conditions_recall_plot_home():
 # Rufe die Funktion auf, um das Diagramm zu erstellen
 # frame_matching_plot()
 
-_combined_lighting_conditions_recall_plot_home()
+# _combined_lighting_conditions_recall_plot_home()
+    
+# threshold_variation_Vshape()
+# threshold_variation_Pinch()
+threshold_variation_Fist()
 
 

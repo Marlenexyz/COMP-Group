@@ -51,16 +51,19 @@ Fist recall: 1.0
 THRESHOLD variations
 V-SHAPE: 18, recall = 90,1%
 PINCH: 18, recall = 100%
-FIST: 70, 100%
+FIST: 70, recall = 100%
 
 V-SHAPE: 12, recall = 100%
+V-SHAPE: 18, recall = 90,1%
 V-SHAPE: 25, recall = 100%
 V-SHAPE: 32, recall = 88,1%
 
+PINCH: 18, recall = 100%
 PINCH: 12, recall = 95,0%
 PINCH: 9, recall = 98,0%
 PINCH: 6, recall = 3,9%
 
+FIST: 70, recall = 100%
 FIST: 50, recall = 100%
 FIST: 40, recall = 99,0%
 FIST: 30, recall = 5,0%
