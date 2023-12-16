@@ -17,7 +17,6 @@ class PongGame:
         pygame.mixer.music.load("music/music.mp3")
 
         # Play the background music on a loop
-        pygame.mixer.music.play(-1)
         pygame.mixer.music.set_volume(0.5)
         
         # Load sound effects

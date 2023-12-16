@@ -18,7 +18,7 @@ initial_paddle_pos_left = game_height // 2
 initial_paddle_pos_right = game_height // 2
 countdown = 3 # increase countdown
 
-use_projector_settings = True
+use_projector_settings = False
 test_flag = False
 
 
@@ -191,6 +191,7 @@ if __name__ == '__main__':
         elif status == 'play':
             if not has_run_once:
                 pong.run()
+                pygame.mixer.music.play(-1)
 
                 # Display Countdown on screen, after countdown ends game starts automatically
                 while countdown > 0:
@@ -300,6 +301,6 @@ if __name__ == '__main__':
         cv2.imshow('Video Feed', frame)
 
         for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    exit()
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
