@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-
+'Projector'
 def _bright_lighting_conditions_recall_plot():
     'Bright Lighting Conditions'
     labels = ['Hand', 'Pinch', 'V-Shape', 'Fist']
@@ -59,7 +59,7 @@ def _low_lighting_conditions_recall_plot():
     # Zeige das Diagramm an
     plt.show()
 
-
+'Projector'
 def _combined_lighting_conditions_recall_plot():
     labels = ['Hand', 'Pinch', 'V-Shape', 'Fist']
     values_bright = [0.66, 0.27, 0.77, 0.85]
@@ -121,6 +121,52 @@ def frame_matching_plot():
     plt.legend()
     plt.show()
 
+def _combined_lighting_conditions_recall_plot_home():
+    'Home conditions'
+    labels = ['Hand', 'Pinch', 'V-Shape', 'Fist']
+
+    values_bright = [1.0,1.0,0.18,1.0]
+    values_low = [1.0,0.73,0.98,0.19]
+    # -- bad lighting conditions
+    # Hand recall: 1.0
+    # Pinch recall: 0.73
+    # V recall: 0.98
+    # Fist recall: 0.19
+
+
+    # -- good lighting conditions
+    # Hand recall: 1.0
+    # Pinch recall: 1.0
+    # V recall: 0.18
+    # Fist recall: 1.0
+
+    # Breite der Balken
+    bar_width = 0.25
+
+    color_light = 'lightgray'
+    # color_middle = 'darkgray'
+    color_dark = 'gray'
+
+    # X-Positionen für die Balken
+    bar_positions_bright = np.arange(len(labels))
+    bar_positions_middle = [pos + 0.5 * bar_width for pos in bar_positions_bright]
+    bar_positions_low = [pos + bar_width for pos in bar_positions_bright]
+
+    # Erstelle ein kombiniertes Balkendiagramm
+    plt.bar(bar_positions_bright, values_bright, width=bar_width, label='Bright Lighting', color=color_light)
+    # plt.bar(bar_positions_middle, values_middle, width=bar_width, label='Middle Lighting', color=color_middle)
+    plt.bar(bar_positions_low, values_low, width=bar_width, label='Low Lighting', color=color_dark)
+
+    # Füge Titel und Achsenbeschriftungen hinzu
+    plt.title('Recall For Hand Gestures Under Different Lighting Conditions')
+    plt.xlabel('Hand Gesture')
+    plt.ylabel('Recall')
+
+    # Zeige das Diagramm an
+    plt.xticks(bar_positions_middle,labels)
+    plt.legend()
+    plt.show()
+
 
 # Rufe die Funktion auf, um das kombinierte Diagramm zu erstellen
 # _combined_lighting_conditions_recall_plot()
@@ -132,4 +178,8 @@ def frame_matching_plot():
 # _low_lighting_conditions_recall_plot()
 
 # Rufe die Funktion auf, um das Diagramm zu erstellen
-frame_matching_plot()
+# frame_matching_plot()
+
+_combined_lighting_conditions_recall_plot_home()
+
+
