@@ -16,7 +16,7 @@ debug_width = 600
 
 initial_paddle_pos_left = game_height // 2
 initial_paddle_pos_right = game_height // 2
-countdown = 3 # increase countdown
+countdown = 5 # increase countdown
 
 use_projector_settings = False
 test_flag = False
