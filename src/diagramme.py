@@ -174,7 +174,8 @@ def threshold_variation_Vshape():
 
     # Scatter Plot erstellen
     plt.figure(figsize=(8, 6))
-    plt.scatter(thresholds, recalls, color='blue', marker='o', s= 150)
+    # plt.scatter(thresholds, recalls, color='blue', marker='o', s= 150)
+    plt.bar(thresholds, recalls)#, color='blue')
 
     # Achsentitel und Diagrammüberschrift hinzufügen
     plt.xlabel('Threshold')
@@ -196,7 +197,8 @@ def threshold_variation_Pinch():
 
     # Scatter Plot erstellen
     plt.figure(figsize=(8, 6))
-    plt.scatter(thresholds_pinch, recalls_pinch, color='blue',marker='o',s= 150)
+    # plt.scatter(thresholds_pinch, recalls_pinch, color='blue',marker='o',s= 150)
+    plt.bar(thresholds_pinch, recalls_pinch)#, color='blue')
 
     # Achsentitel und Diagrammüberschrift hinzufügen
     plt.xlabel('THRESHOLD')
@@ -212,8 +214,8 @@ def threshold_variation_Pinch():
 def threshold_variation_Fist():
 
     # Daten für die PINCH-Geste und ihre THRESHOLD-Variationen
-    thresholds_pinch = [70,50,40,30]
-    recalls_pinch = [100, 100, 99.0,5.0]
+    thresholds_fist = [70,50,40,30]
+    recalls_fist = [100, 100, 99.0,5.0]
 
     # FIST: 70, recall = 100%
     # FIST: 50, recall = 100%
@@ -222,7 +224,8 @@ def threshold_variation_Fist():
 
     # Scatter Plot erstellen
     plt.figure(figsize=(8, 6))
-    plt.scatter(thresholds_pinch, recalls_pinch, color='blue',marker='o', s= 150)
+    # plt.scatter(thresholds_pinch, recalls_pinch, color='blue',marker='o', s= 150)
+    plt.bar(thresholds_fist, recalls_fist, width= 1.5)# color='blue')
 
     # Achsentitel und Diagrammüberschrift hinzufügen
     plt.xlabel('THRESHOLD')
@@ -252,8 +255,8 @@ def threshold_variation_Fist():
 
 # _combined_lighting_conditions_recall_plot_home()
     
-threshold_variation_Vshape()
-threshold_variation_Pinch()
+# threshold_variation_Vshape()
+# threshold_variation_Pinch()
 threshold_variation_Fist()
 
 
