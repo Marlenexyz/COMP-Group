@@ -115,7 +115,7 @@ class PongGame:
         self.player_b_score = 0
         self.font = pygame.font.Font(None, 36)
 
-        self.win_score = 10 ## increase to 10
+        self.win_score = 3 ## increase to 10
         self.game_won = False
         
         self.collision_detected = False
